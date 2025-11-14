@@ -143,7 +143,7 @@ class AggregateAllEpitopes:
 
     def determine_used_binding_score_algorithms(self):
         headers = pd.read_csv(self.input_file, delimiter="\t", nrows=0).columns.tolist()
-        potential_algorithms = ["MixMHCpred"]
+        potential_algorithms = ["MixMHCpred", "MixMHC2pred"]
         prediction_algorithms = []
         for algorithm in potential_algorithms:
             if "{} MT Binding Score".format(algorithm) in headers or "{} Binding Score".format(algorithm) in headers:
@@ -152,7 +152,7 @@ class AggregateAllEpitopes:
 
     def determine_used_binding_percentile_algorithms(self):
         headers = pd.read_csv(self.input_file, delimiter="\t", nrows=0).columns.tolist()
-        potential_algorithms = ["NetMHCpan", "NetMHC", "NetMHCcons", "PickPocket", "SMM", "SMMPMBEC", "MHCflurry", "MHCnuggetsI", "NetMHCIIpan", "SMMalign", "NNalign", "MHCnuggetsII", "MixMHCpred"]
+        potential_algorithms = ["NetMHCpan", "NetMHC", "NetMHCcons", "PickPocket", "SMM", "SMMPMBEC", "MHCflurry", "MHCnuggetsI", "NetMHCIIpan", "SMMalign", "NNalign", "MHCnuggetsII", "MixMHCpred", "MixMHC2pred"]
         prediction_algorithms = []
         for algorithm in potential_algorithms:
             if "{} MT Percentile".format(algorithm) in headers or "{} Percentile".format(algorithm) in headers:

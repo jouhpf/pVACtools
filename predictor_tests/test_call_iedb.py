@@ -397,5 +397,22 @@ class CallIEDBClassIITests(CallIEDBTests):
             atol=2e-2
         )
 
+    def test_mixmhc2pred_method_generates_expected_files(self):
+        call_iedb_output_file = tempfile.NamedTemporaryFile()
+        tmp_call_iedb_output_dir = tempfile.TemporaryDirectory()
+
+        pvactools.lib.call_iedb.main([
+            self.input_file,
+            call_iedb_output_file.name,
+            'MixMHC2pred',
+            'DRB1*04:05',
+            '-l', '12',
+            '--tmp-dir', tmp_call_iedb_output_dir.name,
+        ])
+        expected_output_file = os.path.join(self.test_data_dir, 'output_mixmhc2pred.tsv')
+        expected_df = pd.read_csv(expected_output_file, sep="\t", index_col=[0,6,7])
+        actual_df = pd.read_csv(call_iedb_output_file.name, sep="\t", index_col=[0,6,7])
+        pd.testing.assert_frame_equal(expected_df, actual_df, check_like=True, check_exact=False)
+
 if __name__ == '__main__':
     unittest.main()

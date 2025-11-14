@@ -845,3 +845,81 @@ class SMMalign(IEDBMHCII):
     @property
     def iedb_prediction_method(self):
         return 'smm_align'
+
+class MixMHC2pred(MHCII):
+    def valid_allele_names(self):
+        base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+        alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_ii')
+        alleles_file_name = os.path.join(alleles_dir, "MixMHC2pred.tsv")
+        alleles           = []
+        with open(alleles_file_name) as alleles_file:
+            tsv_reader = csv.DictReader(alleles_file, delimiter='\t')
+            for row in tsv_reader:
+                alleles.append(row['OfficialName'])
+        return alleles
+
+    def check_length_valid_for_allele(self, length, allele):
+        return True
+
+    def valid_lengths_for_allele(self, allele):
+        return [12,13,14,15,16,17,18,19,20,21]
+
+    def predict(self, input_file, allele, epitope_length, iedb_executable_path, iedb_retries, tmp_dir=None, log_dir=None):
+        results = pd.DataFrame()
+        all_epitopes = []
+        for record in SeqIO.parse(input_file, "fasta"):
+            seq_num = record.id
+            peptide = str(record.seq)
+            epitopes = pvactools.lib.run_utils.determine_neoepitopes(peptide, epitope_length)
+            all_epitopes.extend(epitopes.values())
+
+        all_epitopes = list(set(all_epitopes))
+        if len(all_epitopes) > 0:
+            tmp_input_file = tempfile.NamedTemporaryFile('w', dir=tmp_dir, delete=False)
+            for epitope in all_epitopes:
+                tmp_input_file.write("{}\n".format(epitope))
+            tmp_input_file.close()
+            tmp_output_file = tempfile.NamedTemporaryFile('r', dir=tmp_dir, delete=False)
+            base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+            alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_ii')
+            alleles_file_name = os.path.join(alleles_dir, "MixMHC2pred.tsv")
+            with open(alleles_file_name) as alleles_file:
+                tsv_reader = csv.DictReader(alleles_file, delimiter='\t')
+                for row in tsv_reader:
+                    if allele == row['OfficialName']:
+                        mixmhc2pred_allele = row['AlleleName']
+                        break
+            if sys.platform == "darwin":
+                arguments = ["MixMHC2pred", "-i", tmp_input_file.name, "-o", tmp_output_file.name, "-a", mixmhc2pred_allele, "--no_context"]
+            else:
+                arguments = ["MixMHC2pred_unix", "-i", tmp_input_file.name, "-o", tmp_output_file.name, "-a", mixmhc2pred_allele, "--no_context"]
+            stderr_fh = tempfile.NamedTemporaryFile('w', dir=tmp_dir, delete=False)
+            try:
+                response = run(arguments, check=True, stdout=DEVNULL, stderr=stderr_fh)
+            except:
+                stderr_fh.close()
+                with open(stderr_fh.name, 'r') as fh:
+                    err = fh.read()
+                os.unlink(stderr_fh.name)
+                raise Exception("An error occurred while calling MixMHC2pred:\n{}".format(err))
+            stderr_fh.close()
+            os.unlink(stderr_fh.name)
+            tmp_output_file.close()
+            df = pd.read_csv(tmp_output_file.name, sep="\t", skiprows=19)
+            os.unlink(tmp_output_file.name)
+            df.rename(columns={
+                '%Rank_best': 'percentile',
+                'Peptide': 'peptide',
+            }, inplace=True)
+            for record in SeqIO.parse(input_file, "fasta"):
+                seq_num = record.id
+                peptide = str(record.seq)
+                epitopes = pvactools.lib.run_utils.determine_neoepitopes(peptide, epitope_length)
+                for start, epitope in epitopes.items():
+                    epitope_df = df[df['peptide'] == epitope]
+                    epitope_df['seq_num'] = seq_num
+                    epitope_df['start'] = start
+                    epitope_df['allele'] = allele
+                    epitope_df['score'] = 'NA'
+                    results = pd.concat((results, epitope_df), axis=0)
+        return (results, 'pandas')
