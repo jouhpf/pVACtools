@@ -65,9 +65,13 @@ class AggregateReportFilter:
                 'output_metrics_file',
                 help="Filtered metrics.json file only retaining those entries from variants in the selected variant Tier."
             )
+        if tool == 'pvacseq':
+            help_text = "Specify a comma-separated list of tiers for which to retain aggregate report and metrics.json variant data."
+        else:
+            help_text = "Specify a comma-separated list of tiers for which to retain aggregate report variant data."
         parser.add_argument(
             "--include-tiers", type=tiers(tool),
-            help="Specify the tiers for which to retain aggregate report and metrics.json variant data.",
+            help=help_text,
             default=['Pass']
         )
         return parser
