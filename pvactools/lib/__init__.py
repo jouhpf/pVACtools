@@ -27,6 +27,7 @@ __all__ = [
     'load_gtf_data',
     'splice_pipeline',
     'anchor_residue_pass',
+    'aggregate_report_filter',
 ]
 
 from . import *
