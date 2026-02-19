@@ -286,6 +286,14 @@ class OutputParser(metaclass=ABCMeta):
             result['wt_epitope_position'] = best_match_position
             result['match_direction']     = 'right'
 
+            if str(best_match_position) not in wt_results:
+                #The WT match position is out of range (can happen when propagating from a large insertion)
+                result['wt_epitope_seq'] = 'NA'
+                result['wt_scores']      = self.format_match_na(result, 'score')
+                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
+                result['mutation_position'] = 'NA'
+                return
+
             #We need to ensure that the matched WT eptiope has enough overlapping amino acids with the MT epitope
             best_match_wt_result = wt_results[str(best_match_position)]
             total_matches = self.determine_total_matches(result['mt_epitope_seq'], best_match_wt_result['wt_epitope_seq'])
@@ -313,6 +321,16 @@ class OutputParser(metaclass=ABCMeta):
         if baseline_best_match_position not in wt_results:
             insertion_length = len(iedb_results_for_wt_iedb_result_key.keys()) - len(wt_results.keys())
             best_match_position = int(baseline_best_match_position) - insertion_length
+            if str(best_match_position) not in wt_results:
+                #The computed WT match position is out of range (e.g. negative for large insertions)
+                #No valid WT match exists for this MT epitope
+                result['wt_epitope_seq'] = 'NA'
+                result['wt_scores']      = self.format_match_na(result, 'score')
+                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
+                result['mutation_position'] = 'NA'
+                result['match_direction'] = 'right'
+                result['wt_epitope_position'] = best_match_position
+                return
             best_match_wt_result = wt_results[str(best_match_position)]
             result['match_direction'] = 'right'
             result['wt_epitope_position'] = best_match_position
@@ -355,7 +373,7 @@ class OutputParser(metaclass=ABCMeta):
             elif result['variant_type'] == 'inframe_del':
                 deletion_length                 = len(wt_results.keys()) - len(iedb_results_for_wt_iedb_result_key.keys())
                 alternate_best_match_position   = int(baseline_best_match_position) + deletion_length
-            if alternate_best_match_position > 0:
+            if str(alternate_best_match_position) in wt_results:
                 alternate_best_match_wt_result      = wt_results[str(alternate_best_match_position)]
                 alternate_best_match_wt_epitope_seq = alternate_best_match_wt_result['wt_epitope_seq']
                 consecutive_matches_from_right      = self.determine_consecutive_matches_from_right(mt_epitope_seq, alternate_best_match_wt_epitope_seq)
