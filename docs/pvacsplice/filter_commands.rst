@@ -120,3 +120,11 @@ By default the ``--top-score-metric`` option is set to ``median`` which will app
 filter to the ``Median MT IC50 Score`` column. If the ``--top-score-metric``
 option is set to ``lowest``, the ``Best MT IC50  Score`` column is used
 instead.
+
+Aggregate Report Filter
+-----------------------
+
+.. program-output:: pvacsplice aggregate_report_filter -h
+
+This command filters the aggregate report to only those variants matching the
+specified ``--include-tiers`` (default:Pass).

@@ -36,6 +36,13 @@ def define_parser():
     )
     top_score_filter_parser.set_defaults(func=top_score_filter)
 
+    aggregate_report_filter_parser = subparsers.add_parser(
+        "aggregate_report_filter",
+        help="Filter an aggregate report based on the variant Tier.",
+        add_help=False,
+    )
+    aggregate_report_filter_parser.set_defaults(func=aggregate_report_filter)
+
     net_chop_parser = subparsers.add_parser(
         "net_chop",
         help="Run NetChop on existing pVACfuse output .tsv to predict cleavage sites on the neoepitopes.",

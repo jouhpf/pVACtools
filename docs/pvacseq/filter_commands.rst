@@ -200,3 +200,15 @@ are multiple qualifying transcripts that lead to different peptide sequences at 
 Even though most genes have alternative transcripts, they often have only subtle differences in open reading frame and overall
 protein sequence, and only differences within the window that would influence a neoantigen candidate are consequential here.
 
+Aggregate Report Filter
+-----------------------
+
+.. program-output:: pvacseq aggregate_report_filter -h
+
+This command filters the aggregate report and its corresponding metrics.json
+file to only those variants matching the specified ``--include-tiers`` (default:
+Pass).
+
+This filter may be useful for high tumor mutation burden cases when the
+metrics.json file size exceeds the pVACview upload file size limit or
+slows down the pVACview application.

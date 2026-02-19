@@ -17,6 +17,7 @@ __all__ = [
     'valid_alleles',
     'update_tiers',
     'valid_algorithms',
+    'aggregate_report_filter',
 ]
 
 from . import *
