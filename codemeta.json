@@ -250,9 +250,9 @@
         "https://course.pvactools.org",
         "https://pvacview.org"
     ],
-    "schema:releaseNotes": "Fix bug with allele specific binding filter not working correctly in pVACsplice by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1359",
+    "schema:releaseNotes": "This is a minor version release. It adds the following features:\n\n* Add ability to change port to serve pVACview to (`--port` parameter). by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1354\n* Add a ``pvacseq|fuse|bind|splice aggregate_report_filter`` command to filter aggregated report on variant Tier. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1368\n* Add a `--length` parameter to the `pvacseq|fuse|splice|bind|vector valid_alleles` commands to filter alleles to ones that work for a specific epitope length. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1372\n* Clarify help texts to differentiate between hard filtering and prioritizing/tiering. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1373\n* Add codemeta.json file to repo. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1374\n\nAdditionally, it fixes the following problem(s):\n\n* Fix an error in the output parser that occurs with very long insertions. by @CSi-Ti in https://github.com/griffithlab/pVACtools/pull/1367\n* Support splice site with multiple matching somatic variants that would previously throw an error. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1369",
     "softwareRequirements": "https://pvactools.readthedocs.io/en/latest/install.html",
-    "version": "6.0.5",
+    "version": "6.1.0",
     "contIntegration": "https://github.com/griffithlab/pVACtools/actions/workflows/tests.yml",
     "codemeta:continuousIntegration": {
         "id": "https://github.com/griffithlab/pVACtools/actions/workflows/tests.yml"

@@ -62,9 +62,18 @@ Contents
 New in Version |release|
 ------------------------
 
-This is a bugfix release. It fixes the following problem(s):
+This is a minor version release. It adds the following features:
 
-* Fix bug with allele specific binding filter not working correctly in pVACsplice. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1359
+* Add ability to change port to serve pVACview to (``--port`` parameter). by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1354
+* Add a ``pvacseq|fuse|bind|splice aggregate_report_filter`` command to filter aggregated report on variant Tier. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1368
+* Add a ``--length`` parameter to the ``pvacseq|fuse|splice|bind|vector valid_alleles`` commands to filter alleles to ones that work for a specific epitope length. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1372
+* Clarify help texts to differentiate between hard filtering and prioritizing/tiering. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1373
+* Add codemeta.json file to repo. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1374
+
+Additionally, it fixes the following problem(s):
+
+* Fix an error in the output parser that occurs with very long insertions. by @CSi-Ti in https://github.com/griffithlab/pVACtools/pull/1367
+* Support splice site with multiple matching somatic variants that would previously throw an error. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1369
 
 New in Version 6
 ----------------

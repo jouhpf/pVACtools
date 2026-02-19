@@ -65,7 +65,7 @@ for dirpath, dirnames, filenames in os.walk("pvactools/tools/pvaccompare/html_re
 
 setup(
     name="pvactools",
-    version="6.0.5",
+    version="6.1.0",
     packages=[
         "pvactools.tools",
         "pvactools.tools.pvacbind",
@@ -129,7 +129,7 @@ setup(
         'pvactools.tools.pvaccompare': pvaccompare_data_files,
     },
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -138,13 +138,12 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ],
-
-    author = "Jasreet Hundal, Susanna Kiwala, Joshua McMichael, Christopher A Miller, Alexander T Wollam, Huiming Xia, Connor J Liu, Sidi Zhao, Yang-Yang Feng, Aaron P Graubert, Amber Z Wollam, Jonas Neichin, Megan Neveau, Jason Walker, William E Gillanders, Elaine R Mardis, Obi L Griffith, Malachi Griffith",
+    author = "Susanna Kiwala, Jasreet Hundal, Joshua McMichael, Christopher A Miller, Luke Hendrickson, Alexander T Wollam, Huiming Xia, Miller Richters, Connor J Liu, Evelyn Schmidt, Jennie Yao, My Hoang, Sidi Zhao, Yang-Yang Feng, Aaron P Graubert, Jayden Zebrowski, Amber Z Wollam, Jonas Neichin, Megan Neveau, Jason Walker, William E Gillanders, Elaine R Mardis, Obi L Griffith, Malachi Griffith",
     author_email = "help@pvactools.org",
     description = "A cancer immunotherapy tools suite",
     long_description = long_description,
     license = "BSD-3-Clause-Clear",
-    keywords = "antigens neoantigens cancer sequencing variant variants fusion fusions",
+    keywords = "immunogenomics, immunotherapy, antigens, neoantigens, cancer, sequencing, variant, variants, fusion, fusions",
     #This needs to be the url where the code is being hosted
     url = "https://github.com/griffithlab/pVACtools",
 )
