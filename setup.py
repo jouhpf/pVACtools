@@ -119,6 +119,7 @@ setup(
         'openpyxl',
         'deepdiff',
         'scikit-learn>=1.6.0,<1.8.0',
+        'imblearn',
     ],
     package_data={
         'pvactools.tools.pvacseq': pvacseq_data_files,
