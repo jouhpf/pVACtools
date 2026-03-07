@@ -682,6 +682,112 @@ class IEDBMHCII(MHCII, IEDB, metaclass=ABCMeta):
 class NetMHCIIVersion:
     netmhciipan_version = None
 
+class ImmuScope_IM(MHCII):
+    immuscope_score_col = 'ImmuScope_IM'
+    immuscope_weights_dir = '/opt/ImmuScope/weights'
+
+    def valid_allele_names(self):
+        """Return allele names supported by ImmuScope.
+
+        Allele support is maintained as a static list in
+        `tools/pvacseq/iedb_alleles/class_ii/Immuscope.txt`.
+        """
+
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+        alleles_dir = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_ii')
+        alleles_file_name = os.path.join(alleles_dir, 'Immuscope.txt')
+        with open(alleles_file_name, 'r') as fh:
+            return list(filter(None, (line.strip() for line in fh)))
+
+    def valid_lengths_for_allele(self, allele):
+        return [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+
+    def check_length_valid_for_allele(self, length, allele):
+        if length not in self.valid_lengths_for_allele(allele):
+            sys.exit(
+                "Epitope length %s not supported for method %s. Valid lengths are: %s" % (
+                    length,
+                    self.__class__.__name__,
+                    ','.join(map(str, self.valid_lengths_for_allele(allele)))
+                )
+            )
+
+    def predict(self, input_file, allele, epitope_length, iedb_executable_path, iedb_retries, tmp_dir=None, log_dir=None):
+        if not os.path.isdir(self.immuscope_weights_dir):
+            raise Exception("ImmuScope weights directory not found at {}".format(self.immuscope_weights_dir))
+
+        results = pd.DataFrame()
+
+        all_epitopes = []
+        for record in SeqIO.parse(input_file, "fasta"):
+            peptide = str(record.seq)
+            epitopes = pvactools.lib.run_utils.determine_neoepitopes(peptide, epitope_length)
+            all_epitopes.extend(epitopes.values())
+        all_epitopes = list(set(all_epitopes))
+
+        if len(all_epitopes) == 0:
+            return (results, 'pandas')
+
+        tmp_input_file = tempfile.NamedTemporaryFile('w', dir=tmp_dir, delete=False)
+        tmp_input_file.write("allele\tpeptide\tseq_num\tstart\n")
+        for epitope in all_epitopes:
+            tmp_input_file.write("{}\t{}\t\t\n".format(allele, epitope))
+        tmp_input_file.close()
+
+        tmp_output_file = tempfile.NamedTemporaryFile('r', dir=tmp_dir, delete=False)
+        tmp_output_file.close()
+
+        arguments = [
+            'immuscope-wrapper',
+            '--input', tmp_input_file.name,
+            '--output', tmp_output_file.name,
+            '--allele-col', 'allele',
+            '--peptide-col', 'peptide',
+            '--seq-num-col', 'seq_num',
+            '--start-col', 'start',
+        ]
+        stderr_fh = tempfile.NamedTemporaryFile('w', dir=tmp_dir, delete=False)
+        try:
+            run(arguments, check=True, stdout=DEVNULL, stderr=stderr_fh)
+        except:
+            stderr_fh.close()
+            with open(stderr_fh.name, 'r') as fh:
+                err = fh.read()
+            os.unlink(stderr_fh.name)
+            os.unlink(tmp_input_file.name)
+            if os.path.exists(tmp_output_file.name):
+                os.unlink(tmp_output_file.name)
+            raise Exception("An error occurred while calling ImmuScope:\n{}".format(err))
+        stderr_fh.close()
+        os.unlink(stderr_fh.name)
+        os.unlink(tmp_input_file.name)
+
+        df = pd.read_csv(tmp_output_file.name, sep='\t')
+        os.unlink(tmp_output_file.name)
+
+        # Wrapper emits: allele peptide tgt len ImmuScope_IM seq_num start
+        if self.immuscope_score_col not in df.columns:
+            raise Exception(
+                "ImmuScope wrapper output missing expected score column '{}'. Found columns: {}".format(
+                    self.immuscope_score_col,
+                    ','.join(df.columns),
+                )
+            )
+
+        for record in SeqIO.parse(input_file, "fasta"):
+            seq_num = record.id
+            peptide = str(record.seq)
+            epitopes = pvactools.lib.run_utils.determine_neoepitopes(peptide, epitope_length)
+            for start, epitope in epitopes.items():
+                epitope_df = df[df['peptide'] == epitope].copy()
+                if epitope_df.empty:
+                    continue
+                epitope_df['seq_num'] = seq_num
+                epitope_df['start'] = start
+                results = pd.concat((results, epitope_df), axis=0)
+
+        return (results, 'pandas')
+
 class NetMHCIIpan(IEDBMHCII):
     @property
     def iedb_prediction_method(self):
