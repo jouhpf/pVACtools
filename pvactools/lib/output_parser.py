@@ -420,6 +420,13 @@ class OutputParser(metaclass=ABCMeta):
                 line.get('BigMHC_IM'), method,
                 percentile_keys=None, percentile_fallback='NA', is_reversed=True
             )
+        
+        if m == 'immuscope_im':
+            return self._make_score_entry(
+                line, 'ImmuScope_IM', 'immunogenicity',
+                line.get('ImmuScope_IM'), method,
+                percentile_keys=None, percentile_fallback='NA', is_reversed=True
+            )
 
         if m == 'netmhcpan_el':
             presentation = line.get('score')
@@ -880,7 +887,7 @@ class OutputParser(metaclass=ABCMeta):
             elif method in ['BigMHC_EL', 'netmhciipan_el', 'netmhcpan_el']:
                 headers.append("%s WT Presentation Score" % pretty_method)
                 headers.append("%s MT Presentation Score" % pretty_method)
-            elif method in ['BigMHC_IM', 'DeepImmuno', 'PRIME']:
+            elif method in ['BigMHC_IM', 'DeepImmuno', 'PRIME', 'ImmuScope_IM']:
                 headers.append("%s WT Immunogenicity Score" % pretty_method)
                 headers.append("%s MT Immunogenicity Score" % pretty_method)
             else:
@@ -941,7 +948,7 @@ class OutputParser(metaclass=ABCMeta):
                 elif pretty_method in ['BigMHC_EL', 'NetMHCIIpanEL', 'NetMHCpanEL', 'MixMHCpred']:
                     row[f'{pretty_method} MT Presentation Score'] = self.score_or_na(mt_scores, pretty_method, 'presentation')
                     row[f'{pretty_method} WT Presentation Score'] = self.score_or_na(wt_scores, pretty_method, 'presentation')
-                elif pretty_method in ['BigMHC_IM', 'DeepImmuno', 'PRIME']:
+                elif pretty_method in ['BigMHC_IM', 'DeepImmuno', 'PRIME', 'ImmuScope_IM']:
                     row[f'{pretty_method} MT Immunogenicity Score'] = self.score_or_na(mt_scores, pretty_method, 'immunogenicity')
                     row[f'{pretty_method} WT Immunogenicity Score'] = self.score_or_na(wt_scores, pretty_method, 'immunogenicity')
                 else:
@@ -1248,7 +1255,7 @@ class UnmatchedSequencesOutputParser(OutputParser):
                 headers.append("%s Binding Score" % pretty_method)
             elif method in ['BigMHC_EL', 'netmhciipan_el', 'netmhcpan_el']:
                 headers.append("%s Presentation Score" % pretty_method)
-            elif method in ['BigMHC_IM', 'DeepImmuno', 'PRIME']:
+            elif method in ['BigMHC_IM', 'DeepImmuno', 'PRIME', 'ImmuScope_IM']:
                 headers.append("%s Immunogenicity Score" % pretty_method)
             else:
                 headers.append("%s IC50 Score" % pretty_method)
@@ -1280,7 +1287,7 @@ class UnmatchedSequencesOutputParser(OutputParser):
                     row[f'{pretty_method} Binding Score'] = self.score_or_na(mt_scores, pretty_method, 'binding_score')
                 elif pretty_method in ['BigMHC_EL', 'NetMHCIIpanEL', 'NetMHCpanEL', 'MixMHCpred']:
                     row[f'{pretty_method} Presentation Score'] = self.score_or_na(mt_scores, pretty_method, 'presentation')
-                elif pretty_method in ['BigMHC_IM', 'DeepImmuno', 'PRIME']:
+                elif pretty_method in ['BigMHC_IM', 'DeepImmuno', 'PRIME', 'ImmuScope_IM']:
                     row[f'{pretty_method} Immunogenicity Score'] = self.score_or_na(mt_scores, pretty_method, 'immunogenicity')
                 else:
                     row[f'{pretty_method} IC50 Score'] = self.score_or_na(mt_scores, pretty_method, 'ic50')
