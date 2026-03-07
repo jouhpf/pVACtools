@@ -88,8 +88,8 @@ def run_ml_predictions(base_output_dir, args):
         print("Skipping ML predictions.")
         return
     
-    # Define output directory
-    ml_output_dir = os.path.join(base_output_dir, 'ml_predict')
+    # Save ML output in the same folder as MHC_I.all_epitopes.aggregated.tsv (MHC_Class_I)
+    ml_output_dir = os.path.dirname(file1)
     
     try:
         # Import and run ML predictions
@@ -106,12 +106,6 @@ def run_ml_predictions(base_output_dir, args):
             ml_threshold_reject=args.ml_threshold_reject
         )
         print(f"ML predictions completed successfully using Class I and Class II files. Results saved to: {output_file}")
-        
-        # To have all files available in one place to load into pVACview:
-        # Copy the metrics.json file to the ML output directory
-        shutil.copy(file4, os.path.join(ml_output_dir, "{}.MHC_I.all_epitopes.aggregated.metrics.json".format(args.sample_name)))
-        # Copy the Class II aggregated file to the ML output directory
-        shutil.copy(file3, os.path.join(ml_output_dir, "{}.MHC_II.all_epitopes.aggregated.tsv".format(args.sample_name)))
         
     except Exception as e:
         print(f"Error during standalone ML predictions: {str(e)}")

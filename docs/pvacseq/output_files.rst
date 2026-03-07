@@ -55,8 +55,8 @@ Each folder will contain the same list of output files (listed in the order crea
      - pVACview R Shiny application files. Not generated when running only with presentation and immunogenicity algorithms.
    * - ``www`` (directory)
      - Directory containing image files for pVACview. Not generated when running with presentation and immunogenicity algorithms only.  
-   * - ``ml_predict/<sample_name>.MHC_I.all_epitopes.aggregated.ML_predicted.tsv`` (optional)
-     - A version of the ``<sample_name>.MHC_I.all_epitopes.aggregated.tsv`` with ML-based neoantigen evaluation predictions. Generated when both MHC Class I and Class II predictions are run and the ``--run-ml-predictions`` flag is set.
+   * - ``MHC_Class_I/<sample_name>.MHC_I.all_epitopes.aggregated.ML_predict.tsv`` (optional)
+     - A version of the ``<sample_name>.MHC_I.all_epitopes.aggregated.tsv`` with ML-based neoantigen evaluation predictions. Generated when both MHC Class I and Class II predictions are run and the ``--run-ml-predictions`` flag is set. Written to the same folder as the Class I aggregated file.
 
 
 Filters applied to the filtered.tsv file
@@ -390,14 +390,14 @@ included epitopes, selecting the best-scoring epitope, and which values are outp
 
 .. _ml_prediction_output:
 
-<sample_name>.MHC_I.all_epitopes.aggregated.ML_predicted.tsv Report Columns
+<sample_name>.MHC_I.all_epitopes.aggregated.ML_predict.tsv Report Columns
 --------------------------------------------------
 
-The ``<sample_name>.MHC_I.all_epitopes.aggregated.ML_predicted.tsv`` file is generated when using the :ref:`add_ml_predictions <optional_downstream_analysis_tools_label>` 
+The ``<sample_name>.MHC_I.all_epitopes.aggregated.ML_predict.tsv`` file is generated when using the :ref:`add_ml_predictions <optional_downstream_analysis_tools_label>` 
 tool or when running pVACseq with both MHC Class I and Class II predictions and the ``--run-ml-predictions`` flag enabled. 
 This file contains all columns from the Class I aggregated file (``all_epitopes.aggregated.tsv``) with one additional ML prediction column added.  
 
-The file is written to the ``ml_predict`` subdirectory within the output directory.
+The file is written to the same folder as the Class I aggregated file (``MHC_Class_I`` within the output directory).
 
 .. list-table::
    :header-rows: 1
