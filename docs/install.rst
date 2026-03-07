@@ -248,7 +248,7 @@ ImmuScope model weights:
 
 .. code-block:: none
 
-   wget -O ImmuScope-weights.tar.gz "https://zenodo.org/records/14810445/files/ImmuScope-weights.tar.gz?download=1"; tar -xzvf ImmuScope-weights.tar.gz; rm ImmuScope-weights.tar.gz
+   immuscope-download-weights
 
 .. note::
 
