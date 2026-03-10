@@ -9,7 +9,7 @@ def main(args_input = sys.argv[1:]):
     parser = define_parser()
     args = parser.parse_args(args_input)
 
-    ValidAlleles(args.prediction_algorithm, args.species).print_valid_alleles()
+    ValidAlleles(args.prediction_algorithm, args.species, args.length).print_valid_alleles()
 
 if __name__ == "__main__":
     main()
