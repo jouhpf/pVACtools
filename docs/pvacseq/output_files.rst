@@ -55,8 +55,8 @@ Each folder will contain the same list of output files (listed in the order crea
      - pVACview R Shiny application files. Not generated when running only with presentation and immunogenicity algorithms.
    * - ``www`` (directory)
      - Directory containing image files for pVACview. Not generated when running with presentation and immunogenicity algorithms only.  
-   * - ``MHC_Class_I/<sample_name>.MHC_I.all_epitopes.aggregated.ML_predict.tsv`` (optional)
-     - A version of the ``<sample_name>.MHC_I.all_epitopes.aggregated.tsv`` with ML-based neoantigen evaluation predictions. Generated when both MHC Class I and Class II predictions are run and the ``--run-ml-predictions`` flag is set. Written to the same folder as the Class I aggregated file.
+   * - ``<sample_name>.MHC_I.all_epitopes.aggregated.ML_predict.tsv`` (optional)
+     - A version of the ``<sample_name>.MHC_I.all_epitopes.aggregated.tsv`` with ML-based neoantigen evaluation predictions. Generated when both MHC Class I and Class II predictions are run and the ``--run-ml-predictions`` flag is set. Written only to the ``MHC_Class_I`` folder.
 
 
 Filters applied to the filtered.tsv file
