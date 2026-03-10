@@ -471,19 +471,19 @@ def define_add_ml_predictions_parser(tool='pvacseq'):
         help="Path to the MHC Class II aggregated epitopes TSV."
     )
     parser.add_argument(
+        "sample_name",
+        help="Sample name prefix to use for the output files."
+    )
+    parser.add_argument(
         "--artifacts-path",
         dest="artifacts_path",
         help="Optional path to a directory containing ML model artifacts. Defaults to the package-provided artifacts."
     )
     parser.add_argument(
-        "output_dir",
-        nargs="?",
+        "--output-dir",
+        dest="output_dir",
         default=None,
         help="Directory where the ML prediction TSV should be written. Defaults to the directory containing the Class I aggregated file."
-    )
-    parser.add_argument(
-        "sample_name",
-        help="Sample name prefix to use for the output files."
     )
     parser.add_argument(
         "--ml-threshold-accept",
