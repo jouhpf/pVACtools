@@ -66,8 +66,8 @@ class PvacseqAddMlPredictionsTests(unittest.TestCase):
             input_file_I_aggregated,
             input_file_I_all_epitopes,
             input_file_II_aggregated,
-            output_dir.name,
-            'HCC1395', 
+            'HCC1395',
             '--ml-threshold-accept', '0.55',
-            '--ml-threshold-reject', '0.30'
+            '--ml-threshold-reject', '0.30',
+            '--output-dir', output_dir.name,
         ])) # runs add_ml_predictions.main(), which returns nothing if successful --> False if successful, True if not
