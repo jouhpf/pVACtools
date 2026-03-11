@@ -180,7 +180,8 @@ class PvacspliceBestCandidate:
             "canonical_sort",
             "tsl_sort",
             "WT Protein Length",
-            "Transcript Expression"
+            "Transcript Expression",
+            "Tumor DNA VAF",
         ]
         sort_orders = [
             True,
@@ -188,7 +189,8 @@ class PvacspliceBestCandidate:
             True,
             True,
             False,
-            False
+            False,
+            False,
         ]
 
         #Sort the dataframe according to the criteria and pick the first (best) one
