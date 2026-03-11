@@ -84,7 +84,7 @@ class CombineInputs:
                 )
 
         # create index to match with kmers
-        merged_df['index'] = merged_df['gene_name'] + '.' + merged_df['transcript_id'] + '.' + merged_df['name'] + '.' + merged_df['variant_info'] + '.' + merged_df['anchor']
+        merged_df['index'] = merged_df.index.astype(str) + '.' + merged_df['gene_name'] + '.' + merged_df['transcript_id'] + '.' + merged_df['name'] + '.' + merged_df['variant_info'] + '.' + merged_df['anchor']
 
         # cols for frameshift info
         merged_df[['wt_protein_length', 'alt_protein_length', 'frameshift_event']] = pd.NA

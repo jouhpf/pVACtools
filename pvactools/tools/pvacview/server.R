@@ -24,7 +24,7 @@ options(shiny.port = 3333)
 server <- shinyServer(function(input, output, session) {
   ## pVACtools version
 
-  output$version <- renderText({"pVACtools version 6.0.5"})
+  output$version <- renderText({"pVACtools version 6.1.0"})
 
   ##############################DATA UPLOAD TAB###################################
   ## helper function defined for generating shinyInputs in mainTable (Evaluation dropdown menus)

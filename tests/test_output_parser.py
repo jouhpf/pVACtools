@@ -556,7 +556,7 @@ class OutputParserTests(unittest.TestCase):
         expected_output_file  = os.path.join(self.test_data_dir, "mhcflurry_no_percentile", "output_no_percentile.iedb.parsed.tsv")
         self.assertTrue(compare(parse_output_output_file.name, expected_output_file))
 
-    def test_parse_output_runs_and_produces_expeceted_output_for_complex_inframe_insertion(self):
+    def test_parse_output_runs_and_produces_expected_output_for_complex_inframe_insertion(self):
         parse_output_input_iedb_file = [
                 os.path.join(self.test_data_dir, "complex_inframe_insertion", "input.MHCflurry.HLA-A*24:02.8.tsv"),
                 os.path.join(self.test_data_dir, "complex_inframe_insertion", "input.netmhccons.HLA-A*24:02.8.tsv"),
@@ -577,4 +577,27 @@ class OutputParserTests(unittest.TestCase):
 
         self.assertFalse(parser.execute())
         expected_output_file  = os.path.join(self.test_data_dir, "complex_inframe_insertion", "output.iedb.parsed.tsv")
+        self.assertTrue(compare(parse_output_output_file.name, expected_output_file))
+
+    def test_parse_output_runs_and_produces_expected_output_for_very_long_insertion(self):
+        parse_output_input_iedb_file = [
+                os.path.join(self.test_data_dir, "very_long_insertion", "debug.netmhcpan.H-2-Kb.8.tsv_1-2"),
+                os.path.join(self.test_data_dir, "very_long_insertion", "debug.netmhcpan.H-2-Db.8.tsv_1-2"),
+        ]
+        parse_output_input_tsv_file = os.path.join(self.test_data_dir, "very_long_insertion", "input.tsv")
+        parse_output_key_file = os.path.join(self.test_data_dir, "very_long_insertion", "input.key")
+        parse_output_output_file = tempfile.NamedTemporaryFile()
+
+        parse_output_params = {
+            'input_iedb_files'       : parse_output_input_iedb_file,
+            'input_tsv_file'         : parse_output_input_tsv_file,
+            'key_file'               : parse_output_key_file,
+            'output_file'            : parse_output_output_file.name,
+            'sample_name'            : 'debug',
+            'flurry_state'           : 'both',
+        }
+        parser = DefaultOutputParser(**parse_output_params)
+
+        self.assertFalse(parser.execute())
+        expected_output_file  = os.path.join(self.test_data_dir, "very_long_insertion", "output.iedb.parsed.tsv")
         self.assertTrue(compare(parse_output_output_file.name, expected_output_file))

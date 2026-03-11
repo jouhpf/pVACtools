@@ -77,3 +77,11 @@ filter to the ``Median MT Score`` column and pick the epitope with the lowest
 median mutant ic50 score for each variant. If the ``--top-score-metric``
 option is set to ``lowest``, the ``Best MT Score`` column is instead used to
 make this determination.
+
+Aggregate Report Filter
+-----------------------
+
+.. program-output:: pvacbind aggregate_report_filter -h
+
+This command filters the aggregate report to only those variants matching the
+specified ``--include-tiers`` (default:Pass).

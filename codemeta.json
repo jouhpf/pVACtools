@@ -1,0 +1,266 @@
+{
+    "@context": "https://w3id.org/codemeta/3.0",
+    "type": "SoftwareSourceCode",
+    "applicationCategory": "Bioinformatics",
+    "author": [
+        {
+            "id": "https://orcid.org/0000-0003-4378-7328",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Division of Oncology, Department of Medicine, Washington University School of Medicine, St. Louis, MO"
+            },
+            "email": "susanna.kiwala@wustl.edu",
+            "familyName": "Kiwala",
+            "givenName": "Susanna"
+        },
+        {
+            "id": "https://orcid.org/0000-0001-5539-034X",
+            "type": "Person",
+            "familyName": "Graubert",
+            "givenName": "Aaron"
+        },
+        {
+            "id": "https://orcid.org/0000-0002-5491-2537",
+            "type": "Person",
+            "familyName": "Richters",
+            "givenName": "Miller"
+        },
+        {
+            "id": "_:author_4",
+            "type": "Person",
+            "familyName": "Hendrickson",
+            "givenName": "Luke"
+        },
+        {
+            "id": "_:author_5",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "McDonnell Genome Institute, Washington University School of Medicine, St. Louis, Missouri"
+            },
+            "familyName": "McMichael",
+            "givenName": "Josh"
+        },
+        {
+            "id": "https://orcid.org/0000-0003-2571-1880",
+            "type": "Person",
+            "familyName": "Xia",
+            "givenName": "Huiming"
+        },
+        {
+            "id": "_:author_7",
+            "type": "Person",
+            "familyName": "Wollam",
+            "givenName": "Alexander"
+        },
+        {
+            "id": "_:author_8",
+            "type": "Person",
+            "familyName": "Zebrowski",
+            "givenName": "Jayden"
+        },
+        {
+            "id": "https://orcid.org/0000-0002-6388-446X",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Division of Oncology, Department of Medicine, Washington University School of Medicine, St. Louis, MO"
+            },
+            "email": "mgriffit@wustl.edu",
+            "familyName": "Griffith",
+            "givenName": "Malachi"
+        },
+        {
+            "id": "https://orcid.org/0000-0003-1736-6319",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Division of Oncology, Department of Medicine, Washington University School of Medicine, St. Louis, MO"
+            },
+            "familyName": "Hoang",
+            "givenName": "My"
+        },
+        {
+            "id": "_:author_11",
+            "type": "Person",
+            "givenName": "Amber Wollam"
+        },
+        {
+            "id": "https://orcid.org/0000-0002-2584-5320",
+            "type": "Person",
+            "familyName": "Hundal",
+            "givenName": "Jasreet"
+        },
+        {
+            "id": "_:author_13",
+            "type": "Person",
+            "familyName": "Morrissey",
+            "givenName": "Dorian"
+        },
+        {
+            "id": "https://orcid.org/0000-0002-0577-4705",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "McDonnell Genome Institute, Washington University School of Medicine, St. Louis, Missouri"
+            },
+            "familyName": "Mooney",
+            "givenName": "Thomas"
+        },
+        {
+            "id": "_:author_15",
+            "type": "Person",
+            "familyName": "Walker",
+            "givenName": "Jason"
+        },
+        {
+            "id": "https://orcid.org/0009-0002-7737-2200",
+            "type": "Person",
+            "familyName": "Schmidt",
+            "givenName": "Evelyn"
+        },
+        {
+            "id": "https://orcid.org/0000-0003-4266-6700",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Division of Oncology, Department of Medicine, Washington University School of Medicine, St. Louis, MO"
+            },
+            "familyName": "Miller",
+            "givenName": "Christopher"
+        },
+        {
+            "id": "_:author_18",
+            "type": "Person",
+            "familyName": "Neichin",
+            "givenName": "Jonas"
+        },
+        {
+            "id": "_:author_19",
+            "type": "Person",
+            "familyName": "Feng",
+            "givenName": "Yang-Yang"
+        },
+        {
+            "id": "https://orcid.org/0000-0002-0843-4271",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Division of Oncology, Department of Medicine, Washington University School of Medicine, St. Louis, MO"
+            },
+            "familyName": "Griffith",
+            "givenName": "Obi"
+        },
+        {
+            "id": "https://orcid.org/0000-0002-1604-314X",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Division of Oncology, Department of Medicine, Washington University School of Medicine, St. Louis, MO"
+            },
+            "familyName": "Singhal",
+            "givenName": "Kartik"
+        },
+        {
+            "id": "https://orcid.org/0009-0008-7335-6039",
+            "type": "Person",
+            "familyName": "Gillanders",
+            "givenName": "William"
+        },
+        {
+            "id": "https://orcid.org/0000-0002-5892-1553",
+            "type": "Person",
+            "familyName": "Mardis",
+            "givenName": "Elaine"
+        },
+        {
+            "id": "https://orcid.org/0009-0007-7311-012X",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Division of Oncology, Department of Medicine, Washington University School of Medicine, St. Louis, MO"
+            },
+            "familyName": "Yao",
+            "givenName": "Jennie"
+        },
+        {
+            "id": "https://orcid.org/0000-0003-1736-6319",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Division of Oncology, Department of Medicine, Washington University School of Medicine, St. Louis, MO"
+            },
+            "familyName": "Hoang",
+            "givenName": "My"
+        }
+    ],
+    "codeRepository": "https://github.com/griffithlab/pVACtools",
+    "contributor": [
+        {
+            "id": "_:contributor_1",
+            "type": "Person",
+            "familyName": "Liu",
+            "givenName": "Connor"
+        },
+        {
+            "id": "_:contributor_2",
+            "type": "Person",
+            "familyName": "Zhao",
+            "givenName": "Sidi"
+        },
+        {
+            "id": "_:contributor_3",
+            "type": "Person",
+            "familyName": "Neveau",
+            "givenName": "Megan"
+        }
+    ],
+    "maintainer": "https://orcid.org/0000-0003-4378-7328",
+    "dateCreated": "2015-08-13",
+    "dateModified": "2026-01-13",
+    "datePublished": "2018-01-05",
+    "description": "pVACtools is a cancer immunotherapy suite consisting of the following tools:\n\n- pVACseq: A cancer immunotherapy pipeline for identifying and prioritizing neoantigens from a VCF file.\n- pVACbind: A cancer immunotherapy pipeline for identifying and prioritizing neoantigens from a FASTA file.\n- pVACfuse: A tool for detecting neoantigens resulting from gene fusions.\n- pVACsplice: A tool for detecting neoantigens resulting from splice site variants.\n- pVACvector: A tool designed to aid specifically in the construction of DNA vector-based cancer vaccines.\n- pVACview: An application based on R Shiny that assists users in reviewing, exploring and prioritizing neoantigens from the results of pVACtools processes for personalized cancer vaccine design.",
+    "downloadUrl": "https://github.com/griffithlab/pVACtools/releases/tag/v6.0.5",
+    "funder": {
+        "type": "Organization",
+        "name": "National Cancer Institute, V Foundation for Cancer Research, Goldberg Family Foundation, Jaime Leandro Foundation for Therapeutic Vaccines"
+    },
+    "identifier": "https://doi.org/10.5281/zenodo.3355660",
+    "keywords": [
+        "immunotherapy",
+        "immunogenomics",
+        "antigens",
+        "neoantigens",
+        "cancer sequencing",
+        "variant",
+        "variants",
+        "fusion",
+        "fusions"
+    ],
+    "license": "https://spdx.org/licenses/BSD-3-Clause-Clear",
+    "name": "pVACtools",
+    "operatingSystem": [
+        "Linux",
+        "macOS"
+    ],
+    "programmingLanguage": "Python 3",
+    "relatedLink": [
+        "https://pvactools.org",
+        "https://course.pvactools.org",
+        "https://pvacview.org"
+    ],
+    "schema:releaseNotes": "This is a minor version release. It adds the following features:\n\n* Add ability to change port to serve pVACview to (`--port` parameter). by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1354\n* Add a ``pvacseq|fuse|bind|splice aggregate_report_filter`` command to filter aggregated report on variant Tier. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1368\n* Add a `--length` parameter to the `pvacseq|fuse|splice|bind|vector valid_alleles` commands to filter alleles to ones that work for a specific epitope length. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1372\n* Clarify help texts to differentiate between hard filtering and prioritizing/tiering. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1373\n* Add codemeta.json file to repo. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1374\n\nAdditionally, it fixes the following problem(s):\n\n* Fix an error in the output parser that occurs with very long insertions. by @CSi-Ti in https://github.com/griffithlab/pVACtools/pull/1367\n* Support splice site with multiple matching somatic variants that would previously throw an error. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1369",
+    "softwareRequirements": "https://pvactools.readthedocs.io/en/latest/install.html",
+    "version": "6.1.0",
+    "contIntegration": "https://github.com/griffithlab/pVACtools/actions/workflows/tests.yml",
+    "codemeta:continuousIntegration": {
+        "id": "https://github.com/griffithlab/pVACtools/actions/workflows/tests.yml"
+    },
+    "developmentStatus": "active",
+    "funding": "U01CA248235, R01CA301054, P50CA272213, UL1TR002345, V2018-007",
+    "codemeta:isSourceCodeOf": {
+        "id": "pVACtools"
+    },
+    "issueTracker": "https://github.com/griffithlab/pVACtools/issues"
+}

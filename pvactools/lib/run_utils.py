@@ -142,6 +142,33 @@ def pvacsplice_anchors():
     # Return function handle to checking function
     return pvacsplice_anchors_checker
 
+def tiers(tool):
+    if tool == 'pvacseq':
+        tiers = ["Pass", "PoorBinder", "RefMatch", "PoorTranscript", "LowExpr", "Anchor", "Subclonal", "ProbPos", "Poor", "NoExpr"]
+    elif tool == 'pvacfuse':
+        tiers = ["Pass", "PoorBinder", "RefMatch", "LowReadSupport", "LowExpr", "ProbPos", "Poor"]
+    elif tool == 'pvacsplice':
+        tiers = ["Pass", "PoorBinder", "RefMatch", "PoorTranscript", "LowExpr", "Subclonal", "ProbPos", "Poor", "NoExpr"]
+    elif tool == 'pvacbind':
+        tiers = ["Pass", "PoorBinder", "RefMatch", "ProbPos", "Poor"]
+    tiers_string = ", ".join(['"{}"'.format(x) for x in tiers])
+    """Return function handle of an argument type function for
+       ArgumentParser checking of the pVACseq tiers
+       checking that the specified criteria are in the list of: [{}]""".format(tiers_string)
+
+    # Define the function with default arguments
+    def tiers_checker(arg):
+        """New Type function for argparse - a comma-separated list with predefined valid values."""
+
+        arg_list = arg.split(",")
+        for argument in arg_list:
+            if argument not in tiers:
+                raise argparse.ArgumentTypeError('List element must be one of {}, not {}'.format(tiers_string, argument))
+        return arg_list
+
+    # Return function handle to checking function
+    return tiers_checker
+
 def supported_amino_acids():
     return ["A", "R", "N", "D", "C", "E", "Q", "G", "H", "I", "L", "K", "M", "F", "P", "S", "T", "W", "Y", "V"]
 

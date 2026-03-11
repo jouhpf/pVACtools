@@ -19,6 +19,7 @@ __all__ = [
     'transcript_filter',
     'identify_problematic_amino_acids',
     'update_tiers',
+    'aggregate_report_filter',
 ]
 
 from . import *

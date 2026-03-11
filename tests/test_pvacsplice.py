@@ -362,3 +362,51 @@ class PvacspliceTests(unittest.TestCase):
             output_dir.cleanup()
             os.unlink(unzipped_fasta_file)
         self.assertTrue('Requested alleles are not from the same species.' in str(context.exception))
+
+    def test_pvacsplice_pipeline_multiple_somatic_variants_overlapping_splice_site(self):
+        with patch('pvactools.lib.call_iedb.requests.post', unittest.mock.Mock(side_effect = lambda url, data, files=None: make_response(
+            data,
+            files,
+            os.path.join(test_data_directory(), 'mock_files'),
+        ))):
+            output_dir = tempfile.TemporaryDirectory(dir = self.test_data_directory)
+
+            fasta_file = os.path.join(self.test_data_directory, "inputs", "inputs_multiple_variants_overlapping_splice_site", "Mus_musculus.GRCm38.dna.chromosome.1.fa.gz")
+            unzipped_fasta_file = gunzip_file(fasta_file, suffix=".fa")
+            run.main([
+                os.path.join(self.test_data_directory, "inputs", "inputs_multiple_variants_overlapping_splice_site", "multiple_overlapping_mutations.regtools.tsv"),
+                'tumor',
+                'H-2-Kb',
+                'NetMHC',
+                output_dir.name,
+                os.path.join(self.test_data_directory, "inputs", "inputs_multiple_variants_overlapping_splice_site", "variants.vcf.gz"),
+                unzipped_fasta_file,
+                os.path.join(self.test_data_directory, "inputs", "inputs_multiple_variants_overlapping_splice_site", "Mus_musculus.GRCm38.102.ENSMUSG00000013997.gtf"),
+                '-e1', '8',
+                '--normal-sample-name', 'normal',
+            ])
+
+            for file_name in (
+                'tumor.MHC_I.all_epitopes.tsv',
+            ):
+                output_file   = os.path.join(output_dir.name, 'MHC_Class_I', file_name)
+                expected_file = os.path.join(self.test_data_directory, 'results', 'results_multiple_variants_overlapping_splice_site', file_name)
+                self.assertTrue(compare(output_file, expected_file), "files don't match %s - %s" %(output_file, expected_file))
+
+
+            for file_name in (
+                'tumor.MHC_I.all_epitopes.aggregated.tsv',
+            ):
+                output_file   = os.path.join(output_dir.name, 'MHC_Class_I', file_name)
+                expected_file = os.path.join(self.test_data_directory, 'results', 'results_multiple_variants_overlapping_splice_site', file_name)
+                self.assertTrue(cmp(output_file, expected_file), "files don't match %s - %s" %(output_file, expected_file))
+
+            for file_name in (
+                'tumor_combined.tsv',
+            ):
+                output_file   = os.path.join(output_dir.name, file_name)
+                expected_file = os.path.join(self.test_data_directory, 'results', 'results_multiple_variants_overlapping_splice_site', file_name)
+                self.assertTrue(cmp(output_file, expected_file), "files don't match %s - %s" %(output_file, expected_file))
+
+            output_dir.cleanup()
+            os.unlink(unzipped_fasta_file)
