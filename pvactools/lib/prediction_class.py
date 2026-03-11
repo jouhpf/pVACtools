@@ -582,7 +582,10 @@ class IEDBMHCI(MHCI, IEDB, metaclass=ABCMeta):
         method = self.iedb_prediction_method
         if not self.valid_allele_names_dict:
             self.valid_allele_names_dict = self.parse_iedb_allele_file()
-        return self.valid_allele_names_dict[allele]
+        if allele in self.valid_allele_names_dict:
+            return self.valid_allele_names_dict[allele]
+        else:
+            return []
 
     def check_length_valid_for_allele(self, length, allele):
         valid_lengths = self.valid_lengths_for_allele(allele)
