@@ -90,12 +90,15 @@ class RunArgumentParser(metaclass=ABCMeta):
         self.parser.add_argument(
             "-b","--binding-threshold", type=int,
             default=500,
-            help="Report only epitopes where the mutant allele has ic50 binding scores below this value.",
+            help="When creating the filtered.tsv report, only include epitopes where the mutant "
+                 + "allele has ic50 binding scores below this value. When creating the aggreated.tsv "
+                 + "report, only bin candidates into the Pass tier that meet this threshold.",
         )
         self.parser.add_argument(
             '--percentile-threshold', type=float_range(0.0,100.0),
-            help="Report only epitopes where the mutant allele "
-                 +"has a percentile rank below this value."
+            help="When creating the filtered.tsv report, only include epitopes where the mutant "
+                 + "allele has a percentile rank below this value. When creating the aggregated.tsv "
+                 + "report, only bin candidates into the Pass tier that meet this threshold."
         )
         self.parser.add_argument(
             '--percentile-threshold-strategy',
@@ -147,7 +150,8 @@ class RunArgumentParser(metaclass=ABCMeta):
         self.parser.add_argument(
             '--problematic-amino-acids', type=lambda s:[a for a in s.split(',')],
             help=textwrap.dedent('''\
-            A list of amino acids to consider as problematic. Each entry can be specified in the following format:
+            A list of amino acids to consider as problematic. During aggregate report creation, only candidates without
+            problematic positions will be binned into the Pass tier. Each entry can be specified in the following format:
             `amino_acid(s)`: One or more one-letter amino acid codes. Any occurrence of this amino acid string,
                              regardless of the position in the epitope, is problematic. When specifying more than
                              one amino acid, they will need to occur together in the specified order.
@@ -163,7 +167,9 @@ class RunArgumentParser(metaclass=ABCMeta):
         self.parser.add_argument(
             '--run-reference-proteome-similarity',
             action='store_true',
-            help="Blast peptides against the reference proteome."
+            help="Blast peptides against the reference proteome or search for peptides in a reference proteome fasta file. "
+                 + "During aggregate report creation, only candidates without a reference proteome match will be binned into "
+                 + "the Pass tier."
         )
         self.parser.add_argument(
             '--blastp-path',
@@ -221,51 +227,67 @@ class RunArgumentParser(metaclass=ABCMeta):
         )
         self.parser.add_argument(
             '--normal-cov', type=int,
-            help="Normal Coverage Cutoff. Only sites above this read depth cutoff will be considered.",
+            help="Normal Coverage Cutoff. When creating the filtered.tsv report, only include epitopes "
+                 + "with a normal read depth above this cutoff.",
             default=5
-        )
+        ) 
         self.parser.add_argument(
             '--tdna-cov', type=int,
-            help="Tumor DNA Coverage Cutoff. Only sites above this read depth cutoff will be considered.",
-            default=10
+            help="Tumor DNA Coverage Cutoff. When creating the filtered.tsv report, only include epitopes "
+                 + "with a tumor DNA read depth above this cutoff.",
+            default=1
         )
         self.parser.add_argument(
             '--trna-cov', type=int,
-            help="Tumor RNA Coverage Cutoff. Only sites above this read depth cutoff will be considered.",
+            help="Tumor RNA Coverage Cutoff. When creating the filtered.tsv report, only include epitopes "
+                 + "with a tumor RNA read depth above this cutoff.",
             default=10
         )
         self.parser.add_argument(
             '--normal-vaf', type=float_range(0.0, 1.0),
-            help="Normal VAF Cutoff in decimal format. Only sites BELOW this cutoff in normal will be considered.",
+            help="Normal VAF Cutoff in decimal format. When creating the filtered.tsv report, only include epitopes "
+                 + "with a normal VAF BELOW this cutoff.",
             default=0.02
         )
         self.parser.add_argument(
             '--tdna-vaf', type=float_range(0.0, 1.0),
-            help="Tumor DNA VAF Cutoff in decimal format. Only sites above this cutoff will be considered.",
+            help="Tumor DNA VAF Cutoff in decimal format. When creating the filtered.tsv report, only include epitopes "
+                 + "with a tumor DNA VAF above this cutoff. When creating the aggregated.tsv report, use this cutoff to "
+                 + "determine if a candidate is subclonal or not. Only clonal candidates will be binned into the Pass tier.",
             default=0.25
         )
         self.parser.add_argument(
             '--trna-vaf', type=float_range(0.0, 1.0),
-            help="Tumor RNA VAF Cutoff in decimal format. Only sites above this cutoff will be considered.",
+            help="Tumor RNA VAF Cutoff in decimal format. When creating the filtered.tsv report, only include epitopes "
+                 + "with a tumor RNA VAF above this cutoff. This parameter is also used in combination with the --expn-val "
+                 + "cutoff for tiering candidates when creating the aggregated.tsv report. This allele expression cutoff is "
+                 + "calculated as --trna-vaf * --expn-val * 10. Only candidates with Allele Expr "
+                 + "(RNA Expr * RNA VAF) above the allele expr cutoff will be binned into the Pass tier.",
             default=0.25
         )
         self.parser.add_argument(
             "--tumor-purity", type=float_range(0.0, 1.0),
-            help="Value between 0 and 1 indicating the fraction of tumor cells in the tumor sample. Information is used during aggregate report creation for a simple estimation of whether variants are subclonal or clonal based on VAF. If not provided, purity is estimated directly from the VAFs.",
+            help="Value between 0 and 1 indicating the fraction of tumor cells in the tumor sample. Information is used during "
+                + "aggregate report creation for a simple estimation of whether variants are subclonal or clonal based on VAF. "
+                + "If not provided, purity is estimated directly from the VAFs.",
         )
         self.parser.add_argument(
             "--transcript-prioritization-strategy", type=transcript_prioritization_strategy(),
-            help="Specify the criteria to consider when prioritizing or filtering transcripts of the neoantigen candidates during aggregate report creation or TSL filtering. "
+            help="Specify the criteria to consider when prioritizing and tiering candidates during aggregate report creation "
+                 + "or filtering during Transcript filtering when creating the filtered.tsv file. "
                  + "'canonical' will prioritize/select candidates resulting from variants on a Ensembl canonical transcript. "
                  + "'mane_select' will prioritize/select candidates resulting from variants on a MANE select transcript. "
                  + "'tsl' will prioritize/select candidates where the transcript support level (TSL) matches the --maximum-transcript-support-level. "
-                 + "When selecting more than one criteria, a transcript meeting EITHER of the selected criteria will be prioritized/selected.",
+                 + "When selecting more than one criteria, a transcript meeting EITHER of the selected criteria will be prioritized/selected. "
+                 + "Only if the best transcript of a candidate passes EITHER of the selected criteria will the candidate be "
+                 + "binned into the Pass tier.",
             default=['canonical', 'mane_select', 'tsl']
         )
         self.parser.add_argument(
             "--maximum-transcript-support-level", type=int,
             help="The threshold to use for filtering epitopes on the Ensembl transcript support level (TSL). "
-                 + "Keep all epitopes with a transcript support level <= to this cutoff.",
+                 + "Epitopes with a transcript support level <= to this cutoff will be a considered a good transcript "
+                 + "if 'tsl' is one of the selected transcript prioritization strategy options.",
             default=1,
             choices=[1, 2, 3, 4, 5]
         )
@@ -307,16 +329,24 @@ class RunArgumentParser(metaclass=ABCMeta):
     def pvacfuse(self):
         self.parser.add_argument(
             '--starfusion-file',
-            help="Path to a star-fusion.fusion_predictions.tsv or star-fusion.fusion_predictions.abridged.tsv to extract read support and expression information from. When running with AGFusion data, both read support and expression data from this file will be used. When running with Arriba data, only expression data from this file is used while read support data will be parsed from the Arriba data directly."
+            help="Path to a star-fusion.fusion_predictions.tsv or star-fusion.fusion_predictions.abridged.tsv to extract "
+                 + "read support and expression information from. When running with AGFusion data, both read support and "
+                 + "expression data from this file will be used. When running with Arriba data, only expression data from "
+                 + "this file is used while read support data will be parsed from the Arriba data directly."
         )
         self.parser.add_argument(
             '--read-support', type=int,
-            help="Read Support Cutoff. Sites above this cutoff will be considered.",
+            help="Read Support Cutoff. When creating the filtered.tsv report, only include epitopes with a read support "
+                 + "above this value. When creating the aggregated.tsv report, only bin candidates into the Pass tier that "
+                 + "meet this threshold.",
             default=5
         )
         self.parser.add_argument(
             '--expn-val', type=float,
-            help="Expression Cutoff. Expression is meassured as FFPM (fusion fragments per million total reads). Sites above this cutoff will be considered.",
+            help="Expression Cutoff. Expression is meassured as FFPM (fusion fragments per million total reads). "
+                 + "When creating the filtered.tsv report, only include epitopes with expression "
+                 + "above this value. When creating the aggregated.tsv report, only bin candidates into the Pass tier that "
+                 + "meet this threshold.",
             default=0.1
         )
 
@@ -355,7 +385,11 @@ class RunArgumentParser(metaclass=ABCMeta):
         self.parser.add_argument(
             '--expn-val', type=float,
             default=1.0,
-            help="Gene and Transcript Expression cutoff. Only sites above this cutoff will be considered.",
+            help="Gene and transcript Expression Cutoff in decimal format. When creating the filtered.tsv report, only include epitopes "
+                 + "with gene and transcript expression above this cutoff. This parameter is also used in combination with the --trna-vaf "
+                 + "cutoff for tiering candidates when creating the aggregated.tsv report. This allele expression cutoff is "
+                 + "calculated as --trna-vaf * --expn-val * 10. Only candidates with Allele Expr "
+                 + "(RNA Expr * RNA VAF) above the allele expr cutoff will be binned into the Pass tier."
         )
 
     def pvacsplice(self):
@@ -400,7 +434,9 @@ class RunArgumentParser(metaclass=ABCMeta):
         self.parser.add_argument(
             '--expn-val', type=float,
             default=1.0,
-            help="Gene Expression cutoff. Only sites above this cutoff will be considered.",
+            help="Expression Cutoff. When creating the filtered.tsv report, only include epitopes with expression "
+                 + "above this value. When creating the aggregated.tsv report, only bin candidates into the Pass tier that "
+                 + "meet this threshold."
         )
 
     def pvacvector(self):
