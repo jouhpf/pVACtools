@@ -595,7 +595,6 @@ class OutputParser(metaclass=ABCMeta):
                 #The WT match position is out of range (can happen when propagating from a large insertion)
                 result['wt_epitope_seq'] = 'NA'
                 result['wt_scores']      = self.format_match_na(result, 'score')
-                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
                 result['mutation_position'] = 'NA'
                 return
 
@@ -629,7 +628,6 @@ class OutputParser(metaclass=ABCMeta):
                 #No valid WT match exists for this MT epitope
                 result['wt_epitope_seq'] = 'NA'
                 result['wt_scores']      = self.format_match_na(result, 'score')
-                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
                 result['mutation_position'] = 'NA'
                 result['match_direction'] = 'right'
                 result['wt_epitope_position'] = best_match_position
