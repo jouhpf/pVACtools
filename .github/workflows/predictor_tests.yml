@@ -54,8 +54,10 @@ jobs:
           pip cache purge
           pip install git+https://github.com/griffithlab/bigmhc.git#egg=bigmhc
           pip install git+https://github.com/griffithlab/deepimmuno.git#egg=deepimmuno
+          pip install git+https://github.com/griffithlab/ImmuScope.git#egg=ImmuScope
           pip install -e .
           mhcflurry-downloads fetch
+          immuscope-download-weights
       - name: Install MixMHCpred
         uses: actions/checkout@master
         with:
