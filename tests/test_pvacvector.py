@@ -202,6 +202,8 @@ class TestPvacvector(unittest.TestCase):
                 '-e1', self.epitope_length,
                 '-n', self.input_n_mer,
                 '--allow-n-peptide-exclusion', '0',
+                '--percentile-threshold-strategy', 'exploratory',
+                '--binding-percentile-threshold', '100',
                 '-k'
             ])
 
@@ -245,6 +247,8 @@ class TestPvacvector(unittest.TestCase):
                 '-e1', self.epitope_length,
                 '-n', self.input_n_mer,
                 '--allow-n-peptide-exclusion', '0',
+                '--percentile-threshold-strategy', 'exploratory',
+                '--binding-percentile-threshold', '100',
                 '-k',
             ])
 
@@ -282,6 +286,8 @@ class TestPvacvector(unittest.TestCase):
                 '-n', self.input_n_mer,
                 '--allow-n-peptide-exclusion', '0',
                 '--allow-incomplete-transcripts',
+                '--percentile-threshold-strategy', 'exploratory',
+                '--binding-percentile-threshold', '100',
                 '-k',
             ])
 
@@ -307,6 +313,8 @@ class TestPvacvector(unittest.TestCase):
             '-b', '32000',
             '--max-clip-length', '2',
             '--allow-n-peptide-exclusion', '0',
+            '--percentile-threshold-strategy', 'exploratory',
+            '--binding-percentile-threshold', '100',
             '--spacers', 'None,AAY',
         ])
 
@@ -393,7 +401,7 @@ class TestPvacvector(unittest.TestCase):
             '-n', self.input_n_mer,
             '-k',
             '-b', '32000',
-            '--percentile-threshold', '80',
+            '--binding-percentile-threshold', '80',
             '--max-clip-length', '0',
             '--allow-n-peptide-exclusion', '0',
             '--spacers', 'None',
@@ -419,6 +427,8 @@ class TestPvacvector(unittest.TestCase):
             '-n', self.input_n_mer,
             '-k',
             '-b', '22000',
+            '--percentile-threshold-strategy', 'exploratory',
+            '--binding-percentile-threshold', '100',
             '--max-clip-length', '0',
             '--spacers', 'None',
         ])
@@ -478,6 +488,8 @@ class TestPvacvector(unittest.TestCase):
                 '-e1', self.epitope_length,
                 '-n', self.input_n_mer,
                 '-b', '22000',
+                '--percentile-threshold-strategy', 'exploratory',
+                '--binding-percentile-threshold', '100',
                 '--spacers', 'None',
             ])
             self.assertIn("INFO:root:Clipping 1 amino acids off the end of peptide MT.14.LGALS2.ENST00000215886.4.missense.132E/Q would clip the best peptide. Skipping.", log.output)
