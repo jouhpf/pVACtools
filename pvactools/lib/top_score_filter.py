@@ -242,25 +242,25 @@ class PvacfuseTopScoreFilter(TopScoreFilter, metaclass=ABCMeta):
 
             filtered_lines = []
             for index, lines in lines_per_variant.items():
-                lines = sorted(lines, key = itemgetter('Mutation'))
+                lines = sorted(lines, key = itemgetter('Index'))
                 variant_tracker = defaultdict(set)
                 for line in lines:
-                    variant, consequence = line['Mutation'].split('.', 1)
+                    variant, consequence = line['Index'].split('.', 1)
                     variant_tracker[consequence].add(variant)
                 transcripts_with_same_epitopes = defaultdict(list)
-                for transcript, transcript_lines in groupby(lines, key = itemgetter('Mutation')):
+                for transcript, transcript_lines in groupby(lines, key = itemgetter('Index')):
                     transcript_lines = list(transcript_lines)
                     epitopes = ','.join(sorted([x['Epitope Seq'] for x in transcript_lines]))
                     transcripts_with_same_epitopes[epitopes].append(transcript)
                 for transcripts in transcripts_with_same_epitopes.values():
-                    transcript_set_lines = [x for x in lines if x['Mutation'] in transcripts]
+                    transcript_set_lines = [x for x in lines if x['Index'] in transcripts]
                     best_line = self.find_best_line(transcript_set_lines)
                     filtered_lines.append(best_line)
-                    best_line_variant, best_line_consequence = best_line['Mutation'].split('.', 1)
+                    best_line_variant, best_line_consequence = best_line['Index'].split('.', 1)
                     for variant in variant_tracker[best_line_consequence]:
                         if variant != best_line_variant:
                             duplicate_variant_line = best_line.copy()
-                            duplicate_variant_line['Mutation'] = "{}.{}".format(variant, best_line_consequence)
+                            duplicate_variant_line['Index'] = "{}.{}".format(variant, best_line_consequence)
                             filtered_lines.append(duplicate_variant_line)
 
             sorted_rows = pvactools.lib.sort.pvacfuse_sort(filtered_lines, self.top_score_metric, self.top_score_metric2)
@@ -295,7 +295,7 @@ class PvacbindTopScoreFilter(TopScoreFilter, metaclass=ABCMeta):
             for line in reader:
                 if line["{} IC50 Score".format(self.formatted_top_score_metric)] == 'NA':
                     continue
-                lines_per_variant[line['Mutation']].append(line)
+                lines_per_variant[line['Index']].append(line)
 
             filtered_lines = []
             for index, lines in lines_per_variant.items():
