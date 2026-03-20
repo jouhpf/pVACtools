@@ -884,10 +884,11 @@ class ImmuScope_IM(MHCII):
         if len(all_epitopes) == 0:
             return (results, 'pandas')
 
-        tmp_input_file = tempfile.NamedTemporaryFile('w', dir=tmp_dir, delete=False)
-        tmp_input_file.write("allele\tpeptide\tseq_num\tstart\n")
+        tmp_input_file = tempfile.NamedTemporaryFile('w', dir=tmp_dir, delete=False, newline='')
+        writer = csv.writer(tmp_input_file, delimiter='\t', lineterminator='\n')
+        writer.writerow(["allele", "peptide", "seq_num", "start"])
         for epitope in all_epitopes:
-            tmp_input_file.write("{}\t{}\t\t\n".format(allele, epitope))
+            writer.writerow([allele, epitope, "", ""])
         tmp_input_file.close()
 
         tmp_output_file = tempfile.NamedTemporaryFile('r', dir=tmp_dir, delete=False)

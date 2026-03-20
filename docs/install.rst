@@ -236,7 +236,7 @@ Installing Immuscope
 ---------------------
 
 If you wish to run the Immuscope_IM prediction algorithm, you will need to
-install Immuscope on your system. This package not a direct dependency of
+install Immuscope on your system. This package is not a direct dependency of
 the the ``pvactools`` packages and needs to be installed manually by running:
 
 .. code-block:: none
