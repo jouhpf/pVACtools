@@ -136,7 +136,7 @@ def find_min_scores(parsed_output_files, current_output_dir, args, min_scores, m
         with open(parsed_output_file, 'r') as parsed:
             reader = csv.DictReader(parsed, delimiter="\t")
             for row in reader:
-                index = row['Mutation']
+                index = row['Index']
                 processed_junctions.add(index)
                 if args.top_score_metric == 'lowest':
                     score = float(row['Best IC50 Score'])
