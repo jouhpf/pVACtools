@@ -73,9 +73,15 @@ _________
 New Features
 ____________
 
-- pVACtools now support two additional prediction algorithms: MixMHCpred and PRIME. MixMHCpred outputs a
-  binding score and percentile, while PRIME outputs a immunogenicity score and
-  percentile.
+- pVACtools now supports multiple additional prediction algorithms:
+
+  - MixMHCpred (class I binding score and percentile)
+  - MixMHC2pred (class II binding score and percentile)
+  - PRIME (class I immunogenicity score and percentile)
+  - TLBind (class I binding score)
+  - TLImm (class I immunogenicity score)
+  - ImmuScope (class II immunogenicity score)
+
 - In order to support a more comprehensive evaluation of candidates, aggreggate binding, presentation,
   and immunogenicity information is now available in the final reports and is used to filter, prioritize,
   and tier candidates:
@@ -102,6 +108,11 @@ ____________
     ``--presentation-percentile-threshold`` or
     ``--immunogenicity-percentile--threshold``, respectively, when all other
     evaluation critiera are passed.
+  - pVACvector has been updated to work on the binding percentile instead of the
+    combined percentile. The corresponding parameter has been renamed to
+    ``--binding-percentile-threshold`` with a new default of 2.0. The junction
+    output file header recording each junction's binding percentile has been
+    updated from ``percentile`` to ``binding_percentile`` to reflect this change.
 
 - The ``--top-score-metric2`` has been updated for sorting candidates and
   determining the criteria for selecting the Best
@@ -116,7 +127,7 @@ ____________
 - Not all prediction algorithms supported by pVACtools may support a
   percentile rank. In order to aleviate this issue, and to provide percentile
   ranks that have been consistently calculated, we have run predictions for
-  all algorithms supported by pVACtools on 100,000 reference peptides each in
+  all class I algorithms supported by pVACtools on 100,000 reference peptides each in
   lengths 8-11 and for the most common 1,000 human class I MHC alleles. These
   predictions support a new feature in pVACtools: normalized percentiles
   (``--use-normalized-percentiles``). With this option enabled, any of the
@@ -128,6 +139,9 @@ ____________
   Turning on this option in class II runs or with non-human data will be
   ignored. The peptides used in our predictions and the raw scores we calculated are
   available at https://github.com/griffithlab/pvactools_percentiles_data.
+- In pVACbind and pVACfuse the ``Mutation`` column name in the various report
+  files has been renamed to ``Index`` in order to ensure consistency between
+  these and other tools.
 
 Bugfixes
 ________
