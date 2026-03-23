@@ -49,16 +49,19 @@ filtering thresholds.
 Prediction Algorithms Supporting Presentation Scores
 ____________________________________________________
 
+- BigMHC_EL
 - MHCflurryEL (Presentation and Processing)
 - NetMHCpanEL
 - NetMHCIIpanEL
-- BigMHC_EL
+- TLBind
 
 Prediction Algorithms Supporting Immunogenicity Scores
 ______________________________________________________
 
 - BigMHC_IM
 - DeepImmuno
+- ImmuScope
+- TLImm
 
 Please note that when running pVACbind with only presentation or immunogenicity algorithms, no
 aggregate report iscreated.
@@ -68,9 +71,11 @@ _______________________________________________________
 
 pVACbind outputs percentile rank information when provided by
 a chosen binding affinity, presentation, or immunogenicity prediction algorithm.
-The following prediction algorithms calculate a
+The following prediction algorithms natively calculate a
 percentile rank:
 
+- MixMHCpred
+- MixMHC2pred
 - MHCflurry
 - MHCflurryEL (Presentation)
 - MHCnuggets
@@ -117,11 +122,9 @@ all_epitopes.tsv and filtered.tsv Report Columns
    * - ``Best Percentile Method``
      - Prediction algorithm with the lowest binding affinity percentile rank for this epitope
    * - ``Individual Prediction Algorithm Scores and Percentiles`` (multiple)
-     - ic50 binding affinity scores and percentiles for the ``Epitope Seq`` for the individual prediction algorithms used
-   * - ``MHCflurryEL WT and MT Processing Score and Presentation Score and Percentile`` (optional)
-     - MHCflurry processing score and presentation score and percentiles
-       for the ``MT Epitope Seq`` and ``WT Epitiope Seq`` if the run included
-       MHCflurryEL as one of the prediction algorithms
+     - ic50 binding affinity scores, binding scores, presentation scores, processing scores, or immunogenicity scores as well as percentile ranks
+       for the ``Epitope Seq`` for the individual prediction algorithms used. Percentile scores may be ``NA`` if not
+       provided by the prediction algorithm.
    * - ``cterm_7mer_gravy_score``
      - Mean hydropathy of last 7 residues on the C-terminus of the peptide
    * - ``max_7mer_gravy_score``
@@ -198,9 +201,15 @@ and ``%ile MT`` columns is controlled by the ``--top-score-metric`` parameter.
    * - ``Num Passing Peptides``
      - The number of included peptides for this mutation that are well-binding.
    * - ``IC50 MT``
-     - Median IC50 binding affinity of the best-binding epitope across all prediction algorithms used
+     - Median or lowest IC50 binding affinity of the Best Peptide across all prediction algorithms used
    * - ``%ile MT``
-     - Median binding affinity percentile rank of the best-binding epitope across all prediction algorithms used (those that provide percentile output)
+     - Median or lowest percentile rank of the Best Peptide across all prediction algorithms used
+   * - ``IC50 %ile MT``
+     - Median or lowest binding percentile rank of the Best Peptide across all binding prediction algorithms used
+   * - ``IM %ile MT``
+     - Median or lowest immunogenicity percentile rank of the Best Peptide across all immunogenicity prediction algorithms used
+   * - ``Pres %ile MT``
+     - Median or lowest presentation percentile rank of the Best Peptide across all presentation prediction algorithms used
    * - ``Ref Match`` (T/F) (optional)
      - Was there a match of the peptide sequence to the reference proteome?
    * - ``Evaluation``
@@ -231,13 +240,21 @@ provided to the pVACfuse run:
        ``--binding-threshold`` as a fallback. To print a list of alleles that have
        specific binding thresholds and the value of those thresholds, run ``pvacfuse allele_specific_cutoffs``.
      - False
-   * - ``--percentile-threshold``
-     - When set, use this threshold to filter epitopes on the %ile MT score in addition to having to meet the binding threshold.
-     - None
+   * - ``--binding-percentile-threshold``
+     - Use this threshold to filter epitopes on the IC50 %ile MT score.
+     - 2.0
+   * - ``--presentation-percentile-threshold``
+     - Use this threshold to filter epitopes on the Pres %ile MT score.
+     - 2.0
+   * - ``--immunogenicity-percentile-threshold``
+     - Use this threshold to filter epitopes on the IM %ile MT score.
+     - 2.0
    * - ``--percentile-threshold-strategy``
-     - Specify the candidate inclusion strategy. The ``conservative`` option requires a candidate to pass BOTH the binding threshold
-       and percentile threshold (if set). The ``exploratory`` option requires a candidate to pass EITHER the binding threshold or
-       the percentile threshold.
+     - Specify the candidate inclusion strategy. The ``conservative`` option requires a candidate to pass the
+       binding threshold, the binding percentile threshold, the presentation percentile threshold, AND the
+       immunogenicity percentile threshold. The ``exploratory`` option requires a candidate to pass EITHER the
+       binding threshold, the binding percentile threshold, the presentation percentile threshold, OR the
+       immunogenicity percentile threshold.
      - conservative
    * - ``--run-reference-proteome-similarity``
      - Set this flag in order to run reference proteome similarity analysis
@@ -261,16 +278,19 @@ into tiers as follows:
    * - Tier
      - Criteria
    * - ``Pass``
-     - Best Peptide passes the binding, reference match, and problematic
+     - Best Peptide passes the scores, reference match, and problematic
        position criteria
    * - ``PoorBinder``
-     - Best Peptide fails the binding criteria but passes the reference match and problematic
-       position criteria
+     - Best Peptide fails the binding criteria but passes the presentation, immunogenicity, reference match, and problematic position criteria
+   * - ``PoorImmunogenicity``
+     - Best Peptide fails the immunogenicity criteria but passes the binding, presentation, reference match, and problematic position criteria
+   * - ``PoorPresentation``
+     - Best Peptide fails the presentation criteria but passes the binding, immunogenicity, reference match, and problematic position criteria
    * - ``RefMatch``
-     - Best Peptide fails the reference match criteria but passes the binding and problematic
+     - Best Peptide fails the reference match criteria but passes the scores and problematic
        position criteria
    * - ``ProbPros``
-     - Best Peptide fails the problematic position criteria but passes the binding and reference match criteria
+     - Best Peptide fails the problematic position criteria but passes the scores and reference match criteria
    * - ``Poor``
      - Best Peptide doesn't fit in any of the above tiers, usually if it fails
        two or more criteria
@@ -288,14 +308,27 @@ Criteria Details
      - Pass if Best Peptide is strong binder
      - binding score criteria: ``IC50 MT < binding_threshold``
 
-       percentile score criteria (if ``--percentile-threshold`` parameter is
-       set): ``%ile MT < percentile_threshold``
+       binding percentile score criteria: ``IC50 %ile MT < binding_percentile_threshold``
 
        ``conservative`` ``--percentile-threshold-strategy``: needs to pass
-       BOTH the binding score criteria AND the percentile score criteria
+       BOTH the binding score criteria AND the binding percentile score criteria
 
        ``exploratory`` ``--percentile-threshold-strategy``: needs to pass
-       EITHER the binding score criteria OR the percentile score criteria
+       EITHER the binding score criteria OR the binding percentile score criteria
+   * - Presentation Criteria
+     - Pass if the Best Peptide is presented by the MHC
+     - ``Pres %ile MT < presentation_percentile_threshold``
+   * - Immunogenicity Criteria
+     - Pass if the Best Peptide is immunogenic
+     - ``IM %ile MT < immunogenicity_percentile_threshold``
+   * - Scores Criteria
+     - Pass if the Best Peptide is a strong binder, presented by the MHC,
+       and/or immunogenic
+     - ``conservative`` ``--percentile-threshold-strategy``: needs to pass
+       the binding criteria, the presentation criteria, AND the immunogenicity criteria
+
+       ``exploratory`` ``--percentile-threshold-strategy``: needs to pass
+       the binding criteria, the presentation criteria, OR the immunogenicity criteria
    * - Reference Match Criteria
      - Pass if there are no reference protome matches
      - ``Ref Match == False``

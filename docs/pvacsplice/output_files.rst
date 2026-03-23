@@ -66,10 +66,13 @@ filtering thresholds.
 Prediction Algorithms Supporting Percentile Information
 _______________________________________________________
 
-pVACseq outputs binding affinity percentile rank information when provided by
-a chosen prediction algorithm. The following prediction algorithms calculate a
+pVACsplice outputs percentile rank information when provided by
+a chosen binding affinity, presentation, or immunogenicity prediction algorithm.
+The following prediction algorithms natively calculate a
 percentile rank:
 
+- MixMHCpred
+- MixMHC2pred
 - MHCflurry
 - NetMHC
 - NetMHCcons
@@ -81,23 +84,22 @@ percentile rank:
 - SMMPMBEC
 - SMMalign
 
-The following prediction algorithms do not provide a percentile rank:
-
-- MHCnuggets
-
 Prediction Algorithms Supporting Presentation Scores
 ____________________________________________________
 
-- MHCflurryEL
+- BigMHC_EL
+- MHCflurryEL (Presentation and Processing)
 - NetMHCpanEL
 - NetMHCIIpanEL
-- BigMHC_EL
+- TLBind
 
 Prediction Algorithms Supporting Immunogenicity Scores
 ______________________________________________________
 
 - BigMHC_IM
 - DeepImmuno
+- ImmuScope
+- TLImm
 
 Please note that when running pVACseq with only presentation or immunogenicity algorithms, no
 aggregate report is created.
@@ -203,12 +205,10 @@ all_epitopes.tsv and filtered.tsv Report Columns
      - A unique idenitifer for this variant-transcript combination
    * - ``Fasta Key``
      - the number identifier for corresponding altered peptide isoform in pvac output fasta
-   * - ``Individual Prediction Algorithm  IC50 Scores and Percentiles`` (multiple)
-     - ic50 binding affintity and percentile ranks for the ``Epitope Seq`` for the individual prediction algorithms used
-   * - ``MHCflurryEL WT and MT Processing Score and Presentation Score and Percentile`` (optional)
-     - MHCflurry processing score and presentation score and percentiles
-       for the ``Epitope Seq`` if the run included
-       MHCflurryEL as one of the prediction algorithms
+   * - ``Individual Prediction Algorithm Scores and Percentiles`` (multiple)
+     - ic50 binding affinity scores, binding scores, presentation scores, processing scores, or immunogenicity scores as well as percentile ranks
+       for the ``Epitope Seq`` for the individual prediction algorithms used. Percentile scores may be ``NA`` if not
+       provided by the prediction algorithm.
    * - ``Problematic Positions`` (optional)
      - A list of positions in the ``MT Epitope Seq`` that match the
        problematic amino acids defined by the ``--problematic-amino-acids``
@@ -320,9 +320,15 @@ and ``%ile MT`` columns is controlled by the ``--top-score-metric`` parameter.
    * - ``Num Passing Peptides``
      - The number of unique well-binding peptides for this mutation.
    * - ``IC50 MT``
-     - Median or lowest ic50 binding affinity of the best-binding mutant epitope across all prediction algorithms used
+     - Median or lowest IC50 binding affinity of the Best Peptide across all prediction algorithms used
    * - ``%ile MT``
-     - Median or lowest binding affinity percentile rank of the best-binding mutant epitope across all prediction algorithms used (those that provide percentile output)
+     - Median or lowest percentile rank of the Best Peptide across all prediction algorithms used
+   * - ``IC50 %ile MT``
+     - Median or lowest binding percentile rank of the Best Peptide across all binding prediction algorithms used
+   * - ``IM %ile MT``
+     - Median or lowest immunogenicity percentile rank of the Best Peptide across all immunogenicity prediction algorithms used
+   * - ``Pres %ile MT``
+     - Median or lowest presentation percentile rank of the Best Peptide across all presentation prediction algorithms used
    * - ``RNA Expr``
      - Gene expression value for the annotated gene containing the variant.
    * - ``RNA VAF``
@@ -389,13 +395,21 @@ To tier the Best Peptide, several cutoffs can be adjusted using arguments provid
        ``--binding-threshold`` as a fallback. To print a list of alleles that have
        specific binding thresholds and the value of those thresholds, run ``pvacseq allele_specific_cutoffs``.
      - False
-   * - ``--percentile-threshold``
-     - When set, use this threshold to filter epitopes on the %ile MT score in addition to having to meet the binding threshold.
-     - None
+   * - ``--binding-percentile-threshold``
+     - Use this threshold to filter epitopes on the IC50 %ile MT score.
+     - 2.0
+   * - ``--presentation-percentile-threshold``
+     - Use this threshold to filter epitopes on the Pres %ile MT score.
+     - 2.0
+   * - ``--immunogenicity-percentile-threshold``
+     - Use this threshold to filter epitopes on the IM %ile MT score.
+     - 2.0
    * - ``--percentile-threshold-strategy``
-     - Specify the candidate inclusion strategy. The ``conservative`` option requires a candidate to pass BOTH the binding threshold
-       and percentile threshold (if set). The ``exploratory`` option requires a candidate to pass EITHER the binding threshold or
-       the percentile threshold.
+     - Specify the candidate inclusion strategy. The ``conservative`` option requires a candidate to pass the
+       binding threshold, the binding percentile threshold, the presentation percentile threshold, AND the
+       immunogenicity percentile threshold. The ``exploratory`` option requires a candidate to pass EITHER the
+       binding threshold, the binding percentile threshold, the presentation percentile threshold, OR the
+       immunogenicity percentile threshold.
      - conservative
    * - ``--tumor-purity``
      - Value between 0 and 1 indicating the fraction of tumor cells in the tumor sample. Information is used for a simple estimation of
@@ -438,19 +452,23 @@ Given the thresholds provided above, the Best Peptide is evaluated and binned in
    * - Tier
      - Citeria
    * - ``Pass``
-     - Best Peptide passes the binding, reference match, expression, transcript, clonal, and problematic position criteria
+     - Best Peptide passes the scores, reference match, expression, transcript, clonal, and problematic position criteria
    * - ``PoorBinder``
-     - Best Peptide fails the binding criteria but passes the reference match, expression, transcript, clonal, and problematic position criteria
+     - Best Peptide fails the binding criteria but passes the presentation, immunogenicity, reference match, read support, expression, and problematic position criteria
+   * - ``PoorImmunogenicity``
+     - Best Peptide fails the immunogenicity criteria but passes the binding, presentation, reference match, read support, expression, and problematic position criteria
+   * - ``PoorPresentation``
+     - Best Peptide fails the presentation criteria but passes the binding, immunogenicity, reference match, read support, expression, and problematic position criteria
    * - ``RefMatch``
-     - Best Peptide fails the reference match criteria but passes the binding, expression, transcript, clonal, and problematic position criteria
+     - Best Peptide fails the reference match criteria but passes the scores, expression, transcript, clonal, and problematic position criteria
    * - ``PoorTranscript``
-     - Best Peptide fails the transcript criteria but passes the binding, reference match, expression, clonal, and problematic position criteria
+     - Best Peptide fails the transcript criteria but passes the scores, reference match, expression, clonal, and problematic position criteria
    * - ``LowExpr``
-     - Best Peptide meets the low expression criteria and passes the binding, reference match, transcript, clonal, and problematic position criteria
+     - Best Peptide meets the low expression criteria and passes the scores, reference match, transcript, clonal, and problematic position criteria
    * - ``Subclonal``
-     - Best Peptide fails the clonal criteria but passes the binding, reference match, expression, transcript, and problematic position criteria
+     - Best Peptide fails the clonal criteria but passes the scores, reference match, expression, transcript, and problematic position criteria
    * - ``ProbPos``
-     - Best Peptide fails the problematic position criteria but passes the binding, reference match, expression, transcript, and clonal criteria
+     - Best Peptide fails the problematic position criteria but passes the scores, reference match, expression, transcript, and clonal criteria
    * - ``Poor``
      - Best Peptide doesn't fit in any of the above tiers, usually if it fails
        two or more criteria
@@ -471,14 +489,27 @@ Criteria Details
      - Pass if Best Peptide is strong binder
      - binding score criteria: ``IC50 MT < binding_threshold``
 
-       percentile score criteria (if ``--percentile-threshold`` parameter is
-       set): ``%ile MT < percentile_threshold``
+       binding percentile score criteria: ``IC50 %ile MT < binding_percentile_threshold``
 
        ``conservative`` ``--percentile-threshold-strategy``: needs to pass
-       BOTH the binding score criteria AND the percentile score criteria
+       BOTH the binding score criteria AND the binding percentile score criteria
 
        ``exploratory`` ``--percentile-threshold-strategy``: needs to pass
-       EITHER the binding score criteria OR the percentile score criteria
+       EITHER the binding score criteria OR the binding percentile score criteria
+   * - Presentation Criteria
+     - Pass if the Best Peptide is presented by the MHC
+     - ``Pres %ile MT < presentation_percentile_threshold``
+   * - Immunogenicity Criteria
+     - Pass if the Best Peptide is immunogenic
+     - ``IM %ile MT < immunogenicity_percentile_threshold``
+   * - Scores Criteria
+     - Pass if the Best Peptide is a strong binder, presented by the MHC,
+       and/or immunogenic
+     - ``conservative`` ``--percentile-threshold-strategy``: needs to pass
+       the binding criteria, the presentation criteria, AND the immunogenicity criteria
+
+       ``exploratory`` ``--percentile-threshold-strategy``: needs to pass
+       the binding criteria, the presentation criteria, OR the immunogenicity criteria
    * - Expression Criteria
      - Pass if Best Transcript is expressed
      - ``Allele Expr > trna_vaf * expn_val``
