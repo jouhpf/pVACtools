@@ -890,9 +890,10 @@ class MixMHC2pred(MHCII):
                         mixmhc2pred_allele = row['AlleleName']
                         break
             if sys.platform == "darwin":
-                arguments = ["MixMHC2pred", "-i", tmp_input_file.name, "-o", tmp_output_file.name, "-a", mixmhc2pred_allele, "--no_context"]
+                arguments = ["MixMHC2pred"]
             else:
-                arguments = ["MixMHC2pred_unix", "-i", tmp_input_file.name, "-o", tmp_output_file.name, "-a", mixmhc2pred_allele, "--no_context"]
+                arguments = ["MixMHC2pred_unix"]
+            arguments.extend(["-i", tmp_input_file.name, "-o", tmp_output_file.name, "-a", mixmhc2pred_allele, "--no_context", "--extra_out"])
             stderr_fh = tempfile.NamedTemporaryFile('w', dir=tmp_dir, delete=False)
             try:
                 response = run(arguments, check=True, stdout=DEVNULL, stderr=stderr_fh)
@@ -910,6 +911,7 @@ class MixMHC2pred(MHCII):
             df.rename(columns={
                 '%Rank_best': 'percentile',
                 'Peptide': 'peptide',
+                f'Score_{mixmhc2pred_allele}': 'score',
             }, inplace=True)
             for record in SeqIO.parse(input_file, "fasta"):
                 seq_num = record.id
@@ -920,6 +922,5 @@ class MixMHC2pred(MHCII):
                     epitope_df['seq_num'] = seq_num
                     epitope_df['start'] = start
                     epitope_df['allele'] = allele
-                    epitope_df['score'] = 'NA'
                     results = pd.concat((results, epitope_df), axis=0)
         return (results, 'pandas')
