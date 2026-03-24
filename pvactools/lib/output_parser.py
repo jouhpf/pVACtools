@@ -1220,7 +1220,7 @@ class UnmatchedSequencesOutputParser(OutputParser):
 
     def base_headers(self):
         return[
-            'Mutation',
+            'Index',
             'HLA Allele',
             'Sub-peptide Position',
             'Epitope Seq',
@@ -1307,7 +1307,7 @@ class UnmatchedSequencesOutputParser(OutputParser):
                 'HLA Allele'          : result['allele'],
                 'Sub-peptide Position': result['position'],
                 'Epitope Seq'         : result['mt_epitope_seq'],
-                'Mutation'            : result['tsv_index'],
+                'Index'               : result['tsv_index'],
                 #Median IC50 Score
                 'Median IC50 Score': self.rounded_score_or_na(result['median_mt_ic50']),
                 #Median Percentile
