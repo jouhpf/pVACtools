@@ -874,12 +874,22 @@ class ImmuScope_IM(MHCII):
 
         results = pd.DataFrame()
 
-        all_epitopes = []
+        metadata_rows = []
+        unique_pairs = set()
         for record in SeqIO.parse(input_file, "fasta"):
+            seq_num = record.id
             peptide = str(record.seq)
             epitopes = pvactools.lib.run_utils.determine_neoepitopes(peptide, epitope_length)
-            all_epitopes.extend(epitopes.values())
-        all_epitopes = list(set(all_epitopes))
+            for start, epitope in epitopes.items():
+                metadata_rows.append({
+                    'allele': allele,
+                    'peptide': epitope,
+                    'seq_num': seq_num,
+                    'start': start,
+                })
+                unique_pairs.add((allele, epitope))
+
+        all_epitopes = [peptide for _, peptide in unique_pairs]
 
         if len(all_epitopes) == 0:
             return (results, 'pandas')
@@ -931,17 +941,31 @@ class ImmuScope_IM(MHCII):
                 )
             )
 
-        for record in SeqIO.parse(input_file, "fasta"):
-            seq_num = record.id
-            peptide = str(record.seq)
-            epitopes = pvactools.lib.run_utils.determine_neoepitopes(peptide, epitope_length)
-            for start, epitope in epitopes.items():
-                epitope_df = df[df['peptide'] == epitope].copy()
-                if epitope_df.empty:
-                    continue
-                epitope_df['seq_num'] = seq_num
-                epitope_df['start'] = start
-                results = pd.concat((results, epitope_df), axis=0)
+        required_columns = {'allele', 'peptide', self.immuscope_score_col}
+        missing_columns = required_columns.difference(df.columns)
+        if missing_columns:
+            raise Exception(
+                "ImmuScope wrapper output missing expected columns {}. Found columns: {}".format(
+                    ','.join(sorted(missing_columns)),
+                    ','.join(df.columns),
+                )
+            )
+
+        metadata_df = pd.DataFrame(metadata_rows)
+        score_df = df.drop(columns=[col for col in ['seq_num', 'start'] if col in df.columns])
+        results = metadata_df.merge(
+            score_df,
+            on=['allele', 'peptide'],
+            how='left',
+            validate='many_to_one',
+        )
+
+        ordered_columns = [
+            col for col in ['allele', 'peptide', 'tgt', 'len', self.immuscope_score_col, 'seq_num', 'start']
+            if col in results.columns
+        ]
+        remaining_columns = [col for col in results.columns if col not in ordered_columns]
+        results = results[ordered_columns + remaining_columns]
 
         return (results, 'pandas')
 
