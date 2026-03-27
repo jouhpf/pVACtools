@@ -763,6 +763,7 @@ server <- shinyServer(function(input, output, session) {
 
       # Columns that should be hidden from the display
       additional_hidden_columns <- which(colnames(filtered_table) %in% c("Num Passing Transcripts", "Best Transcript", "MANE Select", "Canonical", "TSL",
+                                                                        "%ile WT", "IC50 %ile WT", "IM %ile WT", "Pres %ile WT",
                                                                         "Col DNA VAF", "Col RNA Depth", "Col Allele Expr", "Col RNA VAF", "Col RNA Expr",
                                                                         "Scaled binding percentile", "Scaled immunogenicity percentile", "Scaled presentation percentile", "Scaled BA", "Gene of Interest",
                                                                         "IC50 Pass", "Binding Percentile Pass", "Immunogenicity Percentile Pass", "Presentation Percentile Pass", "Anchor Pass",
