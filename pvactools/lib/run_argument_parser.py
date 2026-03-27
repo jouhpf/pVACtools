@@ -573,16 +573,17 @@ class PvacvectorRunArgumentParser(RunArgumentParser):
             help="Fail junctions where any junctional epitope has ic50 binding scores below this value.",
         )
         self.parser.add_argument(
-            '--percentile-threshold', type=float_range(0.0,100.0),
+            '--binding-percentile-threshold', type=float_range(0.0,100.0),
+            default=2.0,
             help="Fail junctions where any junctional epitope "
-                 +"has a percentile rank below this value."
+                 +"has a binding percentile rank below this value."
         )
         self.parser.add_argument(
             '--percentile-threshold-strategy',
             choices=['conservative', 'exploratory'],
             help="Specify the how to evaluate junctional epitopes if a percentile threshold is set. "
-                 + " The 'conservative' option fails a junction if a junctional epitope fails EITHER the binding threshold OR the percentile threshold (default)."
-                 + " The 'exploratory' option fails a junction only if a junctional epitope fails BOTH the binding threshold AND the percentile threshold.",
+                 + " The 'conservative' option fails a junction if a junctional epitope fails EITHER the binding threshold OR the binding percentile threshold (default)."
+                 + " The 'exploratory' option fails a junction only if a junctional epitope fails BOTH the binding threshold AND the binding percentile threshold.",
             default="conservative",
         )
         self.parser.add_argument(

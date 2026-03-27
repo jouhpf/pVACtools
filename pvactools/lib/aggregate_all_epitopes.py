@@ -188,7 +188,7 @@ class AggregateAllEpitopes:
 
     def determine_used_presentation_score_algorithms(self):
         headers = pd.read_csv(self.input_file, delimiter="\t", nrows=0).columns.tolist()
-        potential_algorithms = ["NetMHCpanEL", "NetMHCIIpanEL", "BigMHC_EL"]
+        potential_algorithms = ["NetMHCpanEL", "NetMHCIIpanEL", "BigMHC_EL", "MixMHC2pred"]
         prediction_algorithms = []
         for algorithm in potential_algorithms:
             if "{} MT Presentation Score".format(algorithm) in headers or "{} Presentation Score".format(algorithm) in headers:
@@ -197,7 +197,7 @@ class AggregateAllEpitopes:
 
     def determine_used_presentation_percentile_algorithms(self):
         headers = pd.read_csv(self.input_file, delimiter="\t", nrows=0).columns.tolist()
-        potential_algorithms = ["NetMHCpanEL", "NetMHCIIpanEL", "BigMHC_EL", "MHCflurryEL Presentation", "MHCflurryEL Processing"]
+        potential_algorithms = ["NetMHCpanEL", "NetMHCIIpanEL", "BigMHC_EL", "MHCflurryEL Presentation", "MHCflurryEL Processing", "MixMHC2pred"]
         prediction_algorithms = []
         for algorithm in potential_algorithms:
             if "{} MT Percentile".format(algorithm) in headers or "{} Percentile".format(algorithm) in headers:
@@ -889,7 +889,7 @@ class UnmatchedSequenceAggregateAllEpitopes(AggregateAllEpitopes, metaclass=ABCM
         super().__init__()
 
     def get_list_unique_mutation_keys(self, df):
-        keys = df["Mutation"].values.tolist()
+        keys = df["Index"].values.tolist()
         return sorted(list(set(keys)))
 
     def calculate_clonal_vaf(self):
@@ -899,13 +899,13 @@ class UnmatchedSequenceAggregateAllEpitopes(AggregateAllEpitopes, metaclass=ABCM
             self.vaf_clonal = None
 
     def read_input_file(self, used_columns, dtypes):
-        df = pd.read_csv(self.input_file, delimiter='\t', float_precision='high', low_memory=False, na_values="NA", keep_default_na=False, dtype={"Mutation": str})
+        df = pd.read_csv(self.input_file, delimiter='\t', float_precision='high', low_memory=False, na_values="NA", keep_default_na=False, dtype={"Index": str})
         df = df[df["{} IC50 Score".format(self.mt_top_score_metric)] != 'NA']
         df = df.astype({"{} IC50 Score".format(self.mt_top_score_metric):'float'})
         return df
 
     def get_sub_df(self, all_epitopes_df, key):
-        df = (all_epitopes_df[lambda x: (x['Mutation'] == key)]).copy()
+        df = (all_epitopes_df[lambda x: (x['Index'] == key)]).copy()
         return (df, key)
 
     def get_included_df(self, df):
