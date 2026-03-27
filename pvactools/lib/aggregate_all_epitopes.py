@@ -188,7 +188,7 @@ class AggregateAllEpitopes:
 
     def determine_used_presentation_score_algorithms(self):
         headers = pd.read_csv(self.input_file, delimiter="\t", nrows=0).columns.tolist()
-        potential_algorithms = ["NetMHCpanEL", "NetMHCIIpanEL", "BigMHC_EL"]
+        potential_algorithms = ["NetMHCpanEL", "NetMHCIIpanEL", "BigMHC_EL", "MixMHC2pred"]
         prediction_algorithms = []
         for algorithm in potential_algorithms:
             if "{} MT Presentation Score".format(algorithm) in headers or "{} Presentation Score".format(algorithm) in headers:
@@ -197,7 +197,7 @@ class AggregateAllEpitopes:
 
     def determine_used_presentation_percentile_algorithms(self):
         headers = pd.read_csv(self.input_file, delimiter="\t", nrows=0).columns.tolist()
-        potential_algorithms = ["NetMHCpanEL", "NetMHCIIpanEL", "BigMHC_EL", "MHCflurryEL Presentation", "MHCflurryEL Processing"]
+        potential_algorithms = ["NetMHCpanEL", "NetMHCIIpanEL", "BigMHC_EL", "MHCflurryEL Presentation", "MHCflurryEL Processing", "MixMHC2pred"]
         prediction_algorithms = []
         for algorithm in potential_algorithms:
             if "{} MT Percentile".format(algorithm) in headers or "{} Percentile".format(algorithm) in headers:

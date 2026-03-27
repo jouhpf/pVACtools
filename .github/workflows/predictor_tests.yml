@@ -69,6 +69,15 @@ jobs:
           chmod +x MixMHCpred
           echo "$(pwd -P)" >> $GITHUB_PATH
           cd ..
+      - name: Install and set up MixMHC2pred
+        run: |
+          mkdir ./MixMHC2pred
+          cd ./MixMHC2pred
+          wget https://github.com/GfellerLab/MixMHC2pred/releases/download/v2.0.2.2/MixMHC2pred-2.0.zip
+          unzip MixMHC2pred-2.0.zip
+          rm MixMHC2pred-2.0.zip
+          chmod +x MixMHC2pred_unix
+          echo "$(pwd -P)" >> $GITHUB_PATH
       - name: Install PRIME
         uses: actions/checkout@master
         with:
