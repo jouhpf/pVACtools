@@ -1474,14 +1474,17 @@ server <- shinyServer(function(input, output, session) {
           }
         }
         incProgress(1)
-        dtable <- datatable(binding_reformat, options = list(
-          pageLength = 10,
-          lengthChange = FALSE,
-          rowCallback = JS("function(row, data, index, rowId) {",
-                           "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
-                           'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
-          columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(binding_reformat))))
-        )) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
+        dtable <- datatable(binding_reformat,
+          selection = 'none',
+          options = list(
+            pageLength = 10,
+            lengthChange = FALSE,
+            rowCallback = JS("function(row, data, index, rowId) {",
+                             "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
+                             'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
+            columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(binding_reformat))))
+          )
+        ) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
         for (col_name in colnames(binding_reformat)[3:original_length]) {
           scaled_col_name <- paste0("Scaled_", col_name)
           if (is.null(input$binding_table_mode) || input$binding_table_mode == 'IC50') {
@@ -1569,14 +1572,17 @@ server <- shinyServer(function(input, output, session) {
           })
         }
         incProgress(1)
-        dtable <- datatable(immunogenicity_reformat, options = list(
-          pageLength = 10,
-          lengthChange = FALSE,
-          rowCallback = JS("function(row, data, index, rowId) {",
-                           "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
-                           'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
-          columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(immunogenicity_reformat))))
-        )) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
+        dtable <- datatable(immunogenicity_reformat,
+          selection = 'none',
+          options = list(
+            pageLength = 10,
+            lengthChange = FALSE,
+            rowCallback = JS("function(row, data, index, rowId) {",
+                             "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
+                             'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
+            columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(immunogenicity_reformat))))
+          )
+        ) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
         for (col_name in colnames(immunogenicity_reformat)[3:original_length]) {
           scaled_col_name <- paste0("Scaled_", col_name)
           dtable <- dtable %>% formatStyle(col_name, scaled_col_name,
@@ -1659,14 +1665,17 @@ server <- shinyServer(function(input, output, session) {
           })
         }
         incProgress(1)
-        dtable <- datatable(presentation_reformat, options = list(
-          pageLength = 10,
-          lengthChange = FALSE,
-          rowCallback = JS("function(row, data, index, rowId) {",
-                           "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
-                           'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
-          columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(presentation_reformat))))
-        )) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
+        dtable <- datatable(presentation_reformat,
+          selection = 'none',
+            options = list(
+            pageLength = 10,
+            lengthChange = FALSE,
+            rowCallback = JS("function(row, data, index, rowId) {",
+                             "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
+                             'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
+            columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(presentation_reformat))))
+          )
+        ) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
         for (col_name in colnames(presentation_reformat)[3:original_length]) {
           scaled_col_name <- paste0("Scaled_", col_name)
           dtable <- dtable %>% formatStyle(col_name, scaled_col_name,
