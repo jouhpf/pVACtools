@@ -99,7 +99,7 @@ def append_columns(intermediate_output_file, tsv_file, output_file):
         writer = csv.DictWriter(output_fh, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
         for line in reader:
-            matching_line = tsv_entries[line['Mutation']]
+            matching_line = tsv_entries[line['Index']]
             line['Chromosome'] = matching_line['chromosome_name']
             line['Start'] = matching_line['start']
             line['Stop'] = matching_line['stop']
