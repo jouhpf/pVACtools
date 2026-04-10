@@ -98,6 +98,7 @@ setup(
         'biopython==1.77',
         'networkx',
         'simanneal',
+        'numpy==1.26.4',
         'pandas<2.1.0',
         'wget',
         'pysam',
