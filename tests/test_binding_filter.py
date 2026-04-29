@@ -150,3 +150,18 @@ class BindingFilterTests(unittest.TestCase):
             os.path.join(self.test_data_path, "Test.filtered.allele_specific_binding.exploratory.tsv"),
             False
         ))
+
+    def test_binding_filter_runs_and_produces_expected_output_immunogenicity_only(self):
+        output_file = tempfile.NamedTemporaryFile()
+        self.assertFalse(BindingFilter(
+            os.path.join(
+                self.test_data_path,
+                'HCC1395.im_only.all_epitopes.short.tsv'
+            ),
+            output_file.name,
+        ).execute())
+        self.assertTrue(cmp(
+            output_file.name,
+            os.path.join(self.test_data_path, "HCC1395.im_only.filtered.tsv"),
+            False
+        ))
