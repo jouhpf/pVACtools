@@ -366,3 +366,29 @@ class AggregateAllEpitopesTests(unittest.TestCase):
             output_file_name,
             os.path.join(self.test_data_dir, "output.pvacbind.top_score_metric2_percentile.tsv")
         ))
+
+    def test_aggregate_all_epitopes_HCC1395_pvacseq_immunogenicity_only_runs_and_produces_expected_output(self):
+        self.assertTrue(py_compile.compile(self.executable))
+        output_file = tempfile.NamedTemporaryFile(suffix='.tsv')
+        self.assertFalse(PvacseqAggregateAllEpitopes(os.path.join(self.test_data_dir, 'HCC1395.im_only.all_epitopes.short.tsv'), output_file.name).execute())
+        self.assertTrue(cmp(
+            output_file.name,
+            os.path.join(self.test_data_dir, "HCC1395.output.im_only.tsv"),
+        ))
+
+        metrics_file = output_file.name.replace('.tsv', '.metrics.json')
+        self.assertTrue(cmp(
+            metrics_file,
+            os.path.join(self.test_data_dir, "HCC1395.output.im_only.metrics.json"),
+        ))
+        os.remove(metrics_file)
+
+        for i in self.pvacview_r_files:
+            pvacview_file = os.path.join(os.path.dirname(output_file.name), i)
+            self.assertTrue(os.path.isfile(pvacview_file))
+            os.remove(pvacview_file)
+
+        for i in ["anchor.jpg", "pVACview_logo.png", "pVACview_logo_mini.png"]:
+            pvacview_file = os.path.join(os.path.dirname(output_file.name), "www", i)
+            self.assertTrue(os.path.isfile(pvacview_file))
+            os.remove(pvacview_file)
