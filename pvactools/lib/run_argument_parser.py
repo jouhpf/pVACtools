@@ -416,6 +416,23 @@ class RunArgumentParser(metaclass=ABCMeta):
                  + "calculated as --trna-vaf * --expn-val * 10. Only candidates with Allele Expr "
                  + "(RNA Expr * RNA VAF) above the allele expr cutoff will be binned into the Pass tier."
         )
+        # ML prediction arguments
+        self.parser.add_argument(
+            "--run-ml-predictions",
+            help="Enable ML-based neoantigen evaluation predictions.",
+            default=False,
+            action='store_true',
+        )
+        self.parser.add_argument(
+            "--ml-threshold-accept", type=float,
+            default=0.55,
+            help="Threshold for Accept predictions in ML model (default: 0.55).",
+        )
+        self.parser.add_argument(
+            "--ml-threshold-reject", type=float,
+            default=0.30,
+            help="Threshold for Reject predictions in ML model (default: 0.30).",
+        )        
 
     def pvacsplice(self):
         self.parser.add_argument(

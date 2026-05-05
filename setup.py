@@ -98,6 +98,7 @@ setup(
         'biopython==1.77',
         'networkx',
         'simanneal',
+        'numpy==1.26.4',
         'pandas<2.1.0',
         'wget',
         'pysam',
@@ -118,6 +119,8 @@ setup(
         'XlsxWriter',
         'openpyxl',
         'deepdiff',
+        'scikit-learn>=1.6.0,<1.8.0',
+        'imblearn',
     ],
     package_data={
         'pvactools.tools.pvacseq': pvacseq_data_files,
