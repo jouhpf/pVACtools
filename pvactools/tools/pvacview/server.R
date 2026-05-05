@@ -1372,7 +1372,7 @@ server <- shinyServer(function(input, output, session) {
   ##plotting IC50 binding score violin plot
   output$violinPlot_IC50 <- renderPlot({
     withProgress(message = "Loading Binding Plot", value = 0, {
-      if (length(df$metricsData[[selectedID()]]$sets) != 0) {
+      if (length(df$metricsData[[selectedID()]]$sets) != 0 && !is.null(bindingDataIC50())) {
         line.data <- data.frame(yintercept = c(500, 1000), cutoffs = c("500nM", "1000nM"), color = c("#28B463", "#28B463"))
         hla_allele_count <- length(unique(bindingDataIC50()$HLA_allele))
         incProgress(0.5)
@@ -1411,6 +1411,13 @@ server <- shinyServer(function(input, output, session) {
             all_percentile_data <- presentationPercentileData()
         } else if (input$percentile_plot_mode == 'immunogenicity') {
             all_percentile_data <- immunogenicityPercentileData()
+        }
+        if (is.null(all_percentile_data)) {
+            p <- ggplot() + annotate(geom = "text", x = 10, y = 20, label = "No data available", size = 6) +
+              theme_void() + theme(legend.position = "none", panel.border = element_blank())
+            incProgress(1)
+            print(p)
+            return()
         }
         line.data <- data.frame(yintercept = c(0.5, 2), cutoffs = c("0.5%", "2%"), color = c("#28B463", "#28B463"))
         hla_allele_count <- length(unique(all_percentile_data$HLA_allele))
@@ -1482,7 +1489,12 @@ server <- shinyServer(function(input, output, session) {
   output$bindingDatatable <- renderDT({
     withProgress(message = "Loading binding datatable", value = 0, {
       if (length(df$metricsData[[selectedID()]]$sets) != 0) {
-        binding_data <- right_join(rbind(bindingDataIC50(), bindingDataScore()), bindingPercentileData(), by=c("algorithms", "HLA_allele", "Mutant"))
+        all_binding_data <- rbind(bindingDataIC50(), bindingDataScore())
+        if (is.null(all_binding_data)) {
+            incProgress(1)
+            return (datatable(data.frame("Binding Predictions Datatable" = character())))
+        }
+        binding_data <- right_join(all_binding_data, bindingPercentileData(), by=c("algorithms", "HLA_allele", "Mutant"))
         binding_data["Score"] <- paste(round(as.numeric(binding_data$`Score`), 1), " (%: ", round(as.numeric(binding_data$`Percentile`), 1), ")", sep = "")
         binding_reformat <- reshape2::dcast(binding_data, HLA_allele + Mutant ~ algorithms, value.var = "Score")
         selected_peptide_data <- selectedPeptideData()
