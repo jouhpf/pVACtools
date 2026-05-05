@@ -186,9 +186,21 @@ server <- shinyServer(function(input, output, session) {
     df$mainTable$`RNA VAF Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA VAF']) && as.numeric(x['RNA VAF']) <= as.numeric(df$metricsData['trna_vaf'])})
     df$mainTable$`RNA Depth Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA Depth']) && as.numeric(x['RNA Depth']) <= as.numeric(df$metricsData['trna_cov'])})
     df$mainTable$`Prob Pos Pass` <- apply(df$mainTable, 1, function(x) {is_probaa_pass(x["Prob Pos"])})
-    df$mainTable$`TSL Fail` <- apply(df$mainTable, 1, function(x) {'tsl' %in% df$transcript_prioritization_strategy && !is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))})
-    df$mainTable$`MANE Select Fail` <- apply(df$mainTable, 1, function(x) {'mane_select' %in% df$transcript_prioritization_strategy && !is_mane_select_pass(x["MANE Select"])})
-    df$mainTable$`Canonical Fail` <- apply(df$mainTable, 1, function(x) {'canonical' %in% df$transcript_prioritization_strategy && !is_canonical_pass(x["Canonical"])})
+    transcript_pass <- apply(df$mainTable, 1, function(x) {
+      if ('tsl' %in% df$transcript_prioritization_strategy && is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))) {
+        return("True")
+      }
+      else if ('mane_select' %in% df$transcript_prioritization_strategy && is_mane_select_pass(x["MANE Select"])) {
+        return("True")
+      }
+      else if ('canonical' %in% df$transcript_prioritization_strategy && is_canonical_pass(x["Canonical"])) {
+        return("True")
+      }
+      else {
+        return("False")
+      }
+    })
+    df$mainTable <- add_column(df$mainTable, `Transcript Pass` = transcript_pass, .after = "TSL")
   })
   #Option 1: User uploaded additional data file
   observeEvent(input$additionalDataInput, {
@@ -310,9 +322,19 @@ server <- shinyServer(function(input, output, session) {
        df$mainTable$`RNA VAF Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA VAF']) && as.numeric(x['RNA VAF']) <= as.numeric(df$metricsData['trna_vaf'])})
        df$mainTable$`RNA Depth Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA Depth']) && as.numeric(x['RNA Depth']) <= as.numeric(df$metricsData['trna_cov'])})
        df$mainTable$`Prob Pos Pass` <- apply(df$mainTable, 1, function(x) {is_probaa_pass(x["Prob Pos"])})
-       df$mainTable$`TSL Fail` <- apply(df$mainTable, 1, function(x) {'tsl' %in% df$transcript_prioritization_strategy && !is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))})
-       df$mainTable$`MANE Select Fail` <- apply(df$mainTable, 1, function(x) {'mane_select' %in% df$transcript_prioritization_strategy && !is_mane_select_pass(x["MANE Select"])})
-       df$mainTable$`Canonical Fail` <- apply(df$mainTable, 1, function(x) {'canonical' %in% df$transcript_prioritization_strategy && !is_canonical_pass(x["Canonical"])})
+       transcript_pass <- apply(df$mainTable, TRUE, function(x) {
+         if ('tsl' %in% df$transcript_prioritization_strategy && is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))) {
+           return("True")
+         }
+         if ('mane_select' %in% df$transcript_prioritization_strategy && is_mane_select_pass(x["MANE Select"])) {
+           return("True")
+         }
+         if ('canonical' %in% df$transcript_prioritization_strategy && is_canonical_pass(x["Canonical"])) {
+           return("True")
+         }
+         return("False")
+       })
+       df$mainTable <- add_column(df$mainTable, `Transcript Pass` = transcript_pass, .after = "TSL")
        df$lastSelectedRow <- 1
       updateTabItems(session, "tabs", "explore")
       incProgress(0.1)
@@ -497,9 +519,19 @@ server <- shinyServer(function(input, output, session) {
     df$mainTable$`RNA VAF Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA VAF']) && as.numeric(x['RNA VAF']) <= as.numeric(df$metricsData['trna_vaf'])})
     df$mainTable$`RNA Depth Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA Depth']) && as.numeric(x['RNA Depth']) <= as.numeric(df$metricsData['trna_cov'])})
     df$mainTable$`Prob Pos Pass` <- apply(df$mainTable, 1, function(x) {is_probaa_pass(x["Prob Pos"])})
-    df$mainTable$`TSL Fail` <- apply(df$mainTable, 1, function(x) {'tsl' %in% df$transcript_prioritization_strategy && !is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))})
-    df$mainTable$`MANE Select Fail` <- apply(df$mainTable, 1, function(x) {'mane_select' %in% df$transcript_prioritization_strategy && !is_mane_select_pass(x["MANE Select"])})
-    df$mainTable$`Canonical Fail` <- apply(df$mainTable, 1, function(x) {'canonical' %in% df$transcript_prioritization_strategy && !is_canonical_pass(x["Canonical"])})
+    transcript_pass <- apply(df$mainTable, TRUE, function(x) {
+      if ('tsl' %in% df$transcript_prioritization_strategy && is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))) {
+        return("True")
+      }
+      if ('mane_select' %in% df$transcript_prioritization_strategy && is_mane_select_pass(x["MANE Select"])) {
+        return("True")
+      }
+      if ('canonical' %in% df$transcript_prioritization_strategy && is_canonical_pass(x["Canonical"])) {
+        return("True")
+      }
+      return("False")
+    })
+    df$mainTable <- add_column(df$mainTable, `Transcript Pass` = transcript_pass, .after = "TSL")
     tier_sorter <- c("Pass", "PoorBinder", "PoorImmunogenicity", "PoorPresentation", "RefMatch", "PoorTranscript", "LowExpr", "Anchor", "Subclonal", "ProbPos", "Poor", "NoExpr")
     df$mainTable$`Rank` <- rank(desc(as.numeric(replace(df$mainTable$`Allele Expr`, is.na(df$mainTable$`Allele Expr`), 0))), ties.method = "first")
     for (metric in df$scoring_candidate_metric) {
@@ -559,9 +591,19 @@ server <- shinyServer(function(input, output, session) {
     df$mainTable$`RNA VAF Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA VAF']) && as.numeric(x['RNA VAF']) <= as.numeric(df$metricsData['trna_vaf'])})
     df$mainTable$`RNA Depth Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA Depth']) && as.numeric(x['RNA Depth']) <= as.numeric(df$metricsData['trna_cov'])})
     df$mainTable$`Prob Pos Pass` <- apply(df$mainTable, 1, function(x) {is_probaa_pass(x["Prob Pos"])})
-    df$mainTable$`TSL Fail` <- apply(df$mainTable, 1, function(x) {'tsl' %in% df$transcript_prioritization_strategy && !is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))})
-    df$mainTable$`MANE Select Fail` <- apply(df$mainTable, 1, function(x) {'mane_select' %in% df$transcript_prioritization_strategy && !is_mane_select_pass(x["MANE Select"])})
-    df$mainTable$`Canonical Fail` <- apply(df$mainTable, 1, function(x) {'canonical' %in% df$transcript_prioritization_strategy && !is_canonical_pass(x["Canonical"])})
+    transcript_pass <- apply(df$mainTable, TRUE, function(x) {
+      if ('tsl' %in% df$transcript_prioritization_strategy && is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))) {
+        return("True")
+      }
+      if ('mane_select' %in% df$transcript_prioritization_strategy && is_mane_select_pass(x["MANE Select"])) {
+        return("True")
+      }
+      if ('canonical' %in% df$transcript_prioritization_strategy && is_canonical_pass(x["Canonical"])) {
+        return("True")
+      }
+      return("False")
+    })
+    df$mainTable <- add_column(df$mainTable, `Transcript Pass` = transcript_pass, .after = "TSL")
     tier_sorter <- c("Pass", "PoorBinder", "PoorImmunogenicity", "PoorPresentation", "RefMatch", "PoorTranscript", "LowExpr", "Anchor", "Subclonal", "ProbPos", "Poor", "NoExpr")
     df$mainTable$`Rank` <- rank(desc(as.numeric(replace(df$mainTable$`Allele Expr`, is.na(df$mainTable$`Allele Expr`), 0))), ties.method = "first")
     for (metric in df$scoring_candidate_metric) {
@@ -720,12 +762,13 @@ server <- shinyServer(function(input, output, session) {
                                                                   "RNA Expr", "RNA VAF", "Allele Expr", "RNA Depth", "DNA VAF"))
 
       # Columns that should be hidden from the display
-      additional_hidden_columns <- which(colnames(filtered_table) %in% c("Num Passing Transcripts", "Best Transcript",
+      additional_hidden_columns <- which(colnames(filtered_table) %in% c("Num Passing Transcripts", "Best Transcript", "MANE Select", "Canonical", "TSL",
+                                                                        "%ile WT", "IC50 %ile WT", "IM %ile WT", "Pres %ile WT",
                                                                         "Col DNA VAF", "Col RNA Depth", "Col Allele Expr", "Col RNA VAF", "Col RNA Expr",
                                                                         "Scaled binding percentile", "Scaled immunogenicity percentile", "Scaled presentation percentile", "Scaled BA", "Gene of Interest",
                                                                         "IC50 Pass", "Binding Percentile Pass", "Immunogenicity Percentile Pass", "Presentation Percentile Pass", "Anchor Pass",
                                                                         "VAF Clonal Pass", "Allele Expr Pass", "RNA Expr Fail", "RNA VAF Fail", "RNA Depth Fail",
-                                                                        "Prob Pos Pass", "TSL Fail", "MANE Select Fail", "Canonical Fail"))
+                                                                        "Prob Pos Pass"))
       hidden_targets <- c(hla_columns, additional_hidden_columns)
 
       # Applies a CSS class to the specified columns
@@ -800,15 +843,13 @@ server <- shinyServer(function(input, output, session) {
     %>% formatStyle(c("RNA Expr"), "RNA Expr Fail", fontWeight = styleEqual(c(TRUE), c("bold")), border = styleEqual(c(TRUE), c("2px solid red")))
     %>% formatStyle(c("RNA VAF"), "RNA VAF Fail", fontWeight = styleEqual(c(TRUE), c("bold")), border = styleEqual(c(TRUE), c("2px solid red")))
     %>% formatStyle(c("RNA Depth"), "RNA Depth Fail", fontWeight = styleEqual(c(TRUE), c("bold")), border = styleEqual(c(TRUE), c("2px solid red")))
-    %>% formatStyle(c("TSL"), "TSL Fail", fontWeight = styleEqual(c(TRUE), c("bold")), border = styleEqual(c(TRUE), c("2px solid red")))
-    %>% formatStyle(c("MANE Select"), "MANE Select Fail", fontWeight = styleEqual(c(TRUE), c("bold")), border = styleEqual(c(TRUE), c("2px solid red")))
-    %>% formatStyle(c("Canonical"), "Canonical Fail", fontWeight = styleEqual(c(TRUE), c("bold")), border = styleEqual(c(TRUE), c("2px solid red")))
     %>% formatStyle(c("IC50 MT"), "IC50 Pass",fontWeight = styleEqual(c(FALSE), c("bold")), border = styleEqual(c(FALSE), c("2px solid red")))
     %>% formatStyle(c("IC50 %ile MT"), "Binding Percentile Pass",fontWeight = styleEqual(c(FALSE), c("bold")), border = styleEqual(c(FALSE), c("2px solid red")))
     %>% formatStyle(c("IM %ile MT"), "Immunogenicity Percentile Pass",fontWeight = styleEqual(c(FALSE), c("bold")), border = styleEqual(c(FALSE), c("2px solid red")))
     %>% formatStyle(c("Pres %ile MT"), "Presentation Percentile Pass",fontWeight = styleEqual(c(FALSE), c("bold")), border = styleEqual(c(FALSE), c("2px solid red")))
     %>% formatStyle(c("Prob Pos"), "Prob Pos Pass", fontWeight = styleEqual(c(FALSE), c("bold")), border = styleEqual(c(FALSE), c("2px solid red")))
     %>% formatStyle(c("Ref Match"), "Ref Match", fontWeight = styleEqual(c("True"), c("bold")), border = styleEqual(c("True"), c("2px solid red")))
+    %>% formatStyle(c("Transcript Pass"), "Transcript Pass", fontWeight = styleEqual(c("False"), c("bold")), border = styleEqual(c("False"), c("2px solid red")))
     %>% formatStyle("Best Peptide", fontFamily="monospace")
     , server = FALSE)
   #capture last selected row so that it still displays data from that row when
@@ -1059,8 +1100,12 @@ server <- shinyServer(function(input, output, session) {
         incProgress(0.5)
         names(GB_transcripts) <- c("Transcripts in Selected Set", "Expression", "MANE Select", "Canonical", "Transcript Support Level", "Biotype", "CDS Flags", "Transcript Length (#AA)", "Best Transcript")
         incProgress(0.5)
-        datatable(GB_transcripts, options = list(columnDefs = list(list(defaultContent = "NA", targets = c(5)), list(visible = FALSE, targets = c(-1))))) %>%
-          formatStyle(c("Transcripts in Selected Set"), "Best Transcript", backgroundColor = styleEqual(c(TRUE), c("#98FF98")))
+        datatable(GB_transcripts,
+          selection = 'none',
+          options = list(
+            columnDefs = list(list(defaultContent = "NA", targets = c(5)), list(visible = FALSE, targets = c(-1)))
+          )
+        ) %>% formatStyle(c("Transcripts in Selected Set"), "Best Transcript", backgroundColor = styleEqual(c(TRUE), c("#98FF98")))
       }else {
         GB_transcripts <- data.frame("Transcript" = character(), "Expression" = character(), "MANE Select" = character(), "Canonical" = character(),"TSL" = character(), "Biotype" = character(), "Transcript Length (#AA)"= character(), "Length" = character())
         incProgress(0.5)
@@ -1071,7 +1116,7 @@ server <- shinyServer(function(input, output, session) {
       }
     })
   })
-  
+
   ##display transcript expression
   output$metricsTextTranscript <- renderText({
     if (length(df$metricsData[[selectedID()]]$sets) != 0) {
@@ -1474,14 +1519,17 @@ server <- shinyServer(function(input, output, session) {
           }
         }
         incProgress(1)
-        dtable <- datatable(binding_reformat, options = list(
-          pageLength = 10,
-          lengthChange = FALSE,
-          rowCallback = JS("function(row, data, index, rowId) {",
-                           "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
-                           'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
-          columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(binding_reformat))))
-        )) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
+        dtable <- datatable(binding_reformat,
+          selection = 'none',
+          options = list(
+            pageLength = 10,
+            lengthChange = FALSE,
+            rowCallback = JS("function(row, data, index, rowId) {",
+                             "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
+                             'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
+            columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(binding_reformat))))
+          )
+        ) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
         for (col_name in colnames(binding_reformat)[3:original_length]) {
           scaled_col_name <- paste0("Scaled_", col_name)
           if (is.null(input$binding_table_mode) || input$binding_table_mode == 'IC50') {
@@ -1569,14 +1617,17 @@ server <- shinyServer(function(input, output, session) {
           })
         }
         incProgress(1)
-        dtable <- datatable(immunogenicity_reformat, options = list(
-          pageLength = 10,
-          lengthChange = FALSE,
-          rowCallback = JS("function(row, data, index, rowId) {",
-                           "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
-                           'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
-          columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(immunogenicity_reformat))))
-        )) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
+        dtable <- datatable(immunogenicity_reformat,
+          selection = 'none',
+          options = list(
+            pageLength = 10,
+            lengthChange = FALSE,
+            rowCallback = JS("function(row, data, index, rowId) {",
+                             "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
+                             'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
+            columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(immunogenicity_reformat))))
+          )
+        ) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
         for (col_name in colnames(immunogenicity_reformat)[3:original_length]) {
           scaled_col_name <- paste0("Scaled_", col_name)
           dtable <- dtable %>% formatStyle(col_name, scaled_col_name,
@@ -1659,14 +1710,17 @@ server <- shinyServer(function(input, output, session) {
           })
         }
         incProgress(1)
-        dtable <- datatable(presentation_reformat, options = list(
-          pageLength = 10,
-          lengthChange = FALSE,
-          rowCallback = JS("function(row, data, index, rowId) {",
-                           "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
-                           'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
-          columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(presentation_reformat))))
-        )) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
+        dtable <- datatable(presentation_reformat,
+          selection = 'none',
+            options = list(
+            pageLength = 10,
+            lengthChange = FALSE,
+            rowCallback = JS("function(row, data, index, rowId) {",
+                             "if(((rowId+1) % 4) == 3 || ((rowId+1) % 4) == 0) {",
+                             'row.style.backgroundColor = "#E0E0E0";', "}", "}"),
+            columnDefs = list(list(visible = FALSE, targets = seq(original_length+1, ncol(presentation_reformat))))
+          )
+        ) %>% formatStyle("Mutant", fontWeight = styleEqual("MT", "bold"), color = styleEqual("MT", "#E74C3C"))
         for (col_name in colnames(presentation_reformat)[3:original_length]) {
           scaled_col_name <- paste0("Scaled_", col_name)
           dtable <- dtable %>% formatStyle(col_name, scaled_col_name,
@@ -1864,8 +1918,7 @@ server <- shinyServer(function(input, output, session) {
                                                 "Scaled BA", "Scaled binding percentile", "Scaled immunogenicity percentile", "Scaled presentation percentile", "Comments", "Gene of Interest",
                                                 "Col RNA Expr", "Col RNA VAF", "Col Allele Expr", "Col RNA Depth", "Col DNA VAF",
                                                 "IC50 Pass", "Binding Percentile Pass", "Immunogenicity Percentile Pass", "Presentation Percentile Pass", "Anchor Pass","VAF Clonal Pass", "Allele Expr Pass",
-                                                "RNA Expr Fail", "RNA VAF Fail", "RNA Depth Fail", "Prob Pos Pass",
-                                                "TSL Fail", "MANE Select Fail", "Canonical Fail")
+                                                "RNA Expr Fail", "RNA VAF Fail", "RNA Depth Fail", "Prob Pos Pass")
     data <- df$mainTable[, !(colsToDrop)]
     col_names <- colnames(data)
     evaluations <- data.frame("ID" = row.names(df$evaluations), Evaluation = df$evaluations[, 1])
