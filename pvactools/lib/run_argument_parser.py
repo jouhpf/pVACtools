@@ -230,12 +230,12 @@ class RunArgumentParser(metaclass=ABCMeta):
             help="Normal Coverage Cutoff. When creating the filtered.tsv report, only include epitopes "
                  + "with a normal read depth above this cutoff.",
             default=5
-        ) 
+        )
         self.parser.add_argument(
             '--tdna-cov', type=int,
             help="Tumor DNA Coverage Cutoff. When creating the filtered.tsv report, only include epitopes "
                  + "with a tumor DNA read depth above this cutoff.",
-            default=1
+            default=10
         )
         self.parser.add_argument(
             '--trna-cov', type=int,

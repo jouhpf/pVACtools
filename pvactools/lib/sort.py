@@ -8,7 +8,7 @@ def default_sort(rows, top_score_metric, top_score_metric2):
         sorted_rows = sorted(sorted_rows, key=lambda row: (float(row[f'Median MT {top_score_mod}'])))
     elif top_score_metric == 'lowest':
         sorted_rows = sorted(rows, key=lambda row: (float(row[f'Median MT {top_score_mod}'])))
-        sorted_rows = sorted(sorted_rows, key=lambda row: (float(row['Corresponding Fold Change']) if row['Corresponding Fold Change'].isdigit() else float('inf')), reverse=True)
+        sorted_rows = sorted(sorted_rows, key=lambda row: (float(row['Corresponding Fold Change']) if str(row['Corresponding Fold Change']).isdigit() else float('inf')), reverse=True)
         sorted_rows = sorted(sorted_rows, key=lambda row: (float(row[f'Best MT {top_score_mod}'])))
     return sorted_rows
 

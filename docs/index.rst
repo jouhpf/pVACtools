@@ -62,18 +62,12 @@ Contents
 New in Version |release|
 ------------------------
 
-This is a minor version release. It adds the following features:
+This is a bugfix release. It fixes the following problem(s):
 
-* Add ability to change port to serve pVACview to (``--port`` parameter). by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1354
-* Add a ``pvacseq|fuse|bind|splice aggregate_report_filter`` command to filter aggregated report on variant Tier. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1368
-* Add a ``--length`` parameter to the ``pvacseq|fuse|splice|bind|vector valid_alleles`` commands to filter alleles to ones that work for a specific epitope length. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1372
-* Clarify help texts to differentiate between hard filtering and prioritizing/tiering. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1373
-* Add codemeta.json file to repo. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1374
-
-Additionally, it fixes the following problem(s):
-
-* Fix an error in the output parser that occurs with very long insertions. by @CSi-Ti in https://github.com/griffithlab/pVACtools/pull/1367
-* Support splice site with multiple matching somatic variants that would previously throw an error. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1369
+* Revert accidental tdna-cov parameter default value change. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1388
+* Add missing pvacsplice.wdl to download_wdls command. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1389
+* Fix top score filter to work with presentation/immunogenicity-only reports. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1391
+* Replace deprecated pkg_resources with importlib.metadata. by @susannasiebert in https://github.com/griffithlab/pVACtools/pull/1392
 
 New in Version 6
 ----------------
