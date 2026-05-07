@@ -140,8 +140,9 @@ set the filter will return the top epitope similar to how the Best Peptide is
 determined in the :ref:`aggregated report <aggregated>`:
 
 - Pick all entries with a variant transcript that have a ``protein_coding`` Biotype
-- Of the remaining entries, pick the ones with a variant transcript having
-  a Transcript Support Level <= maximum_transcript_support_level
+- Of the remaining entries, pick the entries that pass at least one of the transcript
+  criteria selected in the ``--transcript-prioritization-strategy`` taking into
+  consideration the ``--maximum-transcript-support-level`` if tsl is one of the selected criteria.
 - Of the remaining entries, pick the entries with no Problematic Positions
 - Of the remaining entries, pick the ones passing the Anchor Criteria (see
   details below)

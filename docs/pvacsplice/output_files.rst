@@ -347,7 +347,7 @@ _____________________
 
 To determine the Best Peptide, all peptides meeting the
 ``--aggregate-inclusion-threshold`` and ``--aggregate-inclusion-count-limit``
-(see above) for a variant are evaluated as follows:
+(see above) for a junction are evaluated as follows:
 
 - If ``--allow-inclomplete-transcripts`` flag is set, pick the entries without
   a ``Transcript CDS Flags`` set.
@@ -436,7 +436,7 @@ Given the thresholds provided above, the Best Peptide is evaluated and binned in
    :header-rows: 1
 
    * - Tier
-     - Citeria
+     - Criteria
    * - ``Pass``
      - Best Peptide passes the binding, reference match, expression, transcript, clonal, and problematic position criteria
    * - ``PoorBinder``

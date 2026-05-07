@@ -496,7 +496,7 @@ Given the thresholds provided above, the Best Peptide is evaluated and binned in
    :header-rows: 1
 
    * - Tier
-     - Citeria
+     - Criteria
    * - ``Pass``
      - Best Peptide passes the binding, reference match, expression, transcript, clonal, problematic position, and anchor criteria
    * - ``PoorBinder``

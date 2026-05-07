@@ -111,15 +111,21 @@ Top Score Filter
 
 .. program-output:: pvacsplice top_score_filter -h
 
-This filter picks the top epitope for each splice site variant. The top epitope is
-determined by first selecting epitopes with no Problematic Positions
-and among those selecting the one with lowest median/best MT IC50 score for
-each splice site variant
+This filter picks the top epitope for each junction according to the following criteria:
 
-By default the ``--top-score-metric`` option is set to ``median`` which will apply this
-filter to the ``Median MT IC50 Score`` column. If the ``--top-score-metric``
-option is set to ``lowest``, the ``Best MT IC50  Score`` column is used
-instead.
+- If ``--allow-inclomplete-transcripts`` flag is set, pick the entries without
+  a ``Transcript CDS Flags`` set.
+- Of the remaining entries, pick the entries where the ``Biotype`` is ``protein_coding``.
+- Of the remaining entries, pick the entries that pass at least one of the transcript criteria selected in the
+  ``--transcript-prioritization-strategy`` taking into consideration the
+  ``--maximum-transcript-support-level`` if ``tsl`` is one of the selected
+  criteria.
+- Of the remaining entries, pick the entries with no ``Problematic Positions``.
+- Sort the remaining entries by lowest ``Median|Best IC50 Score|Percentile``
+  (depending on the selected ``--top-score-metric`` and
+  ``--top-score-metric2``), ``MANE Select`` (True), ``Canonical`` (True),
+  ``Transcript Support Level``, ``WT Protein Length``, and ``Transcript
+  Expression``. Select the highest sorted entry.
 
 Aggregate Report Filter
 -----------------------
