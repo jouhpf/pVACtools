@@ -4,7 +4,7 @@ import shutil
 import sys
 from collections import OrderedDict
 
-import pkg_resources
+import importlib.metadata
 import pymp
 import yaml
 from Bio.Seq import Seq
@@ -50,7 +50,7 @@ class Pipeline(metaclass=ABCMeta):
             with open(log_file, 'r') as log_fh:
                 past_inputs = yaml.load(log_fh, Loader=yaml.FullLoader)
                 current_inputs = self.__dict__
-                current_inputs['pvactools_version'] = pkg_resources.get_distribution("pvactools").version
+                current_inputs['pvactools_version'] = importlib.metadata.version("pvactools")
                 if past_inputs['pvactools_version'] != current_inputs['pvactools_version']:
                     status_message(
                         "Restart to be executed with a different pVACtools version:\n" +
@@ -76,7 +76,7 @@ class Pipeline(metaclass=ABCMeta):
         else:
             with open(log_file, 'w') as log_fh:
                 inputs = self.__dict__
-                inputs['pvactools_version'] = pkg_resources.get_distribution("pvactools").version
+                inputs['pvactools_version'] = importlib.metadata.version("pvactools")
                 yaml.dump(inputs, log_fh, default_flow_style=False)
 
     def get_flurry_state(self):
