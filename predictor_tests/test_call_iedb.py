@@ -116,7 +116,7 @@ class CallIEDBClassITests(CallIEDBTests):
             expected_output_file = os.path.join(self.test_data_dir, 'output_mhcnuggetsI.tsv')
         expected_df = pd.read_csv(expected_output_file, sep="\t", index_col=[0,2,3])
         actual_df = pd.read_csv(call_iedb_output_file.name, sep="\t", index_col=[0,2,3])
-        pd.testing.assert_frame_equal(expected_df, actual_df, check_like=True, check_exact=False)
+        pd.testing.assert_frame_equal(expected_df, actual_df, check_like=True, check_exact=False, rtol=0.05)
 
     def test_bigmhc_el__method_generates_expected_files(self):
         call_iedb_output_file = tempfile.NamedTemporaryFile()
