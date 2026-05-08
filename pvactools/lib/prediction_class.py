@@ -145,7 +145,7 @@ class MHCnuggets(metaclass=ABCMeta):
 
     def valid_allele_names_for_class(self, class_type):
         base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', class_type)
+        alleles_dir       = os.path.join(base_dir, 'supporting_files', 'alleles', class_type)
         alleles_file_name = os.path.join(alleles_dir, "MHCnuggets.txt")
         with open(alleles_file_name, 'r') as fh:
             return list(filter(None, fh.read().split('\n')))
@@ -313,8 +313,8 @@ class PredictionClass(metaclass=ABCMeta):
     @classmethod
     def parse_allele_cutoff_file(cls):
         base_dir                = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        iedb_alleles_dir        = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles')
-        allele_cutoff_file_name = os.path.join(iedb_alleles_dir, "cutoffs.csv")
+        alleles_dir             = os.path.join(base_dir, 'supporting_files', 'alleles')
+        allele_cutoff_file_name = os.path.join(alleles_dir, "cutoffs.csv")
         cutoffs = {}
         with open(allele_cutoff_file_name) as allele_cutoff_file:
             csv_reader = csv.DictReader(allele_cutoff_file)
@@ -358,7 +358,7 @@ class MHCI(PredictionClass, metaclass=ABCMeta):
 class DeepImmuno(MHCI):
     def valid_allele_names(self):
         base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_i')
+        alleles_dir       = os.path.join(base_dir, 'supporting_files', 'alleles', 'class_i')
         alleles_file_name = os.path.join(alleles_dir, "DeepImmuno.tsv")
         alleles           = []
         with open(alleles_file_name) as alleles_file:
@@ -421,7 +421,7 @@ class DeepImmuno(MHCI):
 class BigMHC(metaclass=ABCMeta):
     def valid_allele_names(self):
         base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_i')
+        alleles_dir       = os.path.join(base_dir, 'supporting_files', 'alleles', 'class_i')
         alleles_file_name = os.path.join(alleles_dir, "BigMHC.txt")
         with open(alleles_file_name, 'r') as fh:
             return list(filter(None, fh.read().split('\n')))
@@ -490,7 +490,7 @@ class BigMHC_IM(BigMHC, MHCI):
 class MHCflurry(MHCI):
     def valid_allele_names(self):
         base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_i')
+        alleles_dir       = os.path.join(base_dir, 'supporting_files', 'alleles', 'class_i')
         alleles_file_name = os.path.join(alleles_dir, "MHCflurry.txt")
         with open(alleles_file_name, 'r') as fh:
             return list(filter(None, fh.read().split('\n')))
@@ -552,7 +552,7 @@ class MHCflurryEL(MHCflurry):
 class MixMHCpred(MHCI):
     def valid_allele_names(self):
         base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_i')
+        alleles_dir       = os.path.join(base_dir, 'supporting_files', 'alleles', 'class_i')
         alleles_file_name = os.path.join(alleles_dir, "MixMHCpred.txt")
         with open(alleles_file_name, 'r') as fh:
             return list(filter(None, fh.read().split('\n')))
@@ -614,7 +614,7 @@ class MixMHCpred(MHCI):
 class PRIME(MHCI):
     def valid_allele_names(self):
         base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_i')
+        alleles_dir       = os.path.join(base_dir, 'supporting_files', 'alleles', 'class_i')
         alleles_file_name = os.path.join(alleles_dir, "PRIME.txt")
         with open(alleles_file_name, 'r') as fh:
             return list(filter(None, fh.read().split('\n')))
@@ -697,8 +697,8 @@ class IEDBMHCI(MHCI, IEDB, metaclass=ABCMeta):
         #Ultimately we probably want this method to call out to IEDB but their command is currently broken
         #curl --data "method=ann&species=human" http://tools-api.iedb.org/tools_api/mhci/
         base_dir               = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        iedb_alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_i')
-        iedb_alleles_file_name = os.path.join(iedb_alleles_dir, "%s.tsv" % self.iedb_prediction_method)
+        alleles_dir            = os.path.join(base_dir, 'supporting_files', 'alleles', 'class_i')
+        iedb_alleles_file_name = os.path.join(alleles_dir, "%s.tsv" % self.iedb_prediction_method)
         alleles = {}
         with open(iedb_alleles_file_name) as iedb_alleles_file:
             tsv_reader = csv.DictReader(iedb_alleles_file, delimiter='\t')
@@ -798,8 +798,8 @@ class IEDBMHCII(MHCII, IEDB, metaclass=ABCMeta):
             self.iedb_prediction_method
         )
         base_dir               = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        iedb_alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_ii')
-        iedb_alleles_file_name = os.path.join(iedb_alleles_dir, "%s.tsv" % file_name)
+        alleles_dir            = os.path.join(base_dir, 'supporting_files', 'alleles', 'class_ii')
+        iedb_alleles_file_name = os.path.join(alleles_dir, "%s.tsv" % file_name)
         alleles = []
         with open(iedb_alleles_file_name) as iedb_alleles_file:
             for row in iedb_alleles_file:
@@ -849,7 +849,7 @@ class SMMalign(IEDBMHCII):
 class MixMHC2pred(MHCII):
     def valid_allele_names(self):
         base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-        alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_ii')
+        alleles_dir       = os.path.join(base_dir, 'supporting_files', 'alleles', 'class_ii')
         alleles_file_name = os.path.join(alleles_dir, "MixMHC2pred.tsv")
         alleles           = []
         with open(alleles_file_name) as alleles_file:
@@ -881,7 +881,7 @@ class MixMHC2pred(MHCII):
             tmp_input_file.close()
             tmp_output_file = tempfile.NamedTemporaryFile('r', dir=tmp_dir, delete=False)
             base_dir          = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-            alleles_dir       = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_ii')
+            alleles_dir       = os.path.join(base_dir, 'supporting_files', 'alleles', 'class_ii')
             alleles_file_name = os.path.join(alleles_dir, "MixMHC2pred.tsv")
             with open(alleles_file_name) as alleles_file:
                 tsv_reader = csv.DictReader(alleles_file, delimiter='\t')
