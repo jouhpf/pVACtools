@@ -14,7 +14,7 @@ class FastaToKmersTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.python = sys.executable
-        cls.executable = os.path.join(pvactools_directory(), "pvactools", "tools", "pvacsplice", "fasta_to_kmers.py")
+        cls.executable = os.path.join(pvactools_directory(), "pvactools", "lib", "fasta_to_kmers.py")
         cls.test_data_dir = os.path.join(pvactools_directory(), "tests", "test_data", "pvacsplice")
 
     def module_compiles(self):

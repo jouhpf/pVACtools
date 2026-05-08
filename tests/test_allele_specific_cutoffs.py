@@ -6,29 +6,22 @@ import py_compile
 from subprocess import PIPE
 from subprocess import run as subprocess_run
 
-from pvactools.tools.pvacseq import *
+from pvactools.tools import *
 from tests.utils import *
-
-def test_data_directory():
-    return os.path.join(
-        pvactools_directory(),
-        'tests',
-        'test_data',
-        'pvacseq'
-    )
 
 class PvacseqAlleleSpecificCutoffsTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.pvactools_directory = pvactools_directory()
-        cls.test_data_directory = test_data_directory()
+        cls.module_path = os.path.join(pvactools_directory(), "pvactools", "tools", "allele_specific_cutoffs.py")
+
+    def test_module_compiles(self):
+        self.assertTrue(py_compile.compile(self.module_path))
 
     def test_command(self):
         pvac_script_path = os.path.join(
-            self.pvactools_directory,
+            pvactools_directory(),
             'pvactools',
             'tools',
-            'pvacseq',
             "main.py"
             )
         usage_search = re.compile(r"usage: ")
@@ -38,18 +31,8 @@ class PvacseqAlleleSpecificCutoffsTests(unittest.TestCase):
             'allele_specific_cutoffs',
             '-h'
         ], shell=False, stdout=PIPE)
-        self.assertFalse(result.returncode, "Failed `pvacseq allele_specific_cutoffs -h`")
+        self.assertFalse(result.returncode, "Failed `pvactools allele_specific_cutoffs -h`")
         self.assertRegex(result.stdout.decode(), usage_search)
-
-    def test_compiles(self):
-        compiled_run_path = py_compile.compile(os.path.join(
-            self.pvactools_directory,
-            'pvactools',
-            "tools",
-            "pvacseq",
-            "allele_specific_cutoffs.py"
-        ))
-        self.assertTrue(compiled_run_path)
 
     def test_runs(self):
         self.assertFalse(allele_specific_cutoffs.main([]))
