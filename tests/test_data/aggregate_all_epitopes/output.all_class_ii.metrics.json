@@ -133,21 +133,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.022
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.032
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -283,21 +295,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.025
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.019
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -433,21 +457,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.015
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.031
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -636,21 +672,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.065
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.207
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -839,21 +887,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.215
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.21
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -989,21 +1049,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.01
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.009
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -1139,21 +1211,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.028
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.027
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -1289,21 +1373,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.331
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.336
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -1439,21 +1535,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.366
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.342
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -1650,21 +1758,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.191
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.2
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -1800,21 +1920,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.363
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.298
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -1950,21 +2082,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.348
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.34
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -2100,21 +2244,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.133
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.129
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -2250,21 +2406,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.068
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.066
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -2400,21 +2568,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.243
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.251
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -2550,21 +2730,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.026
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.022
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -2700,21 +2892,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.043
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.018
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -2850,21 +3054,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.027
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.025
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -3000,21 +3216,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.012
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.012
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -3150,21 +3378,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.021
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.025
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -3353,21 +3593,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.007
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.012
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -3503,21 +3755,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.006
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.007
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -3653,21 +3917,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.054
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.032
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -3803,21 +4079,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.016
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.014
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -3953,21 +4241,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.006
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.009
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -4164,21 +4464,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.118
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.054
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -4314,21 +4626,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.024
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.011
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -4464,21 +4788,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.192
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.216
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -4614,21 +4950,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.121
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.094
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -4764,21 +5112,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.03
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.006
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -4914,21 +5274,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.109
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.074
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -5064,21 +5436,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.028
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.119
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -5214,21 +5598,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.036
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.026
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -5364,21 +5760,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.063
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.011
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -5514,21 +5922,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.022
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.103
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -5664,21 +6084,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.069
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.046
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -5867,21 +6299,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.106
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.103
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -6070,21 +6514,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.106
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.103
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -6273,21 +6729,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.116
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.053
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -6423,21 +6891,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.122
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.057
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -6573,21 +7053,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.041
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.049
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -6723,21 +7215,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.021
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.025
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -6873,21 +7377,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.126
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.047
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -7023,21 +7539,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.008
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.007
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -7173,21 +7701,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.121
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.066
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -7323,21 +7863,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.006
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.006
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -7534,21 +8086,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.107
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.066
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -7684,21 +8248,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.076
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.08
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -7834,21 +8410,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.109
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.088
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -7984,21 +8572,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.063
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.02
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -8134,21 +8734,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.041
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.023
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -8284,21 +8896,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.018
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.019
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -8519,21 +9143,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.132
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.059
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -8669,21 +9305,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.086
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.04
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -8819,21 +9467,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.042
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.024
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -8969,21 +9629,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.07
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.011
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -9119,21 +9791,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.022
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.009
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -9269,21 +9953,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.01
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -9419,21 +10115,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.019
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.009
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -9569,21 +10277,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.07
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.042
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -9780,21 +10500,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.262
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.28
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -9930,21 +10662,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.055
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.056
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -10080,21 +10824,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.08
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.039
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -10230,21 +10986,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.052
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.047
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -10380,21 +11148,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.055
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.027
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -10530,21 +11310,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.016
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.054
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -10680,21 +11472,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.01
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -10883,21 +11687,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.068
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -11033,21 +11849,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.013
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.014
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -11183,21 +12011,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.025
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -11333,21 +12173,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.039
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.125
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -11568,21 +12420,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.352
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.062
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -11718,21 +12582,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.222
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.018
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -11868,21 +12744,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.236
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.087
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -12018,21 +12906,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.203
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.04
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -12229,21 +13129,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.004
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.003
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -12432,21 +13344,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.407
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.64
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -12582,21 +13506,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.682
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.804
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -12732,21 +13668,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.432
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.643
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -12882,21 +13830,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.107
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.079
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -13032,21 +13992,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.121
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.23
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -13235,21 +14207,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.019
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.062
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -13385,21 +14369,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.042
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.061
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -13535,21 +14531,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.155
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.201
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -13685,21 +14693,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.025
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.054
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -13835,21 +14855,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.034
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.058
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -13985,21 +15017,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.083
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.081
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -14188,21 +15232,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.054
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.034
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -14338,21 +15394,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.036
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.018
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -14488,21 +15556,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.021
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -14699,21 +15779,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.355
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.132
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -14849,21 +15941,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.182
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.045
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -14999,21 +16103,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.352
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.048
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -15149,21 +16265,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.065
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.023
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -15299,21 +16427,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.376
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.145
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -15449,21 +16589,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.109
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.016
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -15726,21 +16878,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.048
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.066
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -15876,21 +17040,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.128
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.053
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -16026,21 +17202,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.01
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.01
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -16176,21 +17364,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.077
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.029
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -16326,21 +17526,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.012
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.006
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -16476,21 +17688,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.026
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.016
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -16626,21 +17850,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.042
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.047
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -16776,21 +18012,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.014
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.008
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -16926,21 +18174,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.005
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.005
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -17133,21 +18393,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.289
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.27
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -17283,21 +18555,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.455
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.458
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -17486,21 +18770,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.012
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.012
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -17636,21 +18932,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.044
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.026
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -17786,21 +19094,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.11
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.137
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -17936,21 +19256,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.058
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.054
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -18086,21 +19418,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.06
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.111
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -18297,21 +19641,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.007
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.033
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -18447,21 +19803,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.023
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -18597,21 +19965,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.01
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.014
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -18747,21 +20127,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.217
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.115
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -18897,21 +20289,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.006
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.013
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -19047,21 +20451,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.09
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.045
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -19197,21 +20613,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.077
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.06
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -19416,21 +20844,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.123
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.068
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -19566,21 +21006,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.036
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.028
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -19716,21 +21168,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.075
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.011
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -19866,21 +21330,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.218
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.131
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -20016,21 +21492,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.113
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.143
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -20166,21 +21654,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.036
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.051
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -20316,21 +21816,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.024
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.048
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -20466,21 +21978,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.078
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.058
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -20616,21 +22140,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.011
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.008
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -20766,21 +22302,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.007
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.005
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -20916,21 +22464,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.022
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -21127,21 +22687,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.016
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.027
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -21330,21 +22902,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.023
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.065
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -21480,21 +23064,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.093
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.297
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -21630,21 +23226,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.027
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.109
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -21780,21 +23388,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.023
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.136
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -21930,21 +23550,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.008
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.037
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -22080,21 +23712,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.024
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.03
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -22291,21 +23935,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.02
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -22441,21 +24097,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.015
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -22591,21 +24259,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.029
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.038
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -22741,21 +24421,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.026
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.057
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -22891,21 +24583,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.025
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.017
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -23041,21 +24745,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.02
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.01
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -23191,21 +24907,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.039
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.01
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -23341,21 +25069,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.044
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.007
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -23552,21 +25292,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.012
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.018
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -23755,21 +25507,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.013
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.014
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -23958,21 +25722,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.037
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.069
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -24108,21 +25884,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.142
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.241
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -24258,21 +26046,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.03
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.032
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -24408,21 +26208,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.225
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.335
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -24558,21 +26370,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.127
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.152
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -24708,21 +26532,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.147
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.121
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -24858,21 +26694,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.025
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.039
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -25008,21 +26856,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.02
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.042
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -25158,21 +27018,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.131
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.104
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -25308,21 +27180,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.024
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.036
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -25458,21 +27342,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.014
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.024
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -25725,21 +27621,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.004
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.008
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -25928,21 +27836,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.005
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.008
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -26078,21 +27998,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.049
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.08
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -26313,21 +28245,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.223
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.218
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -26463,21 +28407,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.069
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.128
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -26613,21 +28569,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.237
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.285
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -26763,21 +28731,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.163
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.305
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -26913,21 +28893,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.012
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.019
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -27063,21 +29055,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.023
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.028
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -27213,21 +29217,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.062
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.219
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -27363,21 +29379,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.086
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.139
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -27513,21 +29541,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.64
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.642
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -27732,21 +29772,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.407
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.078
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -27882,21 +29934,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.315
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.143
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -28032,21 +30096,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.215
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.132
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -28182,21 +30258,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.488
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.152
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -28332,21 +30420,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.487
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.226
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -28482,21 +30582,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.449
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.201
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -28632,21 +30744,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.156
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.093
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -28782,21 +30906,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.208
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.101
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -28932,21 +31068,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.262
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.152
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -29082,21 +31230,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.157
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.115
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -29232,21 +31392,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.119
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.084
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {
@@ -29382,21 +31554,33 @@
               }
             },
             "individual_immunogenicity_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.039
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  0.015
+                ]
               }
             },
             "individual_immunogenicity_percentile_calls": {
-              "algorithms": [],
+              "algorithms": [
+                "ImmuScope_IM"
+              ],
               "MT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               },
               "WT": {
-                "DRB1*04:05": []
+                "DRB1*04:05": [
+                  "NA"
+                ]
               }
             },
             "individual_presentation_calls": {

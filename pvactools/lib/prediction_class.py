@@ -822,6 +822,153 @@ class IEDBMHCII(MHCII, IEDB, metaclass=ABCMeta):
 class NetMHCIIVersion:
     netmhciipan_version = None
 
+class ImmuScope_IM(MHCII):
+    immuscope_score_col = 'ImmuScope_IM'
+    immuscope_weights_dir = '/opt/ImmuScope/weights'
+
+    def resolved_immuscope_weights_dir(self):
+        xdg_data_home = os.environ.get('XDG_DATA_HOME')
+        if xdg_data_home:
+            user_dir = os.path.join(xdg_data_home, 'ImmuScope', 'weights')
+        else:
+            user_dir = os.path.join(os.path.expanduser('~/.local/share'), 'ImmuScope', 'weights')
+
+        if os.path.isdir(os.path.join(user_dir, 'IM')):
+            return user_dir
+
+        return self.immuscope_weights_dir
+
+    def valid_allele_names(self):
+        """Return allele names supported by ImmuScope.
+
+        Allele support is maintained as a static list in
+        `tools/pvacseq/iedb_alleles/class_ii/Immuscope.txt`.
+        """
+
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+        alleles_dir = os.path.join(base_dir, 'tools', 'pvacseq', 'iedb_alleles', 'class_ii')
+        alleles_file_name = os.path.join(alleles_dir, 'Immuscope.txt')
+        with open(alleles_file_name, 'r') as fh:
+            return list(filter(None, (line.strip() for line in fh)))
+
+    def valid_lengths_for_allele(self, allele):
+        return [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+
+    def check_length_valid_for_allele(self, length, allele):
+        if length not in self.valid_lengths_for_allele(allele):
+            sys.exit(
+                "Epitope length %s not supported for method %s. Valid lengths are: %s" % (
+                    length,
+                    self.__class__.__name__,
+                    ','.join(map(str, self.valid_lengths_for_allele(allele)))
+                )
+            )
+
+    def predict(self, input_file, allele, epitope_length, iedb_executable_path, iedb_retries, tmp_dir=None, log_dir=None):
+        weights_dir = self.resolved_immuscope_weights_dir()
+        if not os.path.isdir(os.path.join(weights_dir, 'IM')):
+            raise Exception(
+                "ImmuScope weights directory not found at {}. "
+                "Install weights (e.g. run `immuscope-download-weights`) or set IMMU_SCOPE_WEIGHTS_DIR.".format(weights_dir)
+            )
+
+        results = pd.DataFrame()
+
+        metadata_rows = []
+        unique_pairs = set()
+        for record in SeqIO.parse(input_file, "fasta"):
+            seq_num = record.id
+            peptide = str(record.seq)
+            epitopes = pvactools.lib.run_utils.determine_neoepitopes(peptide, epitope_length)
+            for start, epitope in epitopes.items():
+                metadata_rows.append({
+                    'allele': allele,
+                    'peptide': epitope,
+                    'seq_num': seq_num,
+                    'start': start,
+                })
+                unique_pairs.add((allele, epitope))
+
+        all_epitopes = [peptide for _, peptide in unique_pairs]
+
+        if len(all_epitopes) == 0:
+            return (results, 'pandas')
+
+        tmp_input_file = tempfile.NamedTemporaryFile('w', dir=tmp_dir, delete=False, newline='')
+        writer = csv.writer(tmp_input_file, delimiter='\t', lineterminator='\n')
+        writer.writerow(["allele", "peptide", "seq_num", "start"])
+        for epitope in all_epitopes:
+            writer.writerow([allele, epitope, "", ""])
+        tmp_input_file.close()
+
+        tmp_output_file = tempfile.NamedTemporaryFile('r', dir=tmp_dir, delete=False)
+        tmp_output_file.close()
+
+        arguments = [
+            'immuscope-wrapper',
+            '--input', tmp_input_file.name,
+            '--output', tmp_output_file.name,
+            '--allele-col', 'allele',
+            '--peptide-col', 'peptide',
+            '--seq-num-col', 'seq_num',
+            '--start-col', 'start',
+        ]
+        stderr_fh = tempfile.NamedTemporaryFile('w', dir=tmp_dir, delete=False)
+        try:
+            run(arguments, check=True, stdout=DEVNULL, stderr=stderr_fh)
+        except:
+            stderr_fh.close()
+            with open(stderr_fh.name, 'r') as fh:
+                err = fh.read()
+            os.unlink(stderr_fh.name)
+            os.unlink(tmp_input_file.name)
+            if os.path.exists(tmp_output_file.name):
+                os.unlink(tmp_output_file.name)
+            raise Exception("An error occurred while calling ImmuScope:\n{}".format(err))
+        stderr_fh.close()
+        os.unlink(stderr_fh.name)
+        os.unlink(tmp_input_file.name)
+
+        df = pd.read_csv(tmp_output_file.name, sep='\t')
+        os.unlink(tmp_output_file.name)
+
+        # Wrapper emits: allele peptide tgt len ImmuScope_IM seq_num start
+        if self.immuscope_score_col not in df.columns:
+            raise Exception(
+                "ImmuScope wrapper output missing expected score column '{}'. Found columns: {}".format(
+                    self.immuscope_score_col,
+                    ','.join(df.columns),
+                )
+            )
+
+        required_columns = {'allele', 'peptide', self.immuscope_score_col}
+        missing_columns = required_columns.difference(df.columns)
+        if missing_columns:
+            raise Exception(
+                "ImmuScope wrapper output missing expected columns {}. Found columns: {}".format(
+                    ','.join(sorted(missing_columns)),
+                    ','.join(df.columns),
+                )
+            )
+
+        metadata_df = pd.DataFrame(metadata_rows)
+        score_df = df.drop(columns=[col for col in ['seq_num', 'start'] if col in df.columns])
+        results = metadata_df.merge(
+            score_df,
+            on=['allele', 'peptide'],
+            how='left',
+            validate='many_to_one',
+        )
+
+        ordered_columns = [
+            col for col in ['allele', 'peptide', 'tgt', 'len', self.immuscope_score_col, 'seq_num', 'start']
+            if col in results.columns
+        ]
+        remaining_columns = [col for col in results.columns if col not in ordered_columns]
+        results = results[ordered_columns + remaining_columns]
+
+        return (results, 'pandas')
+
 class NetMHCIIpan(IEDBMHCII):
     @property
     def iedb_prediction_method(self):

@@ -232,6 +232,37 @@ You can check that DeepImmuno was installed successfully by running:
 
 This should show information about the DeepImmuno installation.
 
+Installing Immuscope
+---------------------
+
+If you wish to run the Immuscope_IM prediction algorithm, you will need to
+install Immuscope on your system. This package is not a direct dependency of
+the the ``pvactools`` packages and needs to be installed manually by running:
+
+.. code-block:: none
+
+   pip install git+https://github.com/griffithlab/ImmuScope.git#egg=ImmuScope
+
+In addition to installing the python package, you will also need to download the
+ImmuScope model weights:
+
+.. code-block:: none
+
+   immuscope-download-weights
+
+.. note::
+
+   Immuscope needs to be installed in the same python 3
+   environment as the ``pvactools`` package.
+
+You can check that Immuscope was installed successfully by running:
+
+.. code-block:: none
+
+   pip show immuscope
+
+This should show information about the Immuscope installation.
+
 .. _blast:
 
 Installing BLAST

@@ -410,5 +410,20 @@ class CallIEDBClassIITests(CallIEDBTests):
             actual_df = pd.read_csv(call_iedb_output_file.name, sep="\t", index_col=[0,13,14])
             pd.testing.assert_frame_equal(expected_df, actual_df, check_like=True, check_exact=False)
 
+    def test_immuscope_im_method_generates_expected_files(self):
+        call_iedb_output_file = tempfile.NamedTemporaryFile()
+
+        pvactools.lib.call_iedb.main([
+            self.input_file,
+            call_iedb_output_file.name,
+            'ImmuScope_IM',
+            'DRB1*01:01',
+            '-l', '15',
+        ])
+        expected_output_file = os.path.join(self.test_data_dir, 'output_immuscope_im.tsv')
+        expected_df = pd.read_csv(expected_output_file, sep="\t", index_col=[1,5,6])
+        actual_df = pd.read_csv(call_iedb_output_file.name, sep="\t", index_col=[1,5,6])
+        pd.testing.assert_frame_equal(expected_df, actual_df, check_like=True, check_exact=False)
+
 if __name__ == '__main__':
     unittest.main()

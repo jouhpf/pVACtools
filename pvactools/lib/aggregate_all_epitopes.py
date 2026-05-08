@@ -161,7 +161,7 @@ class AggregateAllEpitopes:
 
     def determine_used_immunogenicity_score_algorithms(self):
         headers = pd.read_csv(self.input_file, delimiter="\t", nrows=0).columns.tolist()
-        potential_algorithms = ["BigMHC_IM", "DeepImmuno", "PRIME"]
+        potential_algorithms = ["BigMHC_IM", "DeepImmuno", "PRIME", "ImmuScope_IM"]
         prediction_algorithms = []
         for algorithm in potential_algorithms:
             if "{} MT Immunogenicity Score".format(algorithm) in headers or "{} Immunogenicity Score".format(algorithm) in headers:
@@ -170,7 +170,7 @@ class AggregateAllEpitopes:
 
     def determine_used_immunogenicity_percentile_algorithms(self):
         headers = pd.read_csv(self.input_file, delimiter="\t", nrows=0).columns.tolist()
-        potential_algorithms = ["BigMHC_IM", "DeepImmuno", "PRIME"]
+        potential_algorithms = ["BigMHC_IM", "DeepImmuno", "PRIME", "ImmuScope_IM"]
         prediction_algorithms = []
         for algorithm in potential_algorithms:
             if "{} MT Percentile".format(algorithm) in headers or "{} Percentile".format(algorithm) in headers:
