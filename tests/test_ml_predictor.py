@@ -26,7 +26,7 @@ class MLPredictorTests(unittest.TestCase):
         cls.test_data_path = os.path.join(pvactools_directory(), "tests", "test_data", "ml_predictor")
         cls.model_artifacts_path = os.path.join(pvactools_directory(), "pvactools", "supporting_files", "ml_model_artifacts")
 
-    def module_compiles(self):
+    def test_module_compiles(self):
         """Test that the module compiles without syntax errors."""
         self.assertTrue(py_compile.compile(self.ml_predictor_path))
 
@@ -38,7 +38,7 @@ class MLPredictorTests(unittest.TestCase):
         """Test that artifact paths are resolved correctly."""
         test_dir = "/test/path"
         model_path, imputer_path, encoders_path = _resolve_artifact_paths(test_dir)
-        
+
         self.assertEqual(model_path, "/test/path/rf_downsample_model_numpy126.pkl")
         self.assertEqual(imputer_path, "/test/path/trained_imputer_numpy126.joblib")
         self.assertEqual(encoders_path, "/test/path/label_encoders_numpy126.pkl")
@@ -48,9 +48,9 @@ class MLPredictorTests(unittest.TestCase):
         mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
         mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
         mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-        
+
         result = merge_and_prepare_data(mhc1_agg_file, mhc1_all_file, mhc2_agg_file)
-        
+
         # Check result is a DataFrame
         self.assertIsInstance(result, pd.DataFrame)
         # Check required columns exist
@@ -72,9 +72,9 @@ class MLPredictorTests(unittest.TestCase):
         mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
         mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
         mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-        
+
         result = merge_and_prepare_data(mhc1_agg_file, mhc1_all_file, mhc2_agg_file)
-        
+
         # Check Pos is numeric
         self.assertTrue(pd.api.types.is_numeric_dtype(result["Pos"]))
 
@@ -87,11 +87,11 @@ class MLPredictorTests(unittest.TestCase):
         # Use a fixed output directory for inspection
         output_dir = os.path.join(self.test_data_path, "ml_predictor_test_output")
         os.makedirs(output_dir, exist_ok=True)
-        
+
         mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
         mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
         mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-        
+
         result = run_ml_predictions(
             mhc1_agg_file,
             mhc1_all_file,
@@ -102,26 +102,26 @@ class MLPredictorTests(unittest.TestCase):
             0.55,
             0.30
         )
-        
+
         # Check that output file was created
         self.assertTrue(os.path.exists(result))
-        
+
         # Check file path matches expected naming convention
         self.assertIn(".MHC_I.all_epitopes.aggregated.ML_predict.tsv", result)
-        
+
         # Check that file contains data
         df = pd.read_csv(result, sep='\t')
-        
+
         self.assertGreater(df.shape[0], 0)
-        
+
         # Check required columns exist
         self.assertIn('Evaluation', df.columns)
         self.assertIn('ML Prediction (score)', df.columns)
-        
+
         # Check Evaluation values are valid
         valid_evaluations = {'Accept', 'Reject', 'Pending'}
         self.assertTrue(df['Evaluation'].isin(valid_evaluations).all())
-        
+
         # Print file path for easy inspection
         print(f"\nTest output file saved to: {result}")
 
@@ -132,22 +132,22 @@ class MLPredictorTests(unittest.TestCase):
                 mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
                 mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
                 mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-                
+
                 # Run with low threshold
                 result_low = run_ml_predictions(
                     mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                     self.model_artifacts_path, output_dir_low, 'HCC1395', 0.30, 0.30
                 )
-                
+
                 # Run with high threshold
                 result_high = run_ml_predictions(
                     mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                     self.model_artifacts_path, output_dir_high, 'HCC1395', 0.80, 0.30
                 )
-                
+
                 df_low = pd.read_csv(result_low, sep='\t')
                 df_high = pd.read_csv(result_high, sep='\t')
-                
+
                 # With lower threshold, we should have more Accept predictions
                 # (assuming the model produces probabilities across the range)
                 self.assertGreaterEqual(
@@ -162,14 +162,14 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             result = run_ml_predictions(
                 mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                 self.model_artifacts_path, output_dir, 'HCC1395', 0.55, 0.30
             )
-            
+
             df = pd.read_csv(result, sep='\t')
-            
+
             # Check ML Prediction (score) format
             accept_rows = df[df['Evaluation'] == 'Accept']
             if len(accept_rows) > 0:
@@ -180,7 +180,7 @@ class MLPredictorTests(unittest.TestCase):
                         valid_scores.str.startswith("Accept (").all(),
                         "Some Accept rows don't have correct ML Prediction (score) format"
                     )
-            
+
             pending_rows = df[df['Evaluation'] == 'Pending']
             if len(pending_rows) > 0:
                 # Pending rows can have either "NA" or "Review (X.XX)" format
@@ -203,21 +203,21 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             # Read original file to get expected columns
             original_df = pd.read_csv(mhc1_agg_file, sep='\t', dtype=str)
             original_cols = set(original_df.columns)
             original_cols.discard('Evaluation')  # This will be replaced
-            
+
             result = run_ml_predictions(
                 mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                 self.model_artifacts_path, output_dir, 'HCC1395', 0.55, 0.30
             )
-            
+
             output_df = pd.read_csv(result, sep='\t')
             output_cols = set(output_df.columns)
             output_cols.discard('Comments')  # This is new
-            
+
             # All original columns (except Evaluation) should be present
             self.assertTrue(original_cols.issubset(output_cols))
 
@@ -227,14 +227,14 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             result = run_ml_predictions(
                 mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                 self.model_artifacts_path, output_dir, 'HCC1395', 0.55, 0.30
             )
-            
+
             df = pd.read_csv(result, sep='\t')
-            
+
             # TSL should be integer if it exists
             if 'TSL' in df.columns:
                 self.assertTrue(pd.api.types.is_integer_dtype(df['TSL'].fillna(6)))
@@ -249,7 +249,7 @@ class MLPredictorTests(unittest.TestCase):
         mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
         mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
         mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-        
+
         # The function should handle this gracefully
         result = merge_and_prepare_data(mhc1_agg_file, mhc1_all_file, mhc2_agg_file)
         self.assertIsInstance(result, pd.DataFrame)
@@ -261,14 +261,14 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             result = run_ml_predictions(
                 mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                 self.model_artifacts_path, output_dir, 'HCC1395', 0.55, 0.30
             )
-            
+
             df = pd.read_csv(result, sep='\t')
-            
+
             # If there are any NA evaluations, they should be set to Pending
             self.assertFalse(df['Evaluation'].isna().any())
 
@@ -282,14 +282,14 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             # Test that ml_threshold_reject > ml_threshold_accept raises ValueError
             with self.assertRaises(ValueError) as context:
                 run_ml_predictions(
                     mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                     self.model_artifacts_path, output_dir, 'HCC1395', 0.55, 0.60
                 )
-            
+
             # Verify the error message contains relevant information
             error_message = str(context.exception)
             self.assertIn("ml_threshold_reject", error_message)
@@ -303,7 +303,7 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "nonexistent_file.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             with self.assertRaises(Exception):
                 run_ml_predictions(
                     mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
@@ -317,7 +317,7 @@ class MLPredictorTests(unittest.TestCase):
                 mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
                 mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
                 mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-                
+
                 with self.assertRaises(Exception):
                     run_ml_predictions(
                         mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
@@ -334,16 +334,16 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             result = run_ml_predictions(
                 mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                 self.model_artifacts_path, output_dir, 'HCC1395', 0.55, 0.30
             )
-            
+
             # Read the output file and extract probabilities
             df = pd.read_csv(result, sep='\t')
             accept_rows = df[df['Evaluation'] == 'Accept']
-            
+
             if len(accept_rows) > 0:
                 # Extract probability from ML Prediction (score) column
                 scores = accept_rows['ML Prediction (score)'].str.extract(r'Accept \(([\d.]+)\)')
@@ -357,18 +357,18 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             original_df = pd.read_csv(mhc1_agg_file, sep='\t')
             original_row_count = len(original_df)
-            
+
             result = run_ml_predictions(
                 mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                 self.model_artifacts_path, output_dir, 'HCC1395', 0.55, 0.30
             )
-            
+
             output_df = pd.read_csv(result, sep='\t')
             output_row_count = len(output_df)
-            
+
             # Output should have same number of rows as input
             self.assertEqual(original_row_count, output_row_count)
 
@@ -382,13 +382,13 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             sample_name = "TEST_SAMPLE"
             result = run_ml_predictions(
                 mhc1_agg_file, mhc1_all_file, mhc2_agg_file,
                 self.model_artifacts_path, output_dir, sample_name, 0.55, 0.30
             )
-            
+
             self.assertIn(sample_name, result)
 
     def test_missing_required_columns_error(self):
@@ -398,21 +398,21 @@ class MLPredictorTests(unittest.TestCase):
             mhc1_agg_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_all_file = os.path.join(self.test_data_path, "MHC_Class_I", "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc2_agg_file = os.path.join(self.test_data_path, "MHC_Class_II", "HCC1395_TUMOR_DNA.MHC_II.all_epitopes.aggregated.tsv")
-            
+
             # Read the all_epitopes file and remove the specified columns
             mhc1_all_df = pd.read_csv(mhc1_all_file, sep='\t')
             mhc1_agg_df = pd.read_csv(mhc1_agg_file, sep='\t')
-            
+
             # Remove the specified columns (for testing purposes)
             mhc1_all_df_modified = mhc1_all_df.drop(columns=['MHCflurry MT IC50 Score'])
             mhc1_agg_file_modified = mhc1_agg_df.drop(columns=['Pos', 'Prob Pos'])
-            
+
             # Save the modified file to a temporary location
             modified_mhc1_all_file = os.path.join(temp_dir, "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.tsv")
             mhc1_all_df_modified.to_csv(modified_mhc1_all_file, sep='\t', index=False)
             modified_mhc1_agg_file = os.path.join(temp_dir, "HCC1395_TUMOR_DNA.MHC_I.all_epitopes.aggregated.tsv")
             mhc1_agg_file_modified.to_csv(modified_mhc1_agg_file, sep='\t', index=False)
-            
+
             # Test that running ML predictions with missing non-critical columns works
             # (it should handle gracefully and print warnings)
             with tempfile.TemporaryDirectory() as output_dir:
@@ -420,14 +420,14 @@ class MLPredictorTests(unittest.TestCase):
                     modified_mhc1_agg_file, modified_mhc1_all_file, mhc2_agg_file,
                     self.model_artifacts_path, output_dir, 'HCC1395', 0.55, 0.30
                 )
-                
+
                 # Verify that output file was created successfully
                 self.assertTrue(os.path.exists(result))
-                
+
                 # Verify that file contains data
                 df = pd.read_csv(result, sep='\t')
                 self.assertGreater(df.shape[0], 0)
-                
+
                 # Verify required columns exist
                 self.assertIn('Evaluation', df.columns)
                 self.assertIn('ML Prediction (score)', df.columns)

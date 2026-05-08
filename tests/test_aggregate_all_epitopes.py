@@ -17,7 +17,7 @@ class AggregateAllEpitopesTests(unittest.TestCase):
         cls.test_data_dir = os.path.join(pvactools_directory(), "tests", "test_data", "aggregate_all_epitopes")
         cls.pvacview_r_files = ["ui.R", "app.R", "server.R", "styling.R", "anchor_and_helper_functions.R", "neofox_ui.R", "custom_ui.R"]
 
-    def module_compiles(self):
+    def test_module_compiles(self):
         self.assertTrue(py_compile.compile(self.executable))
 
     def test_aggregate_all_epitopes_pvacseq_runs_and_produces_expected_output(self):

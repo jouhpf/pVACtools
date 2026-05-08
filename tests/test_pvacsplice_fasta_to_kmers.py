@@ -17,7 +17,7 @@ class FastaToKmersTests(unittest.TestCase):
         cls.executable = os.path.join(pvactools_directory(), "pvactools", "lib", "fasta_to_kmers.py")
         cls.test_data_dir = os.path.join(pvactools_directory(), "tests", "test_data", "pvacsplice")
 
-    def module_compiles(self):
+    def test_module_compiles(self):
         self.assertTrue(py_compile.compile(self.executable))
 
     def test_fasta_to_kmers_runs_and_produces_expected_output(self):
