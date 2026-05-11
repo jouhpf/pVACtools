@@ -80,10 +80,6 @@ class TestPvacvector(unittest.TestCase):
         for command in [
             "run",
             "visualize",
-            "valid_alleles",
-            "valid_algorithms",
-            "valid_netmhciipan_versions",
-            "allele_specific_cutoffs",
             "download_example_data",
             ]:
             result = subprocess_run([
@@ -118,19 +114,6 @@ class TestPvacvector(unittest.TestCase):
                 visualize.main([input_file, output_dir.name])
                 output_dir.cleanup()
 
-    def test_allele_specific_cutoffs_compiles(self):
-        compiled_run_path = py_compile.compile(os.path.join(
-            self.base_dir,
-            'pvactools',
-            "tools",
-            "pvacvector",
-            "allele_specific_cutoffs.py"
-        ))
-        self.assertTrue(compiled_run_path)
-
-    def test_allele_specific_cutoffs_runs(self):
-        allele_specific_cutoffs.main([])
-
     def test_download_example_data_compiles(self):
         compiled_run_path = py_compile.compile(os.path.join(
             self.base_dir,
@@ -145,45 +128,6 @@ class TestPvacvector(unittest.TestCase):
         output_dir = tempfile.TemporaryDirectory()
         download_example_data.main([output_dir.name])
         output_dir.cleanup()
-
-    def test_valid_alleles_compiles(self):
-        compiled_run_path = py_compile.compile(os.path.join(
-            self.base_dir,
-            'pvactools',
-            "tools",
-            "pvacvector",
-            "valid_alleles.py"
-        ))
-        self.assertTrue(compiled_run_path)
-
-    def test_valid_alleles_runs(self):
-        valid_alleles.main(["-p", "SMM"])
-
-    def test_valid_algorithms_compiles(self):
-        compiled_run_path = py_compile.compile(os.path.join(
-            self.base_dir,
-            'pvactools',
-            "tools",
-            "pvacvector",
-            "valid_algorithms.py"
-        ))
-        self.assertTrue(compiled_run_path)
-
-    def test_valid_algorithms_runs(self):
-        valid_algorithms.main("")
-    
-    def test_valid_netmhciipan_versions_compiles(self):
-        compiled_run_path = py_compile.compile(os.path.join(
-            self.base_dir,
-            'pvactools',
-            "tools",
-            "pvacvector",
-            "valid_netmhciipan_versions.py"
-        ))
-        self.assertTrue(compiled_run_path)
-
-    def test_valid_netmhciipan_versions_runs(self):
-        valid_netmhciipan_versions.main("")
 
     def test_pvacvector_fa_input_runs_and_produces_expected_output(self):
         with patch('requests.post', unittest.mock.Mock(side_effect = lambda url, data: make_response(

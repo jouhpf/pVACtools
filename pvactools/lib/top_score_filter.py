@@ -262,7 +262,6 @@ class PvacfuseTopScoreFilter(TopScoreFilter, metaclass=ABCMeta):
                             duplicate_variant_line['Index'] = "{}.{}".format(variant, best_line_consequence)
                             filtered_lines.append(duplicate_variant_line)
 
-
             sorted_rows = pvactools.lib.sort.pvacfuse_sort(filtered_lines, self.top_score_metric, self.top_score_metric2)
             sorted_rows = sorted_rows.fillna("NA")
             sorted_rows = sorted_rows.to_dict('records')
