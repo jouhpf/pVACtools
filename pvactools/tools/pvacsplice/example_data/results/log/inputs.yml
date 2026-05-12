@@ -12,6 +12,7 @@ anchor_types:
 - D
 - NDA
 annotated_vcf: /storage1/fs1/mgriffit/Active/griffithlab/pipeline_test/susanna//pvacsplice_example_data_inputs/annotated.expression.vcf.gz
+binding_percentile_threshold: 2.0
 binding_threshold: 500
 biotypes:
 - protein_coding
@@ -23,13 +24,13 @@ class_i_epitope_length:
 - 10
 class_ii_epitope_length:
 - 15
-exclude_NAs: false
 expn_val: 1.0
 fasta_size: 200
 genes_of_interest_file: null
 gtf_file: /storage1/fs1/mgriffit/Active/griffithlab/pipeline_test/susanna//pvacsplice_example_data_inputs/Homo_sapiens.GRCh38.105.chr.gtf.gz
 iedb_install_directory: /opt/iedb
 iedb_retries: 5
+immunogenicity_percentile_threshold: 2.0
 input_file: /storage1/fs1/mgriffit/Active/griffithlab/pipeline_test/susanna//pvacsplice_example_data_inputs/HCC1395.splice_junctions.tsv
 junction_score: 10
 keep_tmp_files: true
@@ -42,23 +43,26 @@ netmhciipan_version: '4.1'
 normal_cov: 5
 normal_sample_name: HCC1395_NORMAL_DNA
 normal_vaf: 0.02
-output_dir: /storage1/fs1/mgriffit/Active/griffithlab/pipeline_test/susanna//v6.0.0a12-pvacsplice_example_data/results
+output_dir: /storage1/fs1/mgriffit/Active/griffithlab/pipeline_test/susanna//v7.0.0b2-pvacsplice_example_data/results
 pass_only: false
 peptide_fasta: null
-percentile_threshold: null
 percentile_threshold_strategy: conservative
 prediction_algorithms:
 - all
+presentation_percentile_threshold: 2.0
 problematic_amino_acids: null
-pvactools_version: 6.0.0a12
+pvactools_version: 7.0.0b2
 ref_fasta: /storage1/fs1/mgriffit/Active/griffithlab/pipeline_test/susanna//pvacsplice_example_data_inputs/ref_genome.fa
+reference_scores_path: /tmp
 run_reference_proteome_similarity: false
 sample_name: HCC1395_TUMOR_DNA
 save_gtf: false
 tdna_cov: 10
 tdna_vaf: 0.25
 top_score_metric: median
-top_score_metric2: ic50
+top_score_metric2:
+- ic50
+- combined_percentile
 transcript_prioritization_strategy:
 - canonical
 - mane_select
@@ -66,4 +70,5 @@ transcript_prioritization_strategy:
 trna_cov: 10
 trna_vaf: 0.25
 tumor_purity: null
+use_normalized_percentiles: false
 variant_distance: 100
