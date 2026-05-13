@@ -91,6 +91,38 @@ percentile rank:
 - SMMPMBEC
 - SMMalign
 
+Prediction Algorithms Supporting Normalized Percentile Information
+__________________________________________________________________
+
+Not all prediction algorithms supported by pVACbind output a percentile rank.
+In order to aleviate this issue, and to provide percentile ranks that have been consistently
+calculated, we have run predictions for all class I algorithms supported by pVACtools on 100,000
+reference peptides each in lengths 8-11 and for the most common 1,000 human class I MHC alleles.
+These predictions allow pVACbind support the calculation of normalized percentiles. This feature
+is enable be setting the ``--use-normalized-percentiles`` parameter. With this option enabled,
+pVACbind will calculate normalized percentiles scores for all predicted neoantigen candidates and
+selected prediction algorithms. These normalized percentile ranks will be used in place of percentile
+ranks calculated by the algorithms natively.
+
+The algorithms supporting normalized percentiles are:
+
+- BigMHC_EL
+- BigMHC_IM
+- DeepImmuno
+- MHCflurry
+- MHCflurryEL
+- MHCnuggetsI
+- MixMHCpred
+- NetMHC
+- NetMHCcons
+- NetMHCpan
+- NetMHCpanEL
+- PRIME
+- PickPocket
+- SMM
+- SMMPMBEC
+
+
 .. _pvacbind_all_ep_and_filtered:
 
 all_epitopes.tsv and filtered.tsv Report Columns
@@ -101,7 +133,7 @@ all_epitopes.tsv and filtered.tsv Report Columns
 
    * - Column Name
      - Description
-   * - ``Mutation``
+   * - ``Index``
      - The FASTA ID of the peptide sequence the epitope belongs to
    * - ``HLA Allele``
      - The HLA allele for this prediction
@@ -110,21 +142,43 @@ all_epitopes.tsv and filtered.tsv Report Columns
    * - ``Epitope Seq``
      - The epitope sequence
    * - ``Median IC50 Score``
-     - Median ic50 binding affinity of the epitope of all prediction algorithms used
+     - Median IC50 binding affinity of the epitope of all prediction algorithms used
    * - ``Best IC50 Score``
-     - Lowest ic50 binding affinity of all prediction algorithms used
+     - Lowest IC50 binding affinity of all prediction algorithms used
    * - ``Best IC50 Score Method``
-     - Prediction algorithm with the lowest ic50 binding affinity for this epitope
+     - Prediction algorithm with the lowest IC50 binding affinity for this epitope
    * - ``Median Percentile``
-     - Median binding affinity percentile rank of the epitope of all prediction algorithms used (those that provide percentile output)
+     - Median percentile rank of the epitope of all prediction algorithms used (those that provide percentile output)
    * - ``Best Percentile``
-     - Lowest binding affinity percentile rank of all prediction algorithms used (those that provide percentile output)
+     - Lowest percentile rank of all prediction algorithms used (those that provide percentile output)
    * - ``Best Percentile Method``
-     - Prediction algorithm with the lowest binding affinity percentile rank for this epitope
+     - Prediction algorithm with the lowest percentile rank for this epitope
+   * - ``Median IC50 Percentile``
+     - Median binding percentile rank of the epitope of all binding prediction algorithms used (those that provide percentile output)
+   * - ``Best IC50 Percentile``
+     - Lowest binding percentile rank of all binding prediction algorithms used (those that provide percentile output)
+   * - ``Best IC50 Percentile Method``
+     - Binding prediction algorithm with the lowest binding percentile rank for this epitope
+   * - ``Median Immunogenicity Percentile``
+     - Median immunogenicity percentile rank of the epitope of all
+       immunogenicity prediction algorithms used (those that provide percentile output)
+   * - ``Best Immunogenicity Percentile``
+     - Lowest immunogenicity percentile rank of all immunogenicity prediction algorithms used (those that provide percentile output)
+   * - ``Best Immunogenicity Percentile Method``
+     - Immunogenicity prediction algorithm with the lowest immunogenicity percentile rank for this epitope
+   * - ``Median Presentation Percentile``
+     - Median presentation percentile rank of the epitope of all presentatio prediction algorithms used (those that provide percentile output)
+   * - ``Best Presentation Percentile``
+     - Lowest presentation percentile rank of all presentatio prediction algorithms used (those that provide percentile output)
+   * - ``Best Presentation Percentile Method``
+     - Presentation prediction algorithm with the lowest presentation percentile rank for this epitope
    * - ``Individual Prediction Algorithm Scores and Percentiles`` (multiple)
-     - ic50 binding affinity scores, binding scores, presentation scores, processing scores, or immunogenicity scores as well as percentile ranks
+     - IC50 binding affinity scores, binding scores, presentation scores, processing scores, or immunogenicity scores as well as percentile ranks
        for the ``Epitope Seq`` for the individual prediction algorithms used. Percentile scores may be ``NA`` if not
        provided by the prediction algorithm.
+   * - ``Problematic Positions`` (optional)
+     - A list of positions in the ``Epitope Seq`` that match the problematic amino
+       acids defined by the ``--problematic-amino-acids`` parameter
    * - ``cterm_7mer_gravy_score``
      - Mean hydropathy of last 7 residues on the C-terminus of the peptide
    * - ``max_7mer_gravy_score``
@@ -187,11 +241,16 @@ and ``%ile MT`` columns is controlled by the ``--top-score-metric`` parameter.
      - Description
    * - ``ID``
      - A unique identifier for the variant
-   * - ``HLA Alleles`` (multiple)
+   * - HLA Alleles (multiple)
      - For each HLA allele in the run, the number of this variant's epitopes that bound well
        to the HLA allele (with median binding affinity < 1000)
    * - ``Best Peptide``
-     - The best-binding epitope sequence (lowest median binding affinity)
+     - The best epitope sequence (see Best Peptide Criteria
+       below for more details on how this is determined)
+   * - ``Allele``
+     - The Allele that the Best Peptide is binding to
+   * - ``Pos``
+     - The one-based position of the epitope in the protein sequence used to make the prediction
    * - ``Prob Pos``
      - A list of positions in the Best Peptide that are problematic. ``None`` if the ``-–problematic-pos`` parameter was not set during the pVACfuse run
    * - ``Num Included Peptides``
@@ -212,6 +271,8 @@ and ``%ile MT`` columns is controlled by the ``--top-score-metric`` parameter.
      - Median or lowest presentation percentile rank of the Best Peptide across all presentation prediction algorithms used
    * - ``Ref Match`` (T/F) (optional)
      - Was there a match of the peptide sequence to the reference proteome?
+   * - ``Tier``
+     - A tier suggesting the suitability of variants for use in vaccines.
    * - ``Evaluation``
      - Column to store the evaluation of each variant. Either ``Accept``, ``Reject``, or ``Review``.
 
@@ -363,11 +424,16 @@ The aggregate report is sorted as follows:
    * - Sort Criteria
      - Sort Order
    * - ``Tier`` column
-     - "Pass", "PoorBinder", "RefMatch", "ProbPos", "Poor"
-   * - Ascending rank of either ``IC50 MT`` column (if
-       ``--top-score-metric`` is ``ic50``) or ``%ile MT`` column (if
-       ``--top-score-metric`` is ``percentile``)
+     - "Pass", "PoorBinder", "PoorImmunogenicity", "PoorPresentation",
+       "RefMatch", "ProbPos", "Poor"
+   * - Sum of the ascending ranks of
+       the metrics selected via the ``--top-score-metric2`` parameter (possible values:
+       ``IC50 MT``, ``%ile MT``, ``IC50 %ile MT``, ``Pres %ile MT``; default: ``IC50 MT``,
+       ``%ile MT``).
      - Ascending sum rank
+   * - First metric specified in the ``--top-score-metric2`` as a tie breaker
+       for identical sum ranks
+     - Ascending rank
 
 .. _pvacbind_reference_matches:
 

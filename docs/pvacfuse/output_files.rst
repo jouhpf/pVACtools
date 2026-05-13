@@ -100,6 +100,38 @@ percentile rank:
 - SMMPMBEC
 - SMMalign
 
+Prediction Algorithms Supporting Normalized Percentile Information
+__________________________________________________________________
+
+Not all prediction algorithms supported by pVACfuse output a percentile rank.
+In order to aleviate this issue, and to provide percentile ranks that have been consistently
+calculated, we have run predictions for all class I algorithms supported by pVACtools on 100,000
+reference peptides each in lengths 8-11 and for the most common 1,000 human class I MHC alleles.
+These predictions allow pVACfuse support the calculation of normalized percentiles. This feature
+is enable be setting the ``--use-normalized-percentiles`` parameter. With this option enabled,
+pVACfuse will calculate normalized percentiles scores for all predicted neoantigen candidates and
+selected prediction algorithms. These normalized percentile ranks will be used in place of percentile
+ranks calculated by the algorithms natively.
+
+The algorithms supporting normalized percentiles are:
+
+- BigMHC_EL
+- BigMHC_IM
+- DeepImmuno
+- MHCflurry
+- MHCflurryEL
+- MHCnuggetsI
+- MixMHCpred
+- NetMHC
+- NetMHCcons
+- NetMHCpan
+- NetMHCpanEL
+- PRIME
+- PickPocket
+- SMM
+- SMMPMBEC
+
+
 .. _pvacfuse_all_ep_and_filtered:
 
 all_epitopes.tsv and filtered.tsv Report Columns
@@ -122,7 +154,7 @@ all_epitopes.tsv and filtered.tsv Report Columns
      - The Ensembl gene names of the affected genes
    * - ``Variant Type``
      - The type of fusion. ``inframe_fusion`` for inframe fusions, ``frameshift_fusion`` for frameshift fusions
-   * - ``Mutation``
+   * - ``Index``
      - A unique identifier for the fusion
    * - ``HLA Allele``
      - The HLA allele for this prediction
@@ -137,11 +169,30 @@ all_epitopes.tsv and filtered.tsv Report Columns
    * - ``Best IC50 Score Method``
      - Prediction algorithm with the lowest ic50 binding affinity for this epitope
    * - ``Median Percentile``
-     - Median binding affinity percentile rank of the epitope across all prediction algorithms used (those that provide percentile output)
+     - Median percentile rank of the epitope across all prediction algorithms used (those that provide percentile output)
    * - ``Best Percentile``
-     - Lowest percentile rank of this epitope's ic50 binding affinity of all prediction algorithms used (those that provide percentile output)
+     - Lowest percentile rank of all prediction algorithms used (those that provide percentile output)
    * - ``Best Percentile Method``
-     - Prediction algorithm with the lowest binding affinity percentile rank for this epitope
+     - Prediction algorithm with the lowest percentile rank for this epitope
+   * - ``Median IC50 Percentile``
+     - Median binding percentile rank of the epitope of all binding prediction algorithms used (those that provide percentile output)
+   * - ``Best IC50 Percentile``
+     - Lowest binding percentile rank of all binding prediction algorithms used (those that provide percentile output)
+   * - ``Best IC50 Percentile Method``
+     - Binding prediction algorithm with the lowest binding percentile rank for this epitope
+   * - ``Median Immunogenicity Percentile``
+     - Median immunogenicity percentile rank of the epitope of all
+       immunogenicity prediction algorithms used (those that provide percentile output)
+   * - ``Best Immunogenicity Percentile``
+     - Lowest immunogenicity percentile rank of all immunogenicity prediction algorithms used (those that provide percentile output)
+   * - ``Best Immunogenicity Percentile Method``
+     - Immunogenicity prediction algorithm with the lowest immunogenicity percentile rank for this epitope
+   * - ``Median Presentation Percentile``
+     - Median presentation percentile rank of the epitope of all presentatio prediction algorithms used (those that provide percentile output)
+   * - ``Best Presentation Percentile``
+     - Lowest presentation percentile rank of all presentatio prediction algorithms used (those that provide percentile output)
+   * - ``Best Presentation Percentile Method``
+     - Presentation prediction algorithm with the lowest presentation percentile rank for this epitope
    * - ``Individual Prediction Algorithm Scores and Percentiles`` (multiple)
      - ic50 binding affinity scores, binding scores, presentation scores, processing scores, or immunogenicity scores as well as percentile ranks
        for the ``Epitope Seq`` for the individual prediction algorithms used. Percentile scores may be ``NA`` if not
@@ -222,13 +273,14 @@ and ``%ile MT`` columns is controlled by the ``--top-score-metric`` parameter.
      - Description
    * - ``ID``
      - A unique identifier for the fusion
-   * - ``HLA Alleles`` (multiple)
+   * - HLA Alleles (multiple)
      - For each HLA allele in the run, the number of this fusion's epitopes that bound well
        to the HLA allele (with median binding affinity < 1000)
    * - ``Gene``
      - The Ensembl gene names of the affected genes
    * - ``Best Peptide``
-     - The best-binding epitope sequence (lowest ``IC50 MT`` score)
+     - The best epitope sequence (see Best Peptide Criteria
+       below for more details on how this is determined)
    * - ``Best Transcript``
      - The fusion transcripts coding for the Best Peptide
    * - ``Allele``
@@ -425,14 +477,16 @@ The aggregate report is sorted as follows:
    * - Sort Criteria
      - Sort Order
    * - ``Tier`` column
-     - "Pass", "PoorBinder", "RefMatch", "LowReadSupport", "LowExpr", "ProbPos", "Poor"
-   * - Ascending rank of ``Expr`` column + ascending rank of either ``IC50 MT`` column (if
-       ``--top-score-metric`` is ``ic50``) or ``%ile MT`` column (if
-       ``--top-score-metric`` is ``percentile``)
+     - "Pass", "PoorBinder", "PoorImmunogenicity", "PoorPresentation",
+       "RefMatch", "LowReadSupport", "LowExpr", "ProbPos", "Poor"
+   * - Sum of ascending ranks of ``Expr`` and the ascending ranks of
+       the metrics selected via the ``--top-score-metric2`` parameter (possible values:
+       ``IC50 MT``, ``%ile MT``, ``IC50 %ile MT``, ``Pres %ile MT``; default: ``IC50 MT``,
+       ``%ile MT``).
      - Ascending sum rank
-   * - ``IC50 MT`` column (if ``--top-score-metric`` is ``ic50``) or ``%ile MT`` column (if
-       ``--top-score-metric`` is ``percentile``)
-     - Ascending
+   * - First metric specified in the ``--top-score-metric2`` as a tie breaker
+       for identical sum ranks
+     - Ascending rank
    * - ``ID`` column
      - Alphabetical
 
