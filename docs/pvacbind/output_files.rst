@@ -215,6 +215,21 @@ and ``%ile MT`` columns is controlled by the ``--top-score-metric`` parameter.
    * - ``Evaluation``
      - Column to store the evaluation of each variant. Either ``Accept``, ``Reject``, or ``Review``.
 
+Best Peptide Criteria
+_____________________
+
+To determine the Best Peptide, all peptides meeting the
+``--aggregate-inclusion-threshold`` and ``--aggregate-inclusion-count-limit``
+(see above) for a variant are evaluated as follows:
+
+- Pick the entries with no ``Problematic Positions``.
+- For the remaining entries, calculate a rank for all the metrics specified
+  via the ``--top-score-metric2`` parameter and sum them. Whether the lowest or median value
+  is considered for each metric is controlled by the ``--top-score-metric`` parameter.
+  Sort the remaining entries on this sum rank followed by the rank of the first
+  ``--top-score-metric2`` specified (to break
+  any ties in the sum rank). Select the highest sorted entry.
+
 The pVACbind Aggregate Report Tiers
 ___________________________________
 

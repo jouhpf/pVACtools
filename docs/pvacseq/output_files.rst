@@ -445,9 +445,12 @@ To determine the Best Peptide, all peptides meeting the
 - Of the remaining entries, pick the entries with no ``Problematic Positions``.
 - Of the remaining entries, pick the ones passing the Anchor Criteria (see
   Criteria Details section below)
-- Sort the remaining entries by lowest ``Median|Best MT IC50 Score|Percentile``
-  (depending on the selected ``--top-score-metric`` and
-  ``--top-score-metric2``), ``MANE Select`` (True), ``Canonical`` (True),
+- For the remaining entries, calculate a rank for all the metrics specified
+  via the ``--top-score-metric2`` parameter and sum them. Whether the lowest or median value
+  is considered for each metric is controlled by the ``--top-score-metric`` parameter.
+  Sort the remaining entries on this sum rank followed by the rank of the first
+  ``--top-score-metric2`` specified (to break
+  any ties in the sum rank), ``MANE Select`` (True), ``Canonical`` (True),
   ``Transcript Support Level``, ``Transcript Length``, and ``Transcript
   Expression``. Select the highest sorted entry.
 

@@ -363,11 +363,14 @@ To determine the Best Peptide, all peptides meeting the
   ``--maximum-transcript-support-level`` if ``tsl`` is one of the selected
   criteria.
 - Of the remaining entries, pick the entries with no ``Problematic Positions``.
-- Sort the remaining entries by lowest ``Median|Best IC50 Score|Percentile``
-  (depending on the selected ``--top-score-metric`` and
-  ``--top-score-metric2``), ``MANE Select`` (True), ``Canonical`` (True),
-  ``Transcript Support Level``, ``WT Protein Length``, and ``Transcript
-  Expression``. Select the highest sorted entry.
+- For the remaining entries, calculate a rank for all the metrics specified
+  via the ``--top-score-metric2`` parameter and sum them. Whether the lowest or median value
+  is considered for each metric is controlled by the ``--top-score-metric`` parameter.
+  Sort the remaining entries on this sum rank followed by the rank of the first
+  ``--top-score-metric2`` specified (to break
+  any ties in the sum rank), ``MANE Select`` (True), ``Canonical`` (True),
+  ``Transcript Support Level``, ``WT Protein Length``, ``Transcript
+  Expression``, and ``Tumor DNA VAF``. Select the highest sorted entry.
 
 .. _pvacsplice_aggregate_report_tiers_label:
 
