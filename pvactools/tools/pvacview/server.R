@@ -132,7 +132,7 @@ server <- shinyServer(function(input, output, session) {
   #Option 2: Load from HCC1395 demo data from github
   observeEvent(input$loadDefaultmain, {
     withProgress(message = "Loading Demo Data", value = 0, {
-      load(url("https://github.com/griffithlab/pVACtools/raw/f3128d504ddcd96473614979790a0e30fb82385f/pvactools/tools/pvacview/data/HCC1395_demo_data.rda"))
+      load(url("https://github.com/griffithlab/pVACtools/raw/fb379cd2/pvactools/tools/pvacview/data/HCC1395_demo_data.rda"))
       incProgress(0.3)
 
       ## Class I demo aggregate report
@@ -149,7 +149,7 @@ server <- shinyServer(function(input, output, session) {
       incProgress(0.2)
 
       ## Class II additional demo aggregate report
-      add_data <- getURL("https://raw.githubusercontent.com/griffithlab/pVACtools/f3128d504ddcd96473614979790a0e30fb82385f/pvactools/tools/pvacview/data/H_NJ-HCC1395-HCC1395.Class_II.all_epitopes.aggregated.tsv")
+      add_data <- getURL("https://raw.githubusercontent.com/griffithlab/pVACtools/fb379cd2/pvactools/tools/pvacview/data/H_NJ-HCC1395-HCC1395.Class_II.all_epitopes.aggregated.tsv")
       addData <- read.table(text = add_data, sep = "\t",  header = FALSE, stringsAsFactors = FALSE, check.names = FALSE)
       colnames(addData) <- addData[1, ]
       addData <- addData[-1, ]

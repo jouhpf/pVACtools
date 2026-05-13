@@ -14,6 +14,7 @@ library(colourpicker)
 library(purrr)
 
 source("anchor_and_helper_functions.R", local = TRUE)
+source("input_processing_functions.R", local = TRUE)
 source("styling.R")
 
 #specify max shiny app upload size (currently 300MB)
@@ -32,14 +33,6 @@ server <- shinyServer(function(input, output, session) {
     inputs <- character(len)
     for (i in seq_len(len)) {
       inputs[i] <- as.character(FUN(paste0(id, i), label = NULL, ..., selected = data[i, "Evaluation"]))
-    }
-    inputs
-  }
-  ## helper function defined for generating shinyInputs in mainTable (Investigate button)
-  shinyInputSelect <- function(FUN, row_ids, button_label, ...) {
-    inputs <- character(nrow(row_ids))
-    for (i in 1:nrow(row_ids)) {
-      inputs[i] <- as.character(FUN(paste0(button_label, row_ids[i, "ID"]), ...))
     }
     inputs
   }
@@ -107,17 +100,8 @@ server <- shinyServer(function(input, output, session) {
   observeEvent(input$mainDataInput$datapath, {
     #session$sendCustomMessage("unbind-DT", "mainTable")
     mainData <- read.table(input$mainDataInput$datapath, sep = "\t",  header = FALSE, stringsAsFactors = FALSE, check.names = FALSE)
-    colnames(mainData) <- mainData[1, ]
-    mainData <- mainData[-1, ]
-    row.names(mainData) <- NULL
+    mainData <- process_main_data(mainData)
     setButtonStyling(mainData$Evaluation, mainData$ID)
-    mainData$Acpt <- shinyInputSelect(actionButton, mainData["ID"], "button-acpt_", icon = icon("thumbs-up"), label = "", onclick = 'Shiny.onInputChange(\"accept_eval\",  this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-    mainData$Rej <- shinyInputSelect(actionButton, mainData["ID"], "button-rej_", icon = icon("thumbs-down"), label = "", onclick = 'Shiny.onInputChange(\"reject_eval\",  this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-    mainData$Rev <- shinyInputSelect(actionButton, mainData["ID"], "button-rev_", icon = icon("flag"), label = "", onclick = 'Shiny.onInputChange(\"review_eval\",  this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-    mainData$`IC50 MT` <- as.numeric(mainData$`IC50 MT`)
-    mainData$`%ile MT` <- as.numeric(mainData$`%ile MT`)
-    mainData$`RNA Depth` <- as.character(as.integer(mainData$`RNA Depth`))
-    mainData$`TSL`[is.na(mainData$`TSL`)] <- "NA"
     df$evaluations <- data.frame(data = mainData$Evaluation, row.names = mainData$ID)
     df$mainTable <- mainData
     df$metricsData <- NULL
@@ -126,84 +110,10 @@ server <- shinyServer(function(input, output, session) {
   #Option 1: User uploaded metrics file
   observeEvent(input$metricsDataInput, {
     df$metricsData <- fromJSON(input$metricsDataInput$datapath)
-    df$binding_threshold <- df$metricsData$`binding_threshold`
-    df$use_allele_specific_binding_thresholds <- df$metricsData$`use_allele_specific_binding_thresholds`
-    df$allele_specific_binding_thresholds <- df$metricsData$`allele_specific_binding_thresholds`
-    df$aggregate_inclusion_binding_threshold <- df$metricsData$`aggregate_inclusion_binding_threshold`
-    df$binding_percentile_threshold <- df$metricsData$`binding_percentile_threshold`
-    df$immunogenicity_percentile_threshold <- df$metricsData$`immunogenicity_percentile_threshold`
-    df$presentation_percentile_threshold <- df$metricsData$`presentation_percentile_threshold`
-    df$percentile_threshold_strategy <- df$metricsData$`percentile_threshold_strategy`
-    df$scoring_candidate_metric <- df$metricsData$`top_score_metric2`
-    df$dna_cutoff <- df$metricsData$vaf_clonal
-    df$allele_expr <- df$metricsData$allele_expr_threshold
-    df$anchor_mode <- ifelse(df$metricsData$`allele_specific_anchors`, "allele-specific", "default")
-    df$allele_specific_anchors <- df$metricsData$`allele_specific_anchors`
-    df$anchor_contribution <- df$metricsData$`anchor_contribution_threshold`
-    df$maximum_transcript_support_level <- df$metricsData$maximum_transcript_support_level
-    df$transcript_prioritization_strategy <- df$metricsData$`transcript_prioritization_strategy`
-    hla <- df$metricsData$alleles
-    df$converted_hla_names <- unlist(lapply(hla, function(x) {
-      if (grepl("HLA-", x)) {
-        strsplit(x, "HLA-")[[1]][2]
-      } else {
-        x
-      }
-    }))
-    if (!("Ref Match" %in% colnames(df$mainTable))) {
-      df$mainTable$`Ref Match` <- "Not Run"
-    }
-    columns_needed <- c("ID", "Index", df$converted_hla_names, "Gene", "AA Change", "Num Passing Transcripts", "Best Peptide", "Best Transcript", "MANE Select", "Canonical", "TSL", "Allele", "Pos", "Prob Pos",
-                        "Num Included Peptides", "Num Passing Peptides", "IC50 MT", "IC50 WT", "%ile MT", "%ile WT", "IC50 %ile MT", "IC50 %ile WT", "Pres %ile MT", "Pres %ile WT", "IM %ile MT", "IM %ile WT",
-                        "RNA Expr", "RNA VAF", "Allele Expr", "RNA Depth", "DNA VAF", "Tier", "Ref Match", "Acpt", "Rej", "Rev")
-    if ("Comments" %in% colnames(df$mainTable)) {
-      columns_needed <- c(columns_needed, "Comments")
-      df$comments <- data.frame(data = df$mainTable$`Comments`, nrow = nrow(df$mainTable), ncol = 1)
-    }else {
-      df$comments <- data.frame(matrix("No comments", nrow = nrow(df$mainTable)), ncol = 1)
-    }
-    if ("ML Prediction (score)" %in% colnames(df$mainTable)) {
-    columns_needed <- c(columns_needed, "ML Prediction (score)")
-    }
-    df$mainTable <- df$mainTable[, columns_needed]
+    df <- process_metrics_data(df)
+    df <- postprocess_inputs(df)
     df$mainTable$`Gene of Interest` <- apply(df$mainTable, 1, function(x) {any(x["Gene"] == df$gene_list)})
-    rownames(df$comments) <- df$mainTable$ID
-    df$mainTable$`Scaled BA` <- apply(df$mainTable, 1, function(x) scale_binding_affinity(df$allele_specific_binding_thresholds, df$use_allele_specific_binding_thresholds, df$binding_threshold, x["Allele"], x["IC50 MT"]))
-    #df$mainTable$`Scaled percentile` <- apply(df$mainTable, 1, function(x) {ifelse(is.null(df$percentile_threshold), as.numeric(x["%ile MT"]), as.numeric(x["%ile MT"]) / (df$percentile_threshold))})
-    df$mainTable$`Scaled binding percentile` <- apply(df$mainTable, 1, function(x) {as.numeric(x["IC50 %ile MT"]) / (df$binding_percentile_threshold)})
-    df$mainTable$`Scaled immunogenicity percentile` <- apply(df$mainTable, 1, function(x) {as.numeric(x["IM %ile MT"]) / (df$immunogenicity_percentile_threshold)})
-    df$mainTable$`Scaled presentation percentile` <- apply(df$mainTable, 1, function(x) {as.numeric(x["Pres %ile MT"]) / (df$presentation_percentile_threshold)})
-    df$mainTable$`Col RNA Expr` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["RNA Expr"]), 0, x["RNA Expr"])})
-    df$mainTable$`Col RNA VAF` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["RNA VAF"]), 0, x["RNA VAF"])})
-    df$mainTable$`Col Allele Expr` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["Allele Expr"]), 0, x["Allele Expr"])})
-    df$mainTable$`Col RNA Depth` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["RNA Depth"]), 0, x["RNA Depth"])})
-    df$mainTable$`Col DNA VAF` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["DNA VAF"]), 0, x["DNA VAF"])})
-    df$mainTable$`IC50 Pass` <- apply(df$mainTable, 1, function(x) {is_ic50_pass(df$use_allele_specific_binding_thresholds, x['Allele'], df$allele_specific_binding_thresholds, as.numeric(x['IC50 MT']), as.numeric(df$binding_threshold))})
-    df$mainTable$`Binding Percentile Pass` <- apply(df$mainTable, 1, function(x) {is_percentile_pass(df$binding_percentile_threshold, as.numeric(x["IC50 %ile MT"]))})
-    df$mainTable$`Immunogenicity Percentile Pass` <- apply(df$mainTable, 1, function(x) {is_percentile_pass(df$immunogenicity_percentile_threshold, as.numeric(x["IM %ile MT"]))})
-    df$mainTable$`Presentation Percentile Pass` <- apply(df$mainTable, 1, function(x) {is_percentile_pass(df$presentation_percentile_threshold, as.numeric(x["Pres %ile MT"]))})
-    df$mainTable$`Anchor Pass` <- apply(df$mainTable, 1, function(x) {is_anchor_residue_pass(df$anchor_mode, x['Best Peptide'], x['Allele'], as.numeric(df$anchor_contribution), x['Pos'], x['IC50 WT'], as.numeric(df$binding_threshold))})
-    df$mainTable$`VAF Clonal Pass` <- apply(df$mainTable, 1, function(x) {is_vaf_clonal_pass(x["DNA VAF"], as.numeric(df$dna_cutoff))})
-    df$mainTable$`Allele Expr Pass` <- apply(df$mainTable, 1, function(x) {is_allele_expr_pass(x["RNA VAF"], x["RNA Expr"], x["Allele Expr"], as.numeric(df$allele_expr))})
-    df$mainTable$`RNA Expr Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA Expr']) && as.numeric(x['RNA Expr']) == 0})
-    df$mainTable$`RNA VAF Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA VAF']) && as.numeric(x['RNA VAF']) <= as.numeric(df$metricsData['trna_vaf'])})
-    df$mainTable$`RNA Depth Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA Depth']) && as.numeric(x['RNA Depth']) <= as.numeric(df$metricsData['trna_cov'])})
-    df$mainTable$`Prob Pos Pass` <- apply(df$mainTable, 1, function(x) {is_probaa_pass(x["Prob Pos"])})
-    transcript_pass <- apply(df$mainTable, 1, function(x) {
-      if ('tsl' %in% df$transcript_prioritization_strategy && is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))) {
-        return("True")
-      }
-      else if ('mane_select' %in% df$transcript_prioritization_strategy && is_mane_select_pass(x["MANE Select"])) {
-        return("True")
-      }
-      else if ('canonical' %in% df$transcript_prioritization_strategy && is_canonical_pass(x["Canonical"])) {
-        return("True")
-      }
-      else {
-        return("False")
-      }
-    })
-    df$mainTable <- add_column(df$mainTable, `Transcript Pass` = transcript_pass, .after = "TSL")
+    df <- set_formatting_columns(df)
   })
   #Option 1: User uploaded additional data file
   observeEvent(input$additionalDataInput, {
@@ -220,131 +130,41 @@ server <- shinyServer(function(input, output, session) {
     df$mainTable$`Gene of Interest` <- apply(df$mainTable, 1, function(x) {any(x["Gene"] == df$gene_list)})
   })
   #Option 2: Load from HCC1395 demo data from github
-   observeEvent(input$loadDefaultmain, {
-     ## Class I demo aggregate report
-     #session$sendCustomMessage("unbind-DT", "mainTable")
-     withProgress(message = "Loading Demo Data", value = 0, {
-       load(url("https://github.com/griffithlab/pVACtools/raw/b769d139c332839cbe6fbeb9afd04a33b30d2025/pvactools/tools/pvacview/data/HCC1395_demo_data.rda"))
-       incProgress(0.3)
-       #data <- getURL("https://raw.githubusercontent.com/griffithlab/pVACtools/3bcc0530f5deecae5a241edb2e16b9886bab25e7/pvactools/tools/pvacview/data/H_NJ-HCC1395-HCC1395.Class_I.all_epitopes.aggregated.tsv")
-       #mainData <- read.table(text = data, sep = "\t", header = FALSE, stringsAsFactors = FALSE, check.names = FALSE)
-       colnames(mainData) <- mainData[1, ]
-       mainData <- mainData[-1, ]
-       row.names(mainData) <- NULL
-       setButtonStyling(mainData$Evaluation, mainData$ID)
-       mainData$Acpt <- shinyInputSelect(actionButton, mainData["ID"], "button-acpt_", icon = icon("thumbs-up"), label = "", onclick = 'Shiny.onInputChange(\"accept_eval\",  this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-       mainData$Rej <- shinyInputSelect(actionButton, mainData["ID"], "button-rej_", icon = icon("thumbs-down"), label = "", onclick = 'Shiny.onInputChange(\"reject_eval\",  this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-       mainData$Rev <- shinyInputSelect(actionButton, mainData["ID"], "button-rev_", icon = icon("flag"), label = "", onclick = 'Shiny.onInputChange(\"review_eval\",  this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-       mainData$`IC50 MT` <- as.numeric(mainData$`IC50 MT`)
-       mainData$`%ile MT` <- as.numeric(mainData$`%ile MT`)
-       mainData$`RNA Depth` <- as.character(as.integer(mainData$`RNA Depth`))
-       mainData$`TSL`[is.na(mainData$`TSL`)] <- "NA"
-       df$evaluations <- data.frame(data = mainData$Evaluation, row.names = mainData$ID)
-       df$mainTable <- mainData
-       incProgress(0.1)
-       ## Class I demo metrics file
-       #metricsdata <- getURL("https://raw.githubusercontent.com/griffithlab/pVACtools/3bcc0530f5deecae5a241edb2e16b9886bab25e7/pvactools/tools/pvacview/data/H_NJ-HCC1395-HCC1395.Class_I.all_epitopes.aggregated.metrics.json")
-       #df$metricsData <- fromJSON(txt = metricsdata)
-       df$metricsData <- metricsData
-       df$binding_threshold <- df$metricsData$`binding_threshold`
-       df$allele_specific_binding_thresholds <- df$metricsData$`allele_specific_binding_thresholds`
-       df$use_allele_specific_binding_thresholds <- df$metricsData$`use_allele_specific_binding_thresholds`
-       df$aggregate_inclusion_binding_threshold <- df$metricsData$`aggregate_inclusion_binding_threshold`
-       df$binding_percentile_threshold <- df$metricsData$`binding_percentile_threshold`
-       df$immunogenicity_percentile_threshold <- df$metricsData$`immunogenicity_percentile_threshold`
-       df$presentation_percentile_threshold <- df$metricsData$`presentation_percentile_threshold`
-       df$percentile_threshold_strategy <- df$metricsData$`percentile_threshold_strategy`
-       df$scoring_candidate_metric <- df$metricsData$`top_score_metric2`
-       df$dna_cutoff <- df$metricsData$vaf_clonal
-       df$allele_expr <- df$metricsData$allele_expr_threshold
-       df$anchor_mode <- ifelse(df$metricsData$`allele_specific_anchors`, "allele-specific", "default")
-       df$allele_specific_anchors <- df$metricsData$`allele_specific_anchors`
-       df$anchor_contribution <- df$metricsData$`anchor_contribution_threshold`
-       df$maximum_transcript_support_level <- df$metricsData$maximum_transcript_support_level
-       df$transcript_prioritization_strategy <- df$metricsData$`transcript_prioritization_strategy`
-       hla <- df$metricsData$alleles
-       incProgress(0.1)
-       df$converted_hla_names <- unlist(lapply(hla, function(x) {
-         if (grepl("HLA-", x)) {
-           strsplit(x, "HLA-")[[1]][2]
-         } else {
-           x
-         }
-       }))
-       if (!("Ref Match" %in% colnames(df$mainTable))) {
-         df$mainTable$`Ref Match` <- "Not Run"
-       }
-       columns_needed <- c("ID", "Index", df$converted_hla_names, "Gene", "AA Change", "Num Passing Transcripts", "Best Peptide", "Best Transcript", "MANE Select", "Canonical", "TSL", "Allele", "Pos", "Prob Pos",
-                           "Num Included Peptides", "Num Passing Peptides", "IC50 MT", "IC50 WT", "%ile MT", "%ile WT", "IC50 %ile MT", "IC50 %ile WT", "Pres %ile MT", "Pres %ile WT", "IM %ile MT", "IM %ile WT",
-                           "RNA Expr", "RNA VAF", "Allele Expr", "RNA Depth", "DNA VAF", "Tier", "Ref Match", "Acpt", "Rej", "Rev")
-       if ("Comments" %in% colnames(df$mainTable)) {
-         columns_needed <- c(columns_needed, "Comments")
-       }
-       if ("ML Prediction (score)" %in% colnames(df$mainTable)) {
-         columns_needed <- c(columns_needed, "ML Prediction (score)")
-       }
-       df$mainTable <- df$mainTable[, columns_needed]
-       df$mainTable$`Gene of Interest` <- apply(df$mainTable, 1, function(x) {any(x["Gene"] == df$gene_list)})
-       if ("Comments" %in% colnames(df$mainTable)) {
-         df$comments <- data.frame(data = df$mainTable$`Comments`, nrow = nrow(df$mainTable), ncol = 1)
-       }else {
-         df$comments <- data.frame(matrix("No comments", nrow = nrow(df$mainTable)), ncol = 1)
-       }
-       rownames(df$comments) <- df$mainTable$ID
-       incProgress(0.2)
-       ## Class II additional demo aggregate report
-       add_data <- getURL("https://raw.githubusercontent.com/griffithlab/pVACtools/b769d139c332839cbe6fbeb9afd04a33b30d2025/pvactools/tools/pvacview/data/H_NJ-HCC1395-HCC1395.Class_II.all_epitopes.aggregated.tsv")
-       addData <- read.table(text = add_data, sep = "\t",  header = FALSE, stringsAsFactors = FALSE, check.names = FALSE)
-       colnames(addData) <- addData[1, ]
-       addData <- addData[-1, ]
-       row.names(addData) <- NULL
-       df$additionalData <- addData
-       incProgress(0.1)
-       ## Hotspot gene list autoload
-       gene_data <- getURL("https://raw.githubusercontent.com/griffithlab/pVACtools/c5a4f4c5b0bfa9c2832fc752e98dddea4c1c9eda/pvactools/tools/pvacview/data/cancer_census_hotspot_gene_list.tsv")
-       gene_list <- read.table(text = gene_data, sep = "\t",  header = FALSE, stringsAsFactors = FALSE, check.names = FALSE)
-       df$gene_list <- gene_list
-       df$mainTable$`Gene of Interest` <- apply(df$mainTable, 1, function(x) {any(x["Gene"] == df$gene_list)})
-       df$mainTable$`Scaled BA` <- apply(df$mainTable, 1, function(x) scale_binding_affinity(df$allele_specific_binding_thresholds, df$use_allele_specific_binding_thresholds, df$binding_threshold, x["Allele"], x["IC50 MT"]))
-       #df$mainTable$`Scaled percentile` <- apply(df$mainTable, 1, function(x) {ifelse(is.null(df$percentile_threshold), as.numeric(x["%ile MT"]), as.numeric(x["%ile MT"]) / (df$percentile_threshold))})
-       df$mainTable$`Scaled binding percentile` <- apply(df$mainTable, 1, function(x) {as.numeric(x["IC50 %ile MT"]) / (df$binding_percentile_threshold)})
-       df$mainTable$`Scaled immunogenicity percentile` <- apply(df$mainTable, 1, function(x) {as.numeric(x["IM %ile MT"]) / (df$immunogenicity_percentile_threshold)})
-       df$mainTable$`Scaled presentation percentile` <- apply(df$mainTable, 1, function(x) {as.numeric(x["Pres %ile MT"]) / (df$presentation_percentile_threshold)})
-       df$mainTable$`Col RNA Expr` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["RNA Expr"]), 0, x["RNA Expr"])})
-       df$mainTable$`Col RNA VAF` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["RNA VAF"]), 0, x["RNA VAF"])})
-       df$mainTable$`Col Allele Expr` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["Allele Expr"]), 0, x["Allele Expr"])})
-       df$mainTable$`Col RNA Depth` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["RNA Depth"]), 0, x["RNA Depth"])})
-       df$mainTable$`Col DNA VAF` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["DNA VAF"]), 0, x["DNA VAF"])})
-       df$mainTable$`Col RNA Expr` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["RNA Expr"]), 0, x["RNA Expr"])})
-       df$mainTable$`Col RNA VAF` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["RNA VAF"]), 0, x["RNA VAF"])})
-       df$mainTable$`Col Allele Expr` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["Allele Expr"]), 0, x["Allele Expr"])})
-       df$mainTable$`Col RNA Depth` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["RNA Depth"]), 0, x["RNA Depth"])})
-       df$mainTable$`Col DNA VAF` <- apply(df$mainTable, 1, function(x) {ifelse(is.na(x["DNA VAF"]), 0, x["DNA VAF"])})
-       df$mainTable$`IC50 Pass` <- apply(df$mainTable, 1, function(x) {is_ic50_pass(df$use_allele_specific_binding_thresholds, x['Allele'], df$allele_specific_binding_thresholds, as.numeric(x['IC50 MT']), as.numeric(df$binding_threshold))})
-       df$mainTable$`Binding Percentile Pass` <- apply(df$mainTable, 1, function(x) {is_percentile_pass(df$binding_percentile_threshold, as.numeric(x["IC50 %ile MT"]))})
-       df$mainTable$`Immunogenicity Percentile Pass` <- apply(df$mainTable, 1, function(x) {is_percentile_pass(df$immunogenicity_percentile_threshold, as.numeric(x["IM %ile MT"]))})
-       df$mainTable$`Presentation Percentile Pass` <- apply(df$mainTable, 1, function(x) {is_percentile_pass(df$presentation_percentile_threshold, as.numeric(x["Pres %ile MT"]))})
-       df$mainTable$`Anchor Pass` <- apply(df$mainTable, 1, function(x) {is_anchor_residue_pass(df$anchor_mode, x['Best Peptide'], x['Allele'], as.numeric(df$anchor_contribution), x['Pos'], x['IC50 WT'], as.numeric(df$binding_threshold))})
-       df$mainTable$`VAF Clonal Pass` <- apply(df$mainTable, 1, function(x) {is_vaf_clonal_pass(x["DNA VAF"], as.numeric(df$dna_cutoff))})
-       df$mainTable$`Allele Expr Pass` <- apply(df$mainTable, 1, function(x) {is_allele_expr_pass(x["RNA VAF"], x["RNA Expr"], x["Allele Expr"], as.numeric(df$allele_expr))})
-       df$mainTable$`RNA Expr Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA Expr']) && as.numeric(x['RNA Expr']) == 0})
-       df$mainTable$`RNA VAF Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA VAF']) && as.numeric(x['RNA VAF']) <= as.numeric(df$metricsData['trna_vaf'])})
-       df$mainTable$`RNA Depth Fail` <- apply(df$mainTable, 1, function(x) {!is.na(x['RNA Depth']) && as.numeric(x['RNA Depth']) <= as.numeric(df$metricsData['trna_cov'])})
-       df$mainTable$`Prob Pos Pass` <- apply(df$mainTable, 1, function(x) {is_probaa_pass(x["Prob Pos"])})
-       transcript_pass <- apply(df$mainTable, TRUE, function(x) {
-         if ('tsl' %in% df$transcript_prioritization_strategy && is_tsl_pass(x["TSL"], as.numeric(df$maximum_transcript_support_level))) {
-           return("True")
-         }
-         if ('mane_select' %in% df$transcript_prioritization_strategy && is_mane_select_pass(x["MANE Select"])) {
-           return("True")
-         }
-         if ('canonical' %in% df$transcript_prioritization_strategy && is_canonical_pass(x["Canonical"])) {
-           return("True")
-         }
-         return("False")
-       })
-       df$mainTable <- add_column(df$mainTable, `Transcript Pass` = transcript_pass, .after = "TSL")
-       df$lastSelectedRow <- 1
+  observeEvent(input$loadDefaultmain, {
+    withProgress(message = "Loading Demo Data", value = 0, {
+      load(url("https://github.com/griffithlab/pVACtools/raw/f3128d504ddcd96473614979790a0e30fb82385f/pvactools/tools/pvacview/data/HCC1395_demo_data.rda"))
+      incProgress(0.3)
+
+      ## Class I demo aggregate report
+      mainData <- process_main_data(mainData)
+      setButtonStyling(mainData$Evaluation, mainData$ID)
+      df$evaluations <- data.frame(data = mainData$Evaluation, row.names = mainData$ID)
+      df$mainTable <- mainData
+      incProgress(0.1)
+
+      ## Class I demo metrics file
+      df$metricsData <- metricsData
+      df <- process_metrics_data(df)
+      df <- postprocess_inputs(df)
+      incProgress(0.2)
+
+      ## Class II additional demo aggregate report
+      add_data <- getURL("https://raw.githubusercontent.com/griffithlab/pVACtools/f3128d504ddcd96473614979790a0e30fb82385f/pvactools/tools/pvacview/data/H_NJ-HCC1395-HCC1395.Class_II.all_epitopes.aggregated.tsv")
+      addData <- read.table(text = add_data, sep = "\t",  header = FALSE, stringsAsFactors = FALSE, check.names = FALSE)
+      colnames(addData) <- addData[1, ]
+      addData <- addData[-1, ]
+      row.names(addData) <- NULL
+      df$additionalData <- addData
+      incProgress(0.1)
+
+      ## Hotspot gene list autoload
+      gene_data <- getURL("https://raw.githubusercontent.com/griffithlab/pVACtools/c5a4f4c5b0bfa9c2832fc752e98dddea4c1c9eda/pvactools/tools/pvacview/data/cancer_census_hotspot_gene_list.tsv")
+      gene_list <- read.table(text = gene_data, sep = "\t",  header = FALSE, stringsAsFactors = FALSE, check.names = FALSE)
+      df$gene_list <- gene_list
+      df$mainTable$`Gene of Interest` <- apply(df$mainTable, 1, function(x) {any(x["Gene"] == df$gene_list)})
+
+      df <- set_formatting_columns(df)
+      df$lastSelectedRow <- 1
       updateTabItems(session, "tabs", "explore")
       incProgress(0.1)
      })
@@ -1989,203 +1809,50 @@ server <- shinyServer(function(input, output, session) {
   ),
   selection = "none",
   extensions = c("Buttons"))
-  
+
 
 
   ### Other Modules ############################################################
-  
-  
+
+
   ############### NeoFox Tab ##########################
   df_neofox <- reactiveValues(
     mainTable_neofox = NULL,
     binding_threshold = 500,
     percentile_threshold = 0.5
   )
-  
+
   # Option 1: User uploaded
   observeEvent(input$neofox_data$datapath, {
     #session$sendCustomMessage("unbind-DT", "mainTable_neofox")
     mainData_neofox <- read.table(input$neofox_data$datapath, sep = "\t",  header = FALSE, stringsAsFactors = FALSE, check.names = FALSE)
-    colnames(mainData_neofox) <- mainData_neofox[1, ]
-    mainData_neofox <- mainData_neofox[-1, ]
-    row.names(mainData_neofox) <- NULL
-
-    rename_lookup <- c("PRIME_bestScore_allele" = "PRIME_best_allele", "PRIME_bestScore_peptide" = "PRIME_best_peptide", "PRIME_bestScore_rank" = "PRIME_best_rank", "PRIME_bestScore_score" = "PRIME_best_score")
-    mainData_neofox <- mainData_neofox %>% rename(any_of(rename_lookup))
-    mainData_neofox <- rename_with(mainData_neofox, ~ gsub("_", " ", .x, fixed = TRUE))
-
-    # Columns that have been reviewed as most interesting
-    columns_to_star <- c(
-      "dnaVariantAlleleFrequency", "rnaExpression", "imputedGeneExpression",
-      "rnaVariantAlleleFrequency", "NetMHCpan bestRank rank", "NetMHCpan bestAffinity affinity",
-      "NetMHCpan bestAffinity affinityWT", "NetMHCpan bestRank rankWT", "PHBR I",
-      "NetMHCIIpan bestRank rank", "NetMHCIIpan bestRank rankWT", "PHBR II", "Amplitude MHCI bestAffinity",
-      "Pathogensimiliarity MHCI bestAffinity9mer", "DAI MHCI bestAffinity", "Tcell predictor",
-      "Selfsimilarity MHCI", "Selfsimilarity MHCII", "IEDB Immunogenicity MHCI", "IEDB Immunogenicity MHCII",
-      "MixMHCpred bestScore score", "MixMHCpred bestScore rank", "MixMHC2pred bestRank peptide",
-      "MixMHC2pred bestRank rank", "Dissimilarity MHCI", "Dissimilarity MHCII", "Vaxrank bindingScore",
-      "PRIME bestScore rank", "PRIME bestScore score"
-    )
-
-    # Check if each column is present in the dataframe and modify the names
-    starred_column_names <- map(names(mainData_neofox), function(x) {
-      if (x %in% columns_to_star) {
-        paste0("*", x)
-      } else {
-        x
-      }
-    })
-    names(mainData_neofox) <- starred_column_names
-    df_neofox$mainTable_neofox <- mainData_neofox
-    
-    # Add scaling columns for coloring and barplots
-    # There are no checks if user uploads data without one of these columns
-    # Maybe an easy solution would be to just create a dummy column in the
-    # for loop above for missing columns?
-    
-    # Add scaling columns for coloring and barplots
-    df_neofox$mainTable_neofox$`Scaled NetMHCpan_bestAffinity` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$binding_threshold), as.numeric(x["*NetMHCpan bestAffinity affinity"]), as.numeric(x["*NetMHCpan bestAffinity affinity"]) / (df_neofox$binding_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCpan_bestAffinity_WT` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$binding_threshold), as.numeric(x["*NetMHCpan bestAffinity affinityWT"]), as.numeric(x["*NetMHCpan bestAffinity affinityWT"]) / (df_neofox$binding_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCpan_bestRank_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*NetMHCpan bestRank rank"]), as.numeric(x["*NetMHCpan bestRank rank"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCpan_bestRank_rankWT` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*NetMHCpan bestRank rankWT"]), as.numeric(x["*NetMHCpan bestRank rankWT"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCIIpan_bestRank_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*NetMHCIIpan bestRank rank"]), as.numeric(x["*NetMHCIIpan bestRank rank"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCIIpan_bestRank_rankWT` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*NetMHCIIpan bestRank rankWT"]), as.numeric(x["*NetMHCIIpan bestRank rankWT"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled MixMHCpred_bestScore_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*MixMHCpred bestScore rank"]), as.numeric(x["*MixMHCpred bestScore rank"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled MixMHC2pred_bestRank_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*MixMHC2pred bestRank rank"]), as.numeric(x["*MixMHC2pred bestRank rank"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled PRIME_bestScore_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*PRIME bestScore rank"]), as.numeric(x["*PRIME bestScore rank"]) / (df_neofox$percentile_threshold))})
-    # DAI is a measure of agrotopicity - so we want a a high DAI where the MT BA is low and the WT is BA is high, not sure if this is the correct scale
-    df_neofox$mainTable_neofox$`Scaled DAI_MHCI_bestAffinity` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(1), as.numeric(x["*DAI MHCI bestAffinity"]), as.numeric(x["*DAI MHCI bestAffinity"]) / 10000)})
-    
-    df_neofox$mainTable_neofox$`Col DNA VAF` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.na(x["*dnaVariantAlleleFrequency"]), 0, x["*dnaVariantAlleleFrequency"])})
-    df_neofox$mainTable_neofox$`Col RNA Expr` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.na(x["*rnaExpression"]), 0, x["*rnaExpression"])})
-    df_neofox$mainTable_neofox$`Col Gene Expr` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.na(x["*imputedGeneExpression"]), 0, x["*imputedGeneExpression"])})
-    df_neofox$mainTable_neofox$`Col RNA VAF` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.na(x["*rnaVariantAlleleFrequency"]), 0, x["*rnaVariantAlleleFrequency"])})
-
-    len <- nrow(df_neofox$mainTable_neofox)
-    if ('Evaluation' %in% colnames(df_neofox$mainTable_neofox)) {
-        setButtonStyling(df_neofox$mainTable_neofox$Evaluation, df_neofox$mainTable_neofox$ID)
-    } else {
-        df_neofox$mainTable_neofox["Evaluation"] = "Pending"
-    }
-    df_neofox$mainTable_neofox <- cbind(ID = rownames(df_neofox$mainTable_neofox), df_neofox$mainTable_neofox)
-    df_neofox$evaluations <- df_neofox$mainTable_neofox[c("ID", "Evaluation")]
-    df_neofox$mainTable_neofox$Evaluation <- NULL
-    df_neofox$mainTable_neofox$Acpt <- shinyInputSelect(actionButton, df_neofox$mainTable_neofox["ID"], "button-neofox-acpt_", icon = icon("thumbs-up"), label = "", onclick = 'Shiny.onInputChange(\"accept_neofox_eval\", this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-    df_neofox$mainTable_neofox$Rej <- shinyInputSelect(actionButton, df_neofox$mainTable_neofox["ID"], "button-neofox-rej_", icon = icon("thumbs-down"), label = "", onclick = 'Shiny.onInputChange(\"reject_neofox_eval\", this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-    df_neofox$mainTable_neofox$Rev <- shinyInputSelect(actionButton, df_neofox$mainTable_neofox["ID"], "button-neofox-rev_", icon = icon("flag"), label = "", onclick = 'Shiny.onInputChange(\"review_neofox_eval\", this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-
-    if ("Comments" %in% colnames(df_neofox$mainTable_neofox)) {
-      df_neofox$comments <- data.frame(data = df_neofox$mainTable_neofox$`Comments`, nrow = nrow(df_neofox$mainTable_neofox), ncol = 1)
-      df_neofox$mainTable_neofox$Comments <- NULL
-    }else {
-      df_neofox$comments <- data.frame(matrix("No comments", nrow = nrow(df_neofox$mainTable_neofox)), ncol = 1)
-    }
-    rownames(df_neofox$comments) <- df_neofox$mainTable_neofox$ID
-
-    df_neofox$default_neofox_columns <- c("patientIdentifier", "gene", "mutatedXmer", "wildTypeXmer", "position", map(columns_to_star, function(x) { paste0("*", x) }), "Acpt", "Rej", "Rev")
-    df_neofox$hidden_columns <- setdiff(colnames(df_neofox$mainTable_neofox), df_neofox$default_neofox_columns)
+    df_neofox <- process_neofox_input(mainData_neofox, df_neofox)
   })
-  
+
   # Option 2: Demo Data
   observeEvent(input$loadDefaultneofox, {
     #session$sendCustomMessage("unbind-DT", "mainTable_neofox")
     data_neofox <- "data/neofox_neoantigen_candidates_annotated.tsv"
     mainData_neofox <- read.table(data_neofox, sep = "\t", header = FALSE, stringsAsFactors = FALSE, check.names = FALSE)
-    colnames(mainData_neofox) <- mainData_neofox[1, ]
-    mainData_neofox <- mainData_neofox[-1, ]
-    row.names(mainData_neofox) <- NULL
-    mainData_neofox <- type.convert(mainData_neofox, as.is = TRUE)
-
-    rename_lookup <- c("PRIME_bestScore_allele" = "PRIME_best_allele", "PRIME_bestScore_peptide" = "PRIME_best_peptide", "PRIME_bestScore_rank" = "PRIME_best_rank", "PRIME_bestScore_score" = "PRIME_best_score")
-    mainData_neofox <- mainData_neofox %>% rename(any_of(rename_lookup))
-    mainData_neofox <- rename_with(mainData_neofox, ~ gsub("_", " ", .x, fixed = TRUE))
-
-    # Columns that have been reviewed as most interesting
-    columns_to_star <- c(
-      "dnaVariantAlleleFrequency", "rnaExpression", "imputedGeneExpression",
-      "rnaVariantAlleleFrequency", "NetMHCpan bestRank rank", "NetMHCpan bestAffinity affinity",
-      "NetMHCpan bestAffinity affinityWT", "NetMHCpan bestRank rankWT", "PHBR I",
-      "NetMHCIIpan bestRank rank", "NetMHCIIpan bestRank rankWT", "PHBR II", "Amplitude MHCI bestAffinity",
-      "Pathogensimiliarity MHCI bestAffinity9mer", "DAI MHCI bestAffinity", "Tcell predictor",
-      "Selfsimilarity MHCI", "Selfsimilarity MHCII", "IEDB Immunogenicity MHCI", "IEDB Immunogenicity MHCII",
-      "MixMHCpred bestScore score", "MixMHCpred bestScore rank", "MixMHC2pred bestRank peptide",
-      "MixMHC2pred bestRank rank", "Dissimilarity MHCI", "Dissimilarity MHCII", "Vaxrank bindingScore",
-      "PRIME bestScore rank", "PRIME bestScore score"
-    )
-    
-    # Check if each column is present in the dataframe and modify the names
-    starred_column_names <- map(names(mainData_neofox), function(x) {
-      if (x %in% columns_to_star) {
-        paste0("*", x)
-      } else {
-        x
-      }
-    })
-    names(mainData_neofox) <- starred_column_names
-    
-    df_neofox$mainTable_neofox <- mainData_neofox
-    
-    # Add scaling columns for coloring and barplots
-    df_neofox$mainTable_neofox$`Scaled NetMHCpan_bestAffinity` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$binding_threshold), as.numeric(x["*NetMHCpan bestAffinity affinity"]), as.numeric(x["*NetMHCpan bestAffinity affinity"]) / (df_neofox$binding_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCpan_bestAffinity_WT` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$binding_threshold), as.numeric(x["*NetMHCpan bestAffinity affinityWT"]), as.numeric(x["*NetMHCpan bestAffinity affinityWT"]) / (df_neofox$binding_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCpan_bestRank_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*NetMHCpan bestRank rank"]), as.numeric(x["*NetMHCpan bestRank rank"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCpan_bestRank_rankWT` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*NetMHCpan bestRank rankWT"]), as.numeric(x["*NetMHCpan bestRank rankWT"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCIIpan_bestRank_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*NetMHCIIpan bestRank rank"]), as.numeric(x["*NetMHCIIpan bestRank rank"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled NetMHCIIpan_bestRank_rankWT` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*NetMHCIIpan bestRank rankWT"]), as.numeric(x["*NetMHCIIpan bestRank rankWT"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled MixMHCpred_bestScore_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*MixMHCpred bestScore rank"]), as.numeric(x["*MixMHCpred bestScore rank"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled MixMHC2pred_bestRank_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*MixMHC2pred bestRank rank"]), as.numeric(x["*MixMHC2pred bestRank rank"]) / (df_neofox$percentile_threshold))})
-    df_neofox$mainTable_neofox$`Scaled PRIME_bestScore_rank` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(df_neofox$percentile_threshold), as.numeric(x["*PRIME bestScore rank"]), as.numeric(x["*PRIME bestScore rank"]) / (df_neofox$percentile_threshold))})
-    # DAI is a measure of agrotopicity - so we want a a high DAI where the MT BA is low and the WT is BA is high, not sure if this is the correct scale
-    df_neofox$mainTable_neofox$`Scaled DAI_MHCI_bestAffinity` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.null(1), as.numeric(x["*DAI MHCI bestAffinity"]), as.numeric(x["*DAI MHCI bestAffinity"]) / 10000)})
-    
-    df_neofox$mainTable_neofox$`Col DNA VAF` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.na(x["*dnaVariantAlleleFrequency"]), 0, x["*dnaVariantAlleleFrequency"])})
-    df_neofox$mainTable_neofox$`Col RNA Expr` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.na(x["*rnaExpression"]), 0, x["*rnaExpression"])})
-    df_neofox$mainTable_neofox$`Col Gene Expr` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.na(x["*imputedGeneExpression"]), 0, x["*imputedGeneExpression"])})
-    df_neofox$mainTable_neofox$`Col RNA VAF` <- apply(df_neofox$mainTable_neofox, 1, function(x) {ifelse(is.na(x["*rnaVariantAlleleFrequency"]), 0, x["*rnaVariantAlleleFrequency"])})
-
-    len <- nrow(df_neofox$mainTable_neofox)
-    if ('Evaluation' %in% colnames(df_neofox$mainTable_neofox)) {
-        setButtonStyling(df_neofox$mainTable_neofox$Evaluation, df_neofox$mainTable_neofox$ID)
-    } else {
-        df_neofox$mainTable_neofox["Evaluation"] = "Pending"
-    }
-    df_neofox$mainTable_neofox <- cbind(ID = rownames(df_neofox$mainTable_neofox), df_neofox$mainTable_neofox)
-    df_neofox$evaluations <- df_neofox$mainTable_neofox[c("ID", "Evaluation")]
-    df_neofox$mainTable_neofox$Evaluation <- NULL
-    df_neofox$mainTable_neofox$Acpt <- shinyInputSelect(actionButton, df_neofox$mainTable_neofox["ID"], "button-neofox-acpt_", icon = icon("thumbs-up"), label = "", onclick = 'Shiny.onInputChange(\"accept_neofox_eval\", this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-    df_neofox$mainTable_neofox$Rej <- shinyInputSelect(actionButton, df_neofox$mainTable_neofox["ID"], "button-neofox-rej_", icon = icon("thumbs-down"), label = "", onclick = 'Shiny.onInputChange(\"reject_neofox_eval\", this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-    df_neofox$mainTable_neofox$Rev <- shinyInputSelect(actionButton, df_neofox$mainTable_neofox["ID"], "button-neofox-rev_", icon = icon("flag"), label = "", onclick = 'Shiny.onInputChange(\"review_neofox_eval\", this.id, {priority: "event"})', onmousedown = "event.preventDefault(); event.stopPropagation();")
-
-    if ("Comments" %in% colnames(df_neofox$mainTable_neofox)) {
-      df_neofox$comments <- data.frame(data = df_neofox$mainTable_neofox$`Comments`, nrow = nrow(df_neofox$mainTable_neofox), ncol = 1)
-      df_neofox$mainTable_neofox$Comments <- NULL
-    }else {
-      df_neofox$comments <- data.frame(matrix("No comments", nrow = nrow(df_neofox$mainTable_neofox)), ncol = 1)
-    }
-    rownames(df_neofox$comments) <- df_neofox$mainTable_neofox$ID
-
-    df_neofox$default_neofox_columns <- c("patientIdentifier", "gene", "mutatedXmer", "wildTypeXmer", "position", map(columns_to_star, function(x) { paste0("*", x) }), "Acpt", "Rej", "Rev")
-    df_neofox$hidden_columns <- setdiff(colnames(df_neofox$mainTable_neofox), df_neofox$default_neofox_columns)
-
+    df_neofox <- process_neofox_input(mainData_neofox, df_neofox)
     updateTabItems(session, "neofox_tabs", "neofox_explore")
   })
-  
+
   ##Clear file inputs if demo data load button is clicked
   output$neofox_upload_ui <- renderUI({
     fileInput(inputId = "neofox_data", label = "NeoFox output table (tsv required)",
               accept =  c("text/tsv", "text/tab-separated-values,text/plain", ".tsv"))
   })
-  
+
   observeEvent(input$visualize_neofox, {
     updateTabItems(session, "neofox_tabs", "neofox_explore")
   })
-  
+
 
   ## NeoFox Explore
   output$neofoxTable <- DT::renderDataTable(
     if (is.null(df_neofox$mainTable_neofox)) {
       return(datatable(data.frame("Annotated Table" = character())))
-      
     } else {
       return(datatable(df_neofox$mainTable_neofox,
                 escape = FALSE,
@@ -2215,7 +1882,7 @@ server <- shinyServer(function(input, output, session) {
              %>% formatStyle(c("*rnaExpression"), "Col RNA Expr", background = styleColorBar(range(0, 50), "lightblue"), backgroundSize = "98% 88%", backgroundRepeat = "no-repeat", backgroundPosition = "right")
              %>% formatStyle(c("*imputedGeneExpression"), "Col Gene Expr", background = styleColorBar(range(0, 50), "lightblue"), backgroundSize = "98% 88%", backgroundRepeat = "no-repeat", backgroundPosition = "right")
              %>% formatStyle(c("*rnaVariantAlleleFrequency"), "Col RNA VAF", background = styleColorBar(range(0, 1), "lightblue"), backgroundSize = "98% 88%", backgroundRepeat = "no-repeat", backgroundPosition = "right")
-             
+
              %>% formatStyle("*NetMHCpan bestAffinity affinity", "Scaled NetMHCpan_bestAffinity", backgroundColor = styleInterval(c(0.1, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2),
                                                                                      c("#68F784", "#60E47A", "#58D16F", "#4FBD65", "#47AA5A", "#3F9750", "#F3F171", "#F3E770", "#F3DD6F", "#F0CD5B", "#F1C664", "#FF9999"))
                              , fontWeight = styleInterval(c(1000), c("normal", "bold")), border = styleInterval(c(1000), c("normal", "2px solid red")))
@@ -2240,9 +1907,9 @@ server <- shinyServer(function(input, output, session) {
                                                                                                                            c("#FF9999", "#F1C664", "#F0CD5B", "#F3DD6F", "#F3E770", "#F3F171", "#3F9750", "#47AA5A", "#4FBD65", "#58D16F", "#60E47A", "#68F784"))
                       , fontWeight = styleInterval(c(1000), c("normal", "bold")), border = styleInterval(c(1000), c("normal", "2px solid red")))
       )
-    } 
+    }
   )
-  
+
   output$neofox_selected <- renderText({
     if (is.null(df_neofox$mainTable_neofox)) {
       return()
