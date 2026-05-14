@@ -68,7 +68,13 @@ backwards-compatible and certain changes could break old workflows.
 New Tools
 _________
 
-* placeholder
+* pVACseq now has the option of running machine learning (ML)-based neoantigen prioritization
+  predictions. The ML predictor uses a trained random forest model to predict whether neoantigen
+  candidates in the aggregated report should be evaluated as "Accept", "Reject", or "Pending"
+  based on a comprehensive set of features derived from binding affinity predictions, expression
+  data, and variant characteristics. The ML predictor can be enabled by adding the ``--run-ml-predictions``
+  parameter to a pVACseq run. More details can be found in the :ref:`output file documentation <ml_prediction_output>`,
+  the :ref:`vignette <pvacseq_vignette>`.
 
 New Features
 ____________
@@ -78,7 +84,7 @@ ____________
   - MixMHCpred (class I binding score and percentile)
   - MixMHC2pred (class II binding score and percentile)
   - PRIME (class I immunogenicity score and percentile)
-  - TLBind (class I binding score)
+  - TLBind (class I binding score and class I presentation score)
   - TLImm (class I immunogenicity score)
   - ImmuScope (class II immunogenicity score)
 
@@ -113,6 +119,11 @@ ____________
     ``--binding-percentile-threshold`` with a new default of 2.0. The junction
     output file header recording each junction's binding percentile has been
     updated from ``percentile`` to ``binding_percentile`` to reflect this change.
+  - pVACview has been updated to display more information regarding
+    immunogenicity and presentation scores.
+  - pVACtools runs that do not use a binding predictor would previously skip
+    the binding filter, top score filter, and the aggregate report creation. These
+    steps will now be run.
 
 - The ``--top-score-metric2`` has been updated for sorting candidates and
   determining the criteria for selecting the Best
