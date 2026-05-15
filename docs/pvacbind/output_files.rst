@@ -434,6 +434,8 @@ The aggregate report is sorted as follows:
    * - First metric specified in the ``--top-score-metric2`` as a tie breaker
        for identical sum ranks
      - Ascending rank
+   * - ``ID`` column
+     - Alphabetical
 
 .. _pvacbind_reference_matches:
 
