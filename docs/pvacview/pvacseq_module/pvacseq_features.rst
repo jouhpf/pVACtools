@@ -176,10 +176,21 @@ ________________________________________________________________________________
 
 There are four different tabs in this section of the app, providing peptide-level details on the MT/WT peptide pair that you selected in the peptide table.
 
+- :bold:`%ile Plot:`
+
+  Shown in this tab are violin plots of the individual percentile-based binding, presentation, and immunogenicity predictions
+  of the MT and WT peptides for HLA alleles that have predictions included in the aggregate report. These peptides
+  each have up to 16 binding, presentation, and immunogenicity algorithm percentile scores for Class I alleles or up to 7 for Class II alleles. Binding percentiles are shown in blue, presentation in yellow, and immunogenicity in purple. The plot may be filtered to display only binding, presentation or immunogenicity percentiles by changing the option in the "Specify what data to show" dropdown.
+
+  .. figure:: ../../images/screenshots/pvacview-additional_info_2.png
+      :width: 1000px
+      :align: center
+
+
 - :bold:`IC50 Plot:`
 
   Shown in this tab are violin plots of the individual IC50-based binding affinity predictions of the MT and WT peptides for HLA alleles that have predictions
-  included in the aggregate report. These peptides each have up to 8 binding algorithm scores for Class I alleles or up to 4 algorithm scores for Class II alleles.
+  included in the aggregate report. These peptides each have up to 8 IC50 binding algorithm scores for Class I alleles or up to 4 IC50 binding algorithm scores for Class II alleles.
 
   .. figure:: ../../images/screenshots/pvacview-additional_info_1.png
       :width: 1000px
@@ -187,20 +198,9 @@ There are four different tabs in this section of the app, providing peptide-leve
       :alt: pVACview Upload
 
 
-- :bold:`%ile Plot:`
-
-  Shown in this tab are violin plots of the individual percentile-based binding affinity and elution predictions
-  of the MT and WT peptides for HLA alleles that have predictions included in the aggregate report. These peptides
-  each have up to 10 binding and elution algorithm scores for Class I alleles or up to 4 algorithm scores for Class II alleles.
-
-  .. figure:: ../../images/screenshots/pvacview-additional_info_2.png
-      :width: 1000px
-      :align: center
-
-
 - :bold:`Binding Data:`
 
-  Here, we provide the specific IC50 and percentile binding affinity predictions generated from each individual algorithm.
+  Here, we provide the specific binding score and percentile binding affinity predictions generated from each individual algorithm. Most algorithms output an IC50 binding affinity, although some(e.g. MixMHCpred) output a more generic score. This table is shaded with a heatmap cell background to show where each value falls in relation to the specified binding affinity or percentile cutoffs. The "Cell heatmap background coloring" dropdown allows switch between these two options.
   This data is specific to the MT/WT peptide pair selected in the peptide table.
 
   .. figure:: ../../images/screenshots/pvacview-additional_info_3.png
@@ -208,11 +208,21 @@ There are four different tabs in this section of the app, providing peptide-leve
       :align: center
 
 
-- :bold:`Elution and Immunogenicity Data:`
+- :bold:`Presentation Data:`
 
-  Here, we provide the specific presentation and immunogenicity scores and percentiles generated from each individual algorithm.
+  Here, we provide the specific presentation scores and percentiles generated from each individual presentation algorithm. This table is shaded with a heatmap cell background to show where each percentile value falls in relation to the specified presentation percentile cutoff.
   This data is specific to the MT/WT peptide pair selected in the peptide table.
 
   .. figure:: ../../images/screenshots/pvacview-additional_info_4.png
+      :width: 1000px
+      :align: center
+
+
+- :bold:`Immunogenicity Data:`
+
+  Here, we provide the specific immunogenicity scores and percentiles generated from each individual immunogenicity algorithm. This table is shaded with a heatmap cell background to show where each percentile value falls in relation to the specified immunogenicity percentile cutoff.
+  This data is specific to the MT/WT peptide pair selected in the peptide table.
+
+  .. figure:: ../../images/screenshots/pvacview-additional_info_5.png
       :width: 1000px
       :align: center
