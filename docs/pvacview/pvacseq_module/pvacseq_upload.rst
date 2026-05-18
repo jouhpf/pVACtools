@@ -141,18 +141,28 @@ Additionally, you can regenerate the :ref:`Tiers <pvacseq_aggregate_report_tiers
   instead of the binding threshold set above. For alleles where not specific
   threshold is defined, the binding threshold set above is used as a fallback.
 
-- :bold:`Percentile Threshold`
+- :bold:`Binding Percentile Threshold`
 
-  Set this threshold to also consider the the %ile MT when determining whether will
-  the peptide is a good binder. The %ile MT will need to be below this value.
+  Additional threshold to consider when determining whether the peptide is a
+  good binder. The IC50 %ile MT will need to be below this value.
+
+- :bold:`Presentation Percentile Threshold`
+
+  Threshold to consider when determining whether the peptide has good presentation
+  The Pres %ile MT will need to be below this value.
+
+- :bold:`Immunogenicity Percentile Threshold`
+
+  Threshold to consider when determining whether the peptide has good imunogenicity
+  The IM %ile MT will need to be below this value.
 
 - :bold:`Percentile Threshold Strategy`
 
-  When specifying a percentile threshold, this parameter determines how it is
-  evaluated. If it is set to "conservative", the peptide needs to meet BOTH
-  the binding threshold AND the percentile threshold in order to be considered
-  a good binder. If it is set to "exploratory", EITHER the binding threshold
-  OR percentile threshold will need to be met.
+  This parameter determines how exactly to evaluate the binding threshold, binding
+  percentile threshold, presentation percentile threshold, and immunogenicity
+  percentile threshold. If it is set to "conservative", the peptide needs to meet
+  all thresholds in order to pass. If it is set to "exploratory", it will only need
+  to meet one of the thresholds to pass.
 
 - :bold:`Clonal variant VAF`
 
