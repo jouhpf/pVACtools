@@ -31,16 +31,20 @@ helping you in prioritizing which variants to focus on first. Details on the rep
 
 As shown, different cells of the report table are highlighted in various ways:
 
-- :bold:`IC50 MT and %ile MT columns:`
-    The IC50 MT and %ile MT columns represent the median/lowest predicted IC50 binding affinities and median/lowest predicted binding
-    percentiles. Whether these columns contain median or lowest data depends on the value set for the ``--top-score-metric`` in the
-    original pVACseq run. Different colors are used to give a general idea of where predictions fall in relation to the binding threshold
-    and percentile threshold set:
+- :bold:`IC50 MT, %ile MT, IC50 %ile MT, Pres %ile MT, and IM %ile MT columns:`
+    The IC50 MT, %ile MT, IC50 %ile MT, Pred %ile MT, and IM %ile MT columns represent the median/lowest
+    predicted IC50 binding affinities, combined percentiles, binding percentiles, presentation percentiles,
+    and immunogenicity percentiles, respectively. Whether these columns contain median or lowest data depends
+    on the value set for the ``--top-score-metric`` in the original pVACseq run. Different background colors
+    are used to give a general idea of where predictions fall in relation to their respective thresholds set:
 
-    - IC50 MT < binding threshold and %ile MT < percentile threshold colored with shades of green
-    - binding threshold < IC50 MT < (2 * binding threshold) and percentile threshold < %ile MT < (2 * percentile threshold) colored with shades of orange
-    - IC50 MT > (2 * binding threshold) and %ile MT > (2 * percentile
-      threshold) colored with red
+    - If a value is less than the respective threshold set it is colored with shades of green
+    - If a value falls between its threshold and double its threshold it is colored with shades of orange
+    - If a value is above double its respective threshold it is colored with red
+
+    Since no user-specified threshold for the (combined) %ile MT column is available, a hardcoded threshold of
+    2 determines this column's background coloring to still allow for easy interpretion of the combined
+    percentile compared to our default percentile cutoff.
 
 - :bold:`RNA expression, RNA VAF, Allele Expr, RNA Depth, DNA VAF columns:`
     These columns have bar graphs as cell backgrounds to give an idea where specific values fall across the entire patient sample:
@@ -50,7 +54,17 @@ As shown, different cells of the report table are highlighted in various ways:
     - RNA expression ranges from 0 to 50. This is done in order to highlight expression values that are in the lower range, based on the reasoning that, for neoantigen candidates, when the RNA expression reaches a certain level it is considered expressed without the need to specify how high the exact RNA expression value is.
     - Allele Expression ranges from 0 to max of RNA VAF column multiplied by 50 (which is the max for the RNA expression bar graph range).
 
-- The ``Tier`` column is colored based on the specific cell value and red boxes across the row are used to highlight values that did not pass filters and resulted in the tier given.
+- :bold:`Tier column and failing criteria:`
+    The ``Tier`` column is colored based on the specific cell value with the
+    Pass tier in green, the Poor and NoExpr tiers in red, and all other tiers
+    in orange. Red cell borders are used to highlight values that did not pass
+    filters and resulted in the tier given. For example, poor binders will have
+    the IC50 MT and/or IC50 %ile MT columns outlined in red, depending on which
+    value fails its threshold. A poor transcript will have the Transcript Pass
+    column outlined in red if the transcript fails all of the criteria specified
+    in the ``--transcript-proritization-strategy``. This allows for easy
+    identification of the criteria that are causing a candidate to be binned into
+    its respective tier.
 
 For more details on what each column represent, you can hover over the column names and/or click the tool icon on the top right where ``Help`` documentation is located.
 
