@@ -25,7 +25,7 @@ tools:
    users in reviewing, exploring and prioritizing neoantigens from the results of
    pVACtools processes for personalized cancer vaccine design.
 
-.. image:: images/pVACtools_main-figure_v8.png
+.. image:: images/pVACtools_workflow_6.0.0.png
     :align: center
     :alt: pVACtools immunotherapy workflow
 
