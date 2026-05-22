@@ -115,7 +115,7 @@ Specifically, the features can be separated into five categories:
     of neoantigen candidates. The transcript set that includes the best
     transcript is highlighted in green and selected by default.
   - The Reference Matches tab lists reference proteome match details for
-    the selected variant (if reference protome similarity feature was originally run)
+    the selected variant (if reference proteome similarity feature was originally run)
   - The Additional Data tab list additional information about the of the selected
     variant when a Additional Neoantigen Candidate Aggregate Report was uploaded.
   - Variant & Gene Info section lists VAF and expression information for the
@@ -151,7 +151,7 @@ For detailed descriptions on individual sections, please refer to :ref:`features
 Regenerate Tiering
 ******************
 
-Additionally, you can regenerate the :ref:`Tiers <pvacseq_aggregate_report_tiers_label>` of variants by supplying a different set of parameter cutoffs from your original pVACseq run and pressing the ``Recalculate Tiering with new paramters`` button:
+Additionally, you can regenerate the :ref:`Tiers <pvacseq_aggregate_report_tiers_label>` of variants by supplying a different set of parameter cutoffs from your original pVACseq run and pressing the ``Recalculate Tiering with new parameters`` button:
 
 - :bold:`Allele-specific anchor calculations`
 

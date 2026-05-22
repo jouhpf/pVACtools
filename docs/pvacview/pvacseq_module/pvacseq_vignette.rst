@@ -97,7 +97,7 @@ An important advantage of using pVACseq to generate neoantigen predictions is th
 - ``MT Top Score Metric`` : mutant top score metric. (default: Median)
 - ``WT Top Score Metric`` : wildtype top score metric. (default: Median)
 
-Aditionally, the ``HLA.Alleles`` and respective ``Binding.Cutoffs`` are also displayed.
+Additionally, the ``HLA.Alleles`` and respective ``Binding.Cutoffs`` are also displayed.
 
 - ``HLA.Alleles`` : is the list of HLA alleles that the sample expresses and given as input when running pVACseq.
 - ``Binding.Cutoffs``: the IC50 cutoff value for the corresponding HLA allele.
@@ -108,7 +108,7 @@ Aditionally, the ``HLA.Alleles`` and respective ``Binding.Cutoffs`` are also dis
 When predicting neoantigen candidates for a somatic variant, multiple transcripts of a gene may code for the same candidate. pVACseq will attempt to select the most likely transcript coding for a candidate (Best Transcript). The MANE Select, Canonical, and Transcript Support Level (TSL) may considered when picking the best transcript. When determining a candidate's tier, these criteria may also be taken into account. `TSL <https://useast.ensembl.org/info/genome/genebuild/transcript_quality_tags.html>`_ provides information on degree to which transcript isoforms are supported by experimental evidence. The existing TSL levels are: TSL1, TSL2, TSL3, TSL4, TSL5, TSLNA, with TSL1 being the best TSL level.  We suggest users using a higher TSL level cutoff (lower number) for higher confidence in the annotation of the targeted transcript. Default is set to be TSL1.
 
 - ``Transcript Prioritization Strategy``: Users can specify up to three
-  different critieria to consider. The best transcript will need to pass
+  different criteria to consider. The best transcript will need to pass
   at least one of the specified criteria in order for the candidate to pass.
   (default: mane_select, canonical, tsl)
 
@@ -253,7 +253,7 @@ The candidate being investigated has a good binding affinity for HLA-A*29:02 (me
 
 The mutation is not in an anchor position (see ``Anchor heatmap`` tab). A list of anchor positions for each allele-length combination
 is provided in the ``Anchor Positions`` panel below. Additionally, the underlying anchor prediction scores for each amino acid position are
-provided in the ``Anchor Weights`` panel at the bottom. Wile the mutant peptide (``VSFEEINKY``) is a good binder, the wildtype peptide (``VSFEEIKKY``) is a weak binder for HLA-A*29:02. This is scenario number 1 (WT weak binder, MT strong binder) according to the Scenario
+provided in the ``Anchor Weights`` panel at the bottom. While the mutant peptide (``VSFEEINKY``) is a good binder, the wildtype peptide (``VSFEEIKKY``) is a weak binder for HLA-A*29:02. This is scenario number 1 (WT weak binder, MT strong binder) according to the Scenario
 Guide, where the neoantigen candidate is favorable and can be accepted.
 
 .. figure:: ../../images/screenshots/vignette/COL19A1/COL19A1_5_AnchorHeatmap.png

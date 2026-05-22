@@ -197,7 +197,7 @@ for a variety of additional algorithms.
 **Calculation of normalized percentiles**
 
 Not all prediction algorithms supported by pVACseq output a percentile rank.
-In order to aleviate this issue, and to provide percentile ranks that have been consistently
+In order to alleviate this issue, and to provide percentile ranks that have been consistently
 calculated, we have run predictions for all class I algorithms supported by pVACtools on 100,000
 reference peptides each in lengths 8-11 and for the most common 1,000 human class I MHC alleles.
 These predictions allow pVACseq to support the calculation of normalized percentiles. This feature

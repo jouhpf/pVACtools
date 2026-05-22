@@ -280,7 +280,7 @@ all_epitopes.tsv and filtered.tsv Report Columns
      - Nearest neighbor to the ``HLA Allele``. Used for NetMHCstab prediction
 
 .. image:: ../images/output_file_columns.png
-    :alt: pVACseq ouput file columns illustration
+    :alt: pVACseq output file columns illustration
 
 .. _aggregated:
 
@@ -409,7 +409,7 @@ parameter.
    * - ``Tier``
      - A tier suggesting the suitability of variants for use in vaccines.
    * - ``Ref Match`` (True/False/Not Run)
-     - Wether or not there a match of the mutated peptide sequence to the reference proteome. ``Not Run`` if ``--run-reference-proteome-simlarity``
+     - Whether or not there a match of the mutated peptide sequence to the reference proteome. ``Not Run`` if ``--run-reference-proteome-simlarity``
        flag was not set during the pVACseq run.
    * - ``Evaluation``
      - Column to store the evaluation of each variant when evaluating the run in pVACview. Either ``Accept``, ``Reject``, or ``Review``.
@@ -557,7 +557,7 @@ Given the thresholds provided above, the Best Peptide is evaluated and binned in
    :header-rows: 1
 
    * - Tier
-     - Citeria
+     - Criteria
    * - ``Pass``
      - Best Peptide passes the scores, reference match, expression, transcript, clonal, problematic position, and anchor criteria
    * - ``PoorBinder``
@@ -622,7 +622,7 @@ Criteria Details
      - Pass if Best Transcript is expressed
      - ``Allele Expr > trna_vaf * expn_val``
    * - Reference Match Criteria
-     - Pass if there are no reference protome matches
+     - Pass if there are no reference proteome matches
      - ``Ref Match == False``
    * - Transcript Criteria
      - Pass if Best Transcript matches any of the user-specified ``--transcript-prioritization-strategy`` criteria

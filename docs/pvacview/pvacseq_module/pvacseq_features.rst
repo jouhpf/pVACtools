@@ -43,7 +43,7 @@ As shown, different cells of the report table are highlighted in various ways:
     - If a value is above double its respective threshold it is colored with red
 
     Since no user-specified threshold for the (combined) %ile MT column is available, a hardcoded threshold of
-    2 determines this column's background coloring to still allow for easy interpretion of the combined
+    2 determines this column's background coloring to still allow for easy interpretation of the combined
     percentile compared to our default percentile cutoff.
 
 - :bold:`RNA expression, RNA VAF, Allele Expr, RNA Depth, DNA VAF columns:`
@@ -100,7 +100,7 @@ There are three separate boxes in this section as shown, from left to right you 
   - Additional data
 
     The data displayed in this tab is dependent on the additional data file that you provided in the ``Upload`` page. The IC50 MT value and %ile MT values are shown if the app
-    was able to locate the same variant in the data file provided. Values will show up as N/A if IC50 MT or %ile MT values are not provided in the additional file. Additionaly, the Best Peptide of the variant from that file will be listed as well as the HLA Allele the Best Peptide prediction was binding to and the Best Transcript for the prediction.
+    was able to locate the same variant in the data file provided. Values will show up as N/A if IC50 MT or %ile MT values are not provided in the additional file. Additionally, the Best Peptide of the variant from that file will be listed as well as the HLA Allele the Best Peptide prediction was binding to and the Best Transcript for the prediction.
 
 - :bold:`Variant & Gene Info`
 

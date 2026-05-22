@@ -375,7 +375,7 @@ Criteria Details
        ``exploratory`` ``--percentile-threshold-strategy``: needs to pass
        the binding criteria, the presentation criteria, OR the immunogenicity criteria
    * - Reference Match Criteria
-     - Pass if there are no reference protome matches
+     - Pass if there are no reference proteome matches
      - ``Ref Match == False``
    * - Read Support Criteria
      - Pass if the variant has read support

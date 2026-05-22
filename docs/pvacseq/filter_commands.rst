@@ -116,7 +116,7 @@ This filter is used to eliminate variant annotations based on poorly-supported t
 based on whether the transcript is the MANE Select transcripts, whether it is
 the canonical transcript or whether the transcript support level (TSL) meets the
 ``--maximum-transcript-support-level`` cutoff. The
-``--transcript-prioritizatio-strategy`` parameter controlls which ones of these three
+``--transcript-prioritizatio-strategy`` parameter controls which ones of these three
 criteria are considered. A neoantigen candidate passes this filter if its
 transcript passes at least one of the specified criteria.
 

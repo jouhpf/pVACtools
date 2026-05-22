@@ -441,7 +441,7 @@ Given the thresholds provided above, the Best Peptide is evaluated and binned in
    :header-rows: 1
 
    * - Tier
-     - Citeria
+     - Criteria
    * - ``Pass``
      - Best Peptide passes the scores, reference match, expression, transcript, clonal, and problematic position criteria
    * - ``PoorBinder``
@@ -505,7 +505,7 @@ Criteria Details
      - Pass if Best Transcript is expressed
      - ``Allele Expr > trna_vaf * expn_val``
    * - Reference Match Criteria
-     - Pass if there are no reference protome matches
+     - Pass if there are no reference proteome matches
      - ``Ref Match == False``
    * - Transcript Criteria
      - Pass if Best Transcript matches any of the user-specified ``--transcript-prioritization-strategy`` criteria

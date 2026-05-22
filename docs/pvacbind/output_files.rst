@@ -329,7 +329,7 @@ Criteria Details
        ``exploratory`` ``--percentile-threshold-strategy``: needs to pass
        the binding criteria, the presentation criteria, OR the immunogenicity criteria
    * - Reference Match Criteria
-     - Pass if there are no reference protome matches
+     - Pass if there are no reference proteome matches
      - ``Ref Match == False``
    * - Problematic Position Criteria
      - Best Peptide does not contain a problematic amino acid as defined by the

@@ -88,7 +88,7 @@ ____________
   - TLImm (class I immunogenicity score)
   - ImmuScope (class II immunogenicity score)
 
-- In order to support a more comprehensive evaluation of candidates, aggreggate binding, presentation,
+- In order to support a more comprehensive evaluation of candidates, aggregate binding, presentation,
   and immunogenicity information is now available in the final reports and is used to filter, prioritize,
   and tier candidates:
 
@@ -113,7 +113,7 @@ ____________
     added to bin candidates that failed the
     ``--presentation-percentile-threshold`` or
     ``--immunogenicity-percentile--threshold``, respectively, when all other
-    evaluation critiera are passed.
+    evaluation criteria are passed.
   - pVACvector has been updated to work on the binding percentile instead of the
     combined percentile. The corresponding parameter has been renamed to
     ``--binding-percentile-threshold`` with a new default of 2.0. The junction
@@ -132,11 +132,11 @@ ____________
   assigned a rank and the sum of those ranks is used. By default both the IC50
   (``ic50``) and the combined percentile (``combined_percentile``) are used.
   Other allowed values are the binding percentile (``binding_percentile``),
-  the presentation pecentile (``presentation percentile``), and the
+  the presentation percentile (``presentation percentile``), and the
   immunogenicity percentile (``immunogenicity_percentile``). Any number and
   combination of these five criteria may be specified.
 - Not all prediction algorithms supported by pVACtools may support a
-  percentile rank. In order to aleviate this issue, and to provide percentile
+  percentile rank. In order to alleviate this issue, and to provide percentile
   ranks that have been consistently calculated, we have run predictions for
   all class I algorithms supported by pVACtools on 100,000 reference peptides each in
   lengths 8-11 and for the most common 1,000 human class I MHC alleles. These
