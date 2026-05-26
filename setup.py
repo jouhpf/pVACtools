@@ -56,7 +56,7 @@ setup(
         'scikit-learn>=1.6.0,<1.8.0',
         'imblearn',
     ],
-    packages=find_namespace_packages(),
+    packages=find_namespace_packages(exclude=['tests']),
     include_package_data=True,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
