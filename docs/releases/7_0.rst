@@ -26,8 +26,6 @@ ____________
   - MixMHCpred (class I binding score and percentile)
   - MixMHC2pred (class II binding score and percentile)
   - PRIME (class I immunogenicity score and percentile)
-  - TLBind (class I binding score and class I presentation score)
-  - TLImm (class I immunogenicity score)
   - ImmuScope (class II immunogenicity score)
 
 - In order to support a more comprehensive evaluation of candidates, aggregate binding, presentation,
