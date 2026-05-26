@@ -72,6 +72,7 @@ setup(
     author_email = "help@pvactools.org",
     description = "A cancer immunotherapy tools suite",
     long_description = readme(),
+    long_description_content_type="text/markdown",
     license = "BSD-3-Clause-Clear",
     keywords = "immunogenomics, immunotherapy, antigens, neoantigens, cancer, sequencing, variant, variants, fusion, fusions",
     #This needs to be the url where the code is being hosted
