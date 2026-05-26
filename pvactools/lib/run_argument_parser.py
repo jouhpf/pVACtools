@@ -66,6 +66,21 @@ class RunArgumentParser(metaclass=ABCMeta):
             default="4.1",
             help="Specify the version of NetMHCIIpan or NetMHCIIpanEL to be used during the run.",
         )
+        parser.add_argument(
+            "--use-normalized-percentiles",
+            help="When set, calculate normalized percentile scores for all prediction algorithms. For algorithms "
+                 + "that do not natively provide percentiles, percentiles will be derived by comparing prediction "
+                 + "scores against pre-computed reference distributions. For algorithms that do provide native percentiles, "
+                 + "their values will be overwritten with the normalized percentile.",
+            default=False,
+            action='store_true'
+        )
+        parser.add_argument(
+            "--reference-scores-path",
+            default="/tmp",
+            help="Directory to store pre-computed reference percentile files. "
+                 + "If a file is missing, it will be downloaded here when --use-normalized-percentiles is set."
+        )
         self.parser = parser
 
     def epitope_args(self):
@@ -95,16 +110,31 @@ class RunArgumentParser(metaclass=ABCMeta):
                  + "report, only bin candidates into the Pass tier that meet this threshold.",
         )
         self.parser.add_argument(
-            '--percentile-threshold', type=float_range(0.0,100.0),
+            '--binding-percentile-threshold', type=float_range(0.0,100.0),
+            default=2.0,
             help="When creating the filtered.tsv report, only include epitopes where the mutant "
-                 + "allele has a percentile rank below this value. When creating the aggregated.tsv "
+                 + "allele has a binding percentile rank below this value. When creating the aggregated.tsv "
+                 + "report, only bin candidates into the Pass tier that meet this threshold."
+        )
+        self.parser.add_argument(
+            '--presentation-percentile-threshold', type=float_range(0.0,100.0),
+            default=2.0,
+            help="When creating the filtered.tsv report, only include epitopes where the mutant "
+                 + "allele has a presentation percentile rank below this value. When creating the aggregated.tsv "
+                 + "report, only bin candidates into the Pass tier that meet this threshold."
+        )
+        self.parser.add_argument(
+            '--immunogenicity-percentile-threshold', type=float_range(0.0,100.0),
+            default=2.0,
+            help="When creating the filtered.tsv report, only include epitopes where the mutant "
+                 + "allele has a immunogenicity percentile rank below this value. When creating the aggregated.tsv "
                  + "report, only bin candidates into the Pass tier that meet this threshold."
         )
         self.parser.add_argument(
             '--percentile-threshold-strategy',
             choices=['conservative', 'exploratory'],
-            help="Specify the candidate inclusion strategy. The 'conservative' option requires a candidate to pass BOTH the binding threshold and percentile threshold (default)."
-                 + " The 'exploratory' option requires a candidate to pass EITHER the binding threshold or the percentile threshold.",
+            help="Specify the candidate inclusion strategy. The 'conservative' option requires a candidate to pass BOTH the binding threshold and all percentile thresholds set (default)."
+                 + " The 'exploratory' option requires a candidate to pass EITHER the binding threshold or any of the percentile thresholds set.",
             default="conservative",
         )
         self.parser.add_argument(
@@ -123,11 +153,13 @@ class RunArgumentParser(metaclass=ABCMeta):
                  + "median: Use the median MT Score and Median Fold Change (i.e. the  median MT ic50 binding score and fold change of all chosen prediction methods)."
         )
         self.parser.add_argument(
-            '-m2', '--top-score-metric2',
-            choices=['ic50','percentile'],
-            default='ic50',
-            help="Whether to use median/best IC50 or to use median/best percentile score when determining the best peptide in the aggregated report and the top score filter (filtered report). "
-                 + "This parameter is also used to influence the primary sorting criteria in the aggregated report for the candidates within each tier as well as in the filtered report."
+            '-m2', '--top-score-metric2', type=top_score_metric2(),
+            help="Which metrics to consider when selecting the best peptide in the aggregate erport and the top score filter step (filtered report). "
+                 + "Each specified metric will be ranked and the sum of these ranks will be used. This rank sum is also used as the primary sorting criteria in the "
+                 + "aggregated report for the candidates within each tier as well as in the filtered report. Available options are "
+                 + "'ic50', 'combined_percentile', 'binding_percentile', 'immunogenicity_percentile', and 'presentation_percentile'."
+                 + "Whether the lowest or median is considered for each metric is controlled by the --top-score-metric parameter. ",
+            default=['ic50', 'combined_percentile'],
         )
 
     def prediction_args(self):
@@ -196,12 +228,6 @@ class RunArgumentParser(metaclass=ABCMeta):
             help="Number of FASTA entries per IEDB request. "
                  + "For some resource-intensive prediction algorithms like Pickpocket and NetMHCpan it might be helpful to reduce this number. "
                  + "Needs to be an even number.",
-        )
-        self.parser.add_argument(
-            '--exclude-NAs',
-            help="Exclude NA values from the filtered output.",
-            default=False,
-            action='store_true'
         )
 
     def pass_only_args(self):
@@ -391,6 +417,23 @@ class RunArgumentParser(metaclass=ABCMeta):
                  + "calculated as --trna-vaf * --expn-val * 10. Only candidates with Allele Expr "
                  + "(RNA Expr * RNA VAF) above the allele expr cutoff will be binned into the Pass tier."
         )
+        # ML prediction arguments
+        self.parser.add_argument(
+            "--run-ml-predictions",
+            help="Enable ML-based neoantigen evaluation predictions.",
+            default=False,
+            action='store_true',
+        )
+        self.parser.add_argument(
+            "--ml-threshold-accept", type=float,
+            default=0.55,
+            help="Threshold for Accept predictions in ML model (default: 0.55).",
+        )
+        self.parser.add_argument(
+            "--ml-threshold-reject", type=float,
+            default=0.30,
+            help="Threshold for Reject predictions in ML model (default: 0.30).",
+        )        
 
     def pvacsplice(self):
         self.parser.add_argument(
@@ -548,16 +591,17 @@ class PvacvectorRunArgumentParser(RunArgumentParser):
             help="Fail junctions where any junctional epitope has ic50 binding scores below this value.",
         )
         self.parser.add_argument(
-            '--percentile-threshold', type=float_range(0.0,100.0),
+            '--binding-percentile-threshold', type=float_range(0.0,100.0),
+            default=2.0,
             help="Fail junctions where any junctional epitope "
-                 +"has a percentile rank below this value."
+                 +"has a binding percentile rank below this value."
         )
         self.parser.add_argument(
             '--percentile-threshold-strategy',
             choices=['conservative', 'exploratory'],
             help="Specify the how to evaluate junctional epitopes if a percentile threshold is set. "
-                 + " The 'conservative' option fails a junction if a junctional epitope fails EITHER the binding threshold OR the percentile threshold (default)."
-                 + " The 'exploratory' option fails a junction only if a junctional epitope fails BOTH the binding threshold AND the percentile threshold.",
+                 + " The 'conservative' option fails a junction if a junctional epitope fails EITHER the binding threshold OR the binding percentile threshold (default)."
+                 + " The 'exploratory' option fails a junction only if a junctional epitope fails BOTH the binding threshold AND the binding percentile threshold.",
             default="conservative",
         )
         self.parser.add_argument(

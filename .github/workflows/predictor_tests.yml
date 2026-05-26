@@ -5,7 +5,8 @@ on:
     branches: [ master, staging, hotfix ]
   pull_request:
     types: [opened, synchronize, edited, reopened]
-    branches: [ master, staging, hotfix]
+    branches:
+      - '**'
 
 jobs:
   run_tests:
@@ -53,8 +54,45 @@ jobs:
           pip cache purge
           pip install git+https://github.com/griffithlab/bigmhc.git#egg=bigmhc
           pip install git+https://github.com/griffithlab/deepimmuno.git#egg=deepimmuno
+          pip install git+https://github.com/griffithlab/ImmuScope.git#egg=ImmuScope
           pip install -e .
           mhcflurry-downloads fetch
+          immuscope-download-weights
+      - name: Install MixMHCpred
+        uses: actions/checkout@master
+        with:
+          repository: GfellerLab/MixMHCpred
+          path: ./MixMHCpred
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up MixMHCpred
+        run: |
+          cd MixMHCpred
+          pip install -r code/setup_pythonLibrary.txt
+          chmod +x MixMHCpred
+          echo "$(pwd -P)" >> $GITHUB_PATH
+          cd ..
+      - name: Install and set up MixMHC2pred
+        run: |
+          mkdir ./MixMHC2pred
+          cd ./MixMHC2pred
+          wget https://github.com/GfellerLab/MixMHC2pred/releases/download/v2.0.2.2/MixMHC2pred-2.0.zip
+          unzip MixMHC2pred-2.0.zip
+          rm MixMHC2pred-2.0.zip
+          chmod +x MixMHC2pred_unix
+          echo "$(pwd -P)" >> $GITHUB_PATH
+      - name: Install PRIME
+        uses: actions/checkout@master
+        with:
+          repository: GfellerLab/PRIME
+          path: ./PRIME
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up PRIME
+        run: |
+          cd PRIME
+          echo "$(pwd -P)" >> $GITHUB_PATH
+          cd lib
+          g++ -O3 PRIME.cc -o PRIME.x
+          cd ../..
       - name: List installed packages
         run: |
           pip list

@@ -99,7 +99,7 @@ def append_columns(intermediate_output_file, tsv_file, output_file):
         writer = csv.DictWriter(output_fh, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
         for line in reader:
-            matching_line = tsv_entries[line['Mutation']]
+            matching_line = tsv_entries[line['Index']]
             line['Chromosome'] = matching_line['chromosome_name']
             line['Start'] = matching_line['start']
             line['Stop'] = matching_line['stop']
@@ -146,7 +146,9 @@ def main(args_input = sys.argv[1:]):
         'top_score_metric'          : args.top_score_metric,
         'top_score_metric2'         : args.top_score_metric2,
         'binding_threshold'         : args.binding_threshold,
-        'percentile_threshold'      : args.percentile_threshold,
+        'binding_percentile_threshold': args.binding_percentile_threshold,
+        'immunogenicity_percentile_threshold': args.immunogenicity_percentile_threshold,
+        'presentation_percentile_threshold': args.presentation_percentile_threshold,
         'percentile_threshold_strategy': args.percentile_threshold_strategy,
         'allele_specific_binding_thresholds': args.allele_specific_binding_thresholds,
         'net_chop_method'           : args.net_chop_method,
@@ -166,7 +168,6 @@ def main(args_input = sys.argv[1:]):
         'starfusion_file'           : args.starfusion_file,
         'read_support'              : args.read_support,
         'expn_val'                  : args.expn_val,
-        'exclude_NAs'               : args.exclude_NAs,
         'peptide_fasta'             : args.peptide_fasta,
         'aggregate_inclusion_binding_threshold': args.aggregate_inclusion_binding_threshold,
         'aggregate_inclusion_count_limit': args.aggregate_inclusion_count_limit,
@@ -183,6 +184,10 @@ def main(args_input = sys.argv[1:]):
     else:
         iedb_mhc_i_executable = None
         iedb_mhc_ii_executable = None
+    
+    if args.use_normalized_percentiles and species != 'human':
+        print("WARNING: Normalized percentiles are only available for human alleles. Option will be ignored.")
+        args.use_normalized_percentiles = False
 
     all_params = {
         'I': {
@@ -190,7 +195,9 @@ def main(args_input = sys.argv[1:]):
             'prediction_algorithms': class_i_prediction_algorithms,
             'alleles': class_i_alleles,
             'epitope_lengths': args.class_i_epitope_length,
-            'netmhc_stab': args.netmhc_stab
+            'netmhc_stab': args.netmhc_stab,
+            'use_normalized_percentiles': args.use_normalized_percentiles,
+            'reference_scores_path': args.reference_scores_path
         },
         'II': {
             'iedb_executable': iedb_mhc_ii_executable,

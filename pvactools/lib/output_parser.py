@@ -3,8 +3,12 @@ import sys
 import csv
 import re
 import operator
+import requests
+import threading
 import os
 import pandas as pd
+import h5py
+import numpy as np
 from math import ceil, inf
 from statistics import median
 import yaml
@@ -12,6 +16,34 @@ import yaml
 from pvactools.lib.prediction_class import PredictionClass
 
 csv.field_size_limit(sys.maxsize)
+
+class PercentileFileCache:
+    """Thread-safe cache for allele file download status."""
+    _missing = set()
+    _events = {}
+    _lock = threading.Lock()
+
+    @classmethod
+    def get_event(cls, allele):
+        with cls._lock:
+            if allele not in cls._events:
+                cls._events[allele] = threading.Event()
+            return cls._events[allele]
+
+    @classmethod
+    def mark_missing(cls, allele):
+        with cls._lock:
+            cls._missing.add(allele)
+
+    @classmethod
+    def is_missing(cls, allele):
+        with cls._lock:
+            return allele in cls._missing
+
+    @classmethod
+    def mark_done(cls, allele):
+        event = cls.get_event(allele)
+        event.set()  # unblock all waiting threads
 
 class OutputParser(metaclass=ABCMeta):
     def __init__(self, **kwargs):
@@ -22,6 +54,9 @@ class OutputParser(metaclass=ABCMeta):
         self.sample_name             = kwargs['sample_name']
         self.add_sample_name         = kwargs.get('add_sample_name_column')
         self.flurry_state            = kwargs.get('flurry_state')
+        self.use_normalized_percentiles = kwargs.get('use_normalized_percentiles', False)
+        self.reference_scores_path   = kwargs.get('reference_scores_path', None)
+        self.reference_scores        = {}
 
     def parse_input_tsv_file(self):
         with open(self.input_tsv_file, 'r') as reader:
@@ -158,38 +193,337 @@ class OutputParser(metaclass=ABCMeta):
 
         return dict((k, float(v)) if v != 'None' and v is not None and v != "" else (k, 'NA') for k, v in percentiles.items())
 
+    def transform_empty_percentiles(self,p):
+        return float(p) if p != 'None' and p is not None and p != "" else 'NA'
+
+    #def calculate_normalized_percentile(self, allele, length, score, method, is_reversed=False, mode="per_length"):
+    def calculate_normalized_percentile(self, allele, length, score, method, is_reversed=False, mode="length_agnostic"):
+        if allele is None or length is None or score is None or score == 'NA':
+            return 'NA'
+
+        normalized = self._normalize_allele(allele)
+        if normalized is None:
+            return 'NA'
+
+        allele_file = f"{normalized}_percentiles.h5"
+        file_path = os.path.join(self.reference_scores_path, allele_file)
+
+        if mode == "per_length":
+            key = f"{method}/{length}mer"
+        elif mode == "length_agnostic":
+            key = method
+        cache_key = f"{normalized}_{key}"
+        if cache_key in self.reference_scores:
+            ref_scores = self.reference_scores[cache_key]
+        else:
+            try:
+                with h5py.File(file_path, "r") as f:
+                    if key not in f:
+                        return 'NA'  # algorithm or length not present
+                    if mode == "per_length":
+                        ref_scores = f[key][...]
+                    elif mode == "length_agnostic":
+                        scores = []
+                        for length in f[key].keys():
+                            scores.extend(f[key][length][...])
+                        ref_scores = np.array(sorted(scores))
+                    self.reference_scores[cache_key] = ref_scores
+            except Exception as e:
+                return 'NA'
+
+        if ref_scores.size == 0:
+            return 'NA'
+
+        n = len(ref_scores)
+        left = np.searchsorted(ref_scores, score, side="left")
+        right = np.searchsorted(ref_scores, score, side="right")
+
+        if left == right:
+            percentile = left / n * 100
+        else:
+            percentile = (left + right) / (2 * n) * 100
+
+        percentile = 100 - percentile if is_reversed else percentile
+        return round(percentile, 3)
+
+    def _normalize_allele(self, allele):
+        if allele is None:
+            return None
+
+        return allele.replace("*", "_").replace(":", "_")
+
+    def _parse_float_or_na(self, value):
+        try:
+            return float(value)
+        except Exception:
+            return 'NA'
+
+    def _extract_percentile(self, line, *keys, fallback='NA', is_reversed=False):
+        for key in keys:
+            if key in line and line[key] not in (None, '', 'NA'):
+                return self.transform_empty_percentiles(line[key])
+        return fallback
+
+    def _has_normalized_file(self, allele, normalized_allele):
+        allele_file = f"{normalized_allele}_percentiles.h5"
+        file_path = os.path.join(self.reference_scores_path, allele_file)
+
+        if os.path.exists(file_path):
+            return True
+
+        event = PercentileFileCache.get_event(normalized_allele)
+
+        if PercentileFileCache.is_missing(normalized_allele) and event.is_set():
+            return False
+
+        with PercentileFileCache._lock:
+            if os.path.exists(file_path):
+                return True
+
+            if not event.is_set() and normalized_allele not in PercentileFileCache._missing:
+                pass
+            else:
+                # Another thread is already downloading – wait for it
+                event.wait()
+                return os.path.exists(file_path)
+
+        url = f"https://raw.githubusercontent.com/griffithlab/pvactools_percentiles_data/main/hdf5/{allele_file}"
+        try:
+            response = requests.get(url, stream=True)
+            response.raise_for_status()
+
+            os.makedirs(self.reference_scores_path, exist_ok=True)
+            with open(file_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+
+            PercentileFileCache.mark_done(normalized_allele)
+            return True
+
+        except Exception:
+            PercentileFileCache.mark_missing(normalized_allele)
+            PercentileFileCache.mark_done(normalized_allele)
+
+            print(f"WARNING: No percentile file found for allele {allele} ({normalized_allele}). Using 'NA' for percentile values.")
+            return False
+
+    def _make_score_entry(
+        self,
+        line,
+        label,
+        value_key,
+        raw_value,
+        method,
+        percentile_keys=None,
+        percentile_fallback='NA',
+        include_percentile=True,
+        is_reversed=False
+    ):
+        """
+        Centralized entry builder for all predictors.
+        Handles:
+        - raw numeric parsing
+        - percentile extraction
+        - normalized percentile override
+        """
+        val = self._parse_float_or_na(raw_value)
+        entry = {label: {value_key: val}}
+
+        if include_percentile:
+            if self.use_normalized_percentiles:
+                allele = line.get('allele')
+                normalized_allele = self._normalize_allele(allele)
+
+                if normalized_allele is None or not self._has_normalized_file(allele, normalized_allele):
+                    percentile = 'NA'
+                else:
+                    normalized_input = None if val == 'NA' else val
+                    percentile = self.calculate_normalized_percentile(
+                        allele,
+                        len(line.get('peptide') or ''),
+                        normalized_input,
+                        method,
+                        is_reversed
+                    )
+            else:
+                if percentile_keys:
+                    percentile = self._extract_percentile(
+                        line, *percentile_keys, fallback=percentile_fallback
+                    )
+                else:
+                    percentile = percentile_fallback
+
+            entry[label]['percentile'] = percentile
+
+        return entry
+
     def get_scores(self, line, method):
-        if method.lower() == 'mhcflurry':
+        m = method.lower()
+
+        if m == 'mhcflurry':
             if self.flurry_state == 'both':
                 return {
-                    'ic50': float(line['ic50']),
-                    'mhcflurry_processing_score': float(line['mhcflurry_processing_score']),
-                    'mhcflurry_presentation_score': float(line['mhcflurry_presentation_score'])
+                    **self._make_score_entry(
+                        line, 'MHCflurry', 'ic50',
+                        line.get('ic50'), method,
+                        percentile_keys=['percentile']
+                    ),
+                    **self._make_score_entry(
+                        line, 'MHCflurryEL Processing', 'presentation',
+                        line.get('mhcflurry_processing_score'), 'MHCflurry_EL_Processing',
+                        percentile_keys=None, percentile_fallback='NA', is_reversed=True
+                    ),
+                    **self._make_score_entry(
+                        line, 'MHCflurryEL Presentation', 'presentation',
+                        line.get('mhcflurry_presentation_score'), 'MHCflurry_EL_Presentation',
+                        percentile_keys=['mhcflurry_presentation_percentile'], is_reversed=True
+                    )
                 }
-            elif self.flurry_state == 'EL_only':
+
+            if self.flurry_state == 'el_only':
                 return {
-                    'mhcflurry_processing_score': float(line['mhcflurry_processing_score']),
-                    'mhcflurry_presentation_score': float(line['mhcflurry_presentation_score'])
+                    **self._make_score_entry(
+                        line, 'MHCflurryEL Processing', 'presentation',
+                        line.get('mhcflurry_processing_score'), 'MHCflurry_EL_Processing',
+                        percentile_keys=None, percentile_fallback='NA', is_reversed=True
+                    ),
+                    **self._make_score_entry(
+                        line, 'MHCflurryEL Presentation', 'presentation',
+                        line.get('mhcflurry_presentation_score'), 'MHCflurry_EL_Presentation',
+                        percentile_keys=['mhcflurry_presentation_percentile'], is_reversed=True
+                    )
                 }
+
+            return self._make_score_entry(
+                line, 'MHCflurry', 'ic50',
+                line.get('ic50'), method,
+                percentile_keys=['percentile']
+            )
+
+        if m == 'deepimmuno':
+            return self._make_score_entry(
+                line, 'DeepImmuno', 'immunogenicity',
+                line.get('immunogenicity'), method,
+                percentile_keys=None, percentile_fallback='NA', is_reversed=True
+            )
+
+        if m == 'bigmhc_el':
+            return self._make_score_entry(
+                line, 'BigMHC_EL', 'presentation',
+                line.get('BigMHC_EL'), method,
+                percentile_keys=None, percentile_fallback='NA', is_reversed=True
+            )
+
+        if m == 'bigmhc_im':
+            return self._make_score_entry(
+                line, 'BigMHC_IM', 'immunogenicity',
+                line.get('BigMHC_IM'), method,
+                percentile_keys=None, percentile_fallback='NA', is_reversed=True
+            )
+        
+        if m == 'immuscope_im':
+            return self._make_score_entry(
+                line, 'ImmuScope_IM', 'immunogenicity',
+                line.get('ImmuScope_IM'), method,
+                percentile_keys=None, percentile_fallback='NA', is_reversed=True
+            )
+
+        if m == 'netmhcpan_el':
+            presentation = line.get('score')
+
+            percentile = self._extract_percentile(
+                line, 'percentile_rank', 'rank',
+                fallback='NA'
+            )
+
+            entry = self._make_score_entry(
+                line, 'NetMHCpanEL', 'presentation',
+                presentation, 'NetMHCpanEL',
+                include_percentile=False,
+                is_reversed=True
+            )
+
+            if not self.use_normalized_percentiles:
+                entry['NetMHCpanEL']['percentile'] = percentile
             else:
-                return {'ic50': float(line['ic50'])}
-        elif method.lower() == 'deepimmuno':
-            return {'score': float(line['immunogenicity'])}
-        elif method.lower() == 'bigmhc_el':
-            return {'score': float(line['BigMHC_EL'])}
-        elif method.lower() == 'bigmhc_im':
-            return {'score': float(line['BigMHC_IM'])}
-        elif method.lower() == 'netmhcpan_el':
-            return {'score': float(line['score'])}
-        elif 'netmhciipan_el' in method.lower():
-            if 'score' in line:
-                return {'score': float(line['score'])}
-            elif 'ic50' in line:
-                return {'score': float(line['ic50'])}
+                entry['NetMHCpanEL']['percentile'] = self.calculate_normalized_percentile(
+                    line.get('allele'),
+                    len(line.get('peptide') or ''),
+                    self._parse_float_or_na(presentation),
+                    'NetMHCpanEL',
+                    is_reversed=True
+                )
+
+            return entry
+
+        if 'netmhciipan_el' in m:
+            presentation = (
+                line.get('score') if 'score' in line
+                else line.get('ic50') if 'ic50' in line
+                else None
+            )
+            if presentation is None:
+                raise Exception("Missing expected columns 'score' or 'ic50' in NetMHCIIpanEL output")
+
+            percentile = self._extract_percentile(
+                line, 'percentile_rank', 'rank',
+                fallback='NA'
+            )
+
+            entry = self._make_score_entry(
+                line, 'NetMHCIIpanEL', 'presentation',
+                presentation, 'NetMHCIIpanEL',
+                include_percentile=False,
+                is_reversed=True
+            )
+
+            if not self.use_normalized_percentiles:
+                entry['NetMHCIIpanEL']['percentile'] = percentile
             else:
-                raise Exception("Missing expected columns: 'score' or 'ic50' in NetMHCIIpanEL output")
-        else:
-            return {'ic50': float(line['ic50'])}
+                entry['NetMHCIIpanEL']['percentile'] = self.calculate_normalized_percentile(
+                    line.get('allele'),
+                    len(line.get('peptide') or ''),
+                    self._parse_float_or_na(presentation),
+                    'NetMHCIIpanEL',
+                    is_reversed=True
+                )
+
+            return entry
+
+        if m == 'mixmhcpred':
+            return self._make_score_entry(
+                line, 'MixMHCpred', 'binding_score',
+                line.get('score'), method,
+                percentile_keys=['percentile'],
+                is_reversed=True
+            )
+
+        if m == 'mixmhc2pred':
+            return self._make_score_entry(
+                line, 'MixMHC2pred', 'presentation',
+                line.get('score'), method,
+                percentile_keys=['percentile'],
+                is_reversed=True
+            )
+
+        if m == 'prime':
+            return self._make_score_entry(
+                line, 'PRIME', 'immunogenicity',
+                line.get('score'), method,
+                percentile_keys=['percentile'],
+                is_reversed=True
+            )
+
+        pretty_method = PredictionClass.prediction_class_name_for_iedb_prediction_method(method)
+        percentile_keys = [
+            key for key in ('percentile', 'percentile_rank', 'rank') if key in line
+        ] or None
+
+        return self._make_score_entry(
+            line, pretty_method, 'ic50',
+            line.get('ic50'), pretty_method,
+            percentile_keys=percentile_keys
+        )
 
     def format_match_na(self, result, metric):
         return {method: {field: 'NA' for field in fields.keys()} for method, fields in result[f'mt_{metric}s'].items()}
@@ -219,12 +553,10 @@ class OutputParser(metaclass=ABCMeta):
         if total_matches >= self.min_match_count(int(result['peptide_length'])):
             result['wt_epitope_seq'] = wt_epitope_seq
             result['wt_scores']      = wt_result['wt_scores']
-            result['wt_percentiles'] = wt_result['wt_percentiles']
             result['mutation_position'] = self.find_mutation_positions(wt_epitope_seq, mt_epitope_seq)
         else:
             result['wt_epitope_seq'] = 'NA'
             result['wt_scores']      = self.format_match_na(result, 'score')
-            result['wt_percentiles'] = self.format_match_na(result, 'percentile')
             result['mutation_position'] = 'NA'
 
     def match_wildtype_and_mutant_entry_for_frameshift(self, result, mt_position, wt_results, previous_result):
@@ -236,17 +568,8 @@ class OutputParser(metaclass=ABCMeta):
         if match_position not in wt_results:
             result['wt_epitope_seq'] = 'NA'
             result['wt_scores']      = self.format_match_na(result, 'score')
-            result['wt_percentiles'] = self.format_match_na(result, 'percentile')
             result['wt_epitope_position'] = 'NA'
             result['mutation_position'] = 'NA'
-
-            #previous_mutation_position = self.position_to_tuple(previous_result['mutation_position'])
-            #if previous_mutation_position == 'NA':
-            #    result['mutation_position'] = 'NA'
-            #elif previous_mutation_position[0] == 1:
-            #    result['mutation_position'] = '1-{}'.format(peptide_length)
-            #else:
-            #    result['mutation_position'] = '{}-{}'.format(previous_mutation_position[0]-1, peptide_length)
             return
 
         mt_epitope_seq = result['mt_epitope_seq']
@@ -256,7 +579,6 @@ class OutputParser(metaclass=ABCMeta):
             #The MT epitope does not overlap the frameshift mutation
             result['wt_epitope_seq']    = wt_epitope_seq
             result['wt_scores']         = wt_result['wt_scores']
-            result['wt_percentiles']    = wt_result['wt_percentiles']
             result['mutation_position'] = 'NA'
             result['wt_epitope_position'] = 'NA'
         else:
@@ -266,7 +588,6 @@ class OutputParser(metaclass=ABCMeta):
                 #The minimum amino acid match count is met
                 result['wt_epitope_seq'] = wt_result['wt_epitope_seq']
                 result['wt_scores']      = wt_result['wt_scores']
-                result['wt_percentiles'] = wt_result['wt_percentiles']
                 result['mutation_position'] = self.find_mutation_positions(wt_epitope_seq, mt_epitope_seq)
             else:
                 #The minimum amino acid match count is not met
@@ -274,7 +595,6 @@ class OutputParser(metaclass=ABCMeta):
                 #We don't include the matching WT epitope in the output
                 result['wt_epitope_seq'] = 'NA'
                 result['wt_scores']      = self.format_match_na(result, 'score')
-                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
                 result['wt_epitope_seq'] = 'NA'
             result['wt_epitope_position'] = match_position
 
@@ -290,7 +610,6 @@ class OutputParser(metaclass=ABCMeta):
                 #The WT match position is out of range (can happen when propagating from a large insertion)
                 result['wt_epitope_seq'] = 'NA'
                 result['wt_scores']      = self.format_match_na(result, 'score')
-                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
                 result['mutation_position'] = 'NA'
                 return
 
@@ -301,7 +620,6 @@ class OutputParser(metaclass=ABCMeta):
                 #The minimum amino acid match count is met
                 result['wt_epitope_seq'] = best_match_wt_result['wt_epitope_seq']
                 result['wt_scores']      = best_match_wt_result['wt_scores']
-                result['wt_percentiles'] = best_match_wt_result['wt_percentiles']
                 result['mutation_position'] = self.find_mutation_positions(mt_epitope_seq, best_match_wt_result['wt_epitope_seq'])
             else:
                 #The minimum amino acid match count is not met
@@ -309,7 +627,6 @@ class OutputParser(metaclass=ABCMeta):
                 #We don't include the matching WT epitope in the output
                 result['wt_epitope_seq'] = 'NA'
                 result['wt_scores']      = self.format_match_na(result, 'score')
-                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
                 result['mutation_position'] = 'NA'
             return
 
@@ -326,7 +643,6 @@ class OutputParser(metaclass=ABCMeta):
                 #No valid WT match exists for this MT epitope
                 result['wt_epitope_seq'] = 'NA'
                 result['wt_scores']      = self.format_match_na(result, 'score')
-                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
                 result['mutation_position'] = 'NA'
                 result['match_direction'] = 'right'
                 result['wt_epitope_position'] = best_match_position
@@ -339,7 +655,6 @@ class OutputParser(metaclass=ABCMeta):
                 #The minimum amino acid match count is met
                 result['wt_epitope_seq'] = best_match_wt_result['wt_epitope_seq']
                 result['wt_scores']      = best_match_wt_result['wt_scores']
-                result['wt_percentiles'] = best_match_wt_result['wt_percentiles']
                 result['mutation_position'] = self.find_mutation_positions(best_match_wt_result['wt_epitope_seq'], mt_epitope_seq)
             else:
                 #The minimum amino acid match count is not met
@@ -347,7 +662,6 @@ class OutputParser(metaclass=ABCMeta):
                 #We don't include the matching WT epitope in the output
                 result['wt_epitope_seq'] = 'NA'
                 result['wt_scores']      = self.format_match_na(result, 'score')
-                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
                 result['mutation_position'] = 'NA'
             return
 
@@ -357,7 +671,6 @@ class OutputParser(metaclass=ABCMeta):
         if baseline_best_match_wt_epitope_seq == mt_epitope_seq:
             result['wt_epitope_seq']      = baseline_best_match_wt_result['wt_epitope_seq']
             result['wt_scores']           = baseline_best_match_wt_result['wt_scores']
-            result['wt_percentiles']      = baseline_best_match_wt_result['wt_percentiles']
             result['wt_epitope_position'] = int(baseline_best_match_position)
             result['mutation_position']   = 'NA'
             result['match_direction']     = 'left'
@@ -398,7 +711,6 @@ class OutputParser(metaclass=ABCMeta):
                 #The minimum amino acid match count is met
                 result['wt_epitope_seq'] = best_match_wt_result['wt_epitope_seq']
                 result['wt_scores']      = best_match_wt_result['wt_scores']
-                result['wt_percentiles'] = best_match_wt_result['wt_percentiles']
                 result['mutation_position'] = self.find_mutation_positions(best_match_wt_result['wt_epitope_seq'], mt_epitope_seq)
             else:
                 #The minimum amino acid match count is not met
@@ -406,7 +718,6 @@ class OutputParser(metaclass=ABCMeta):
                 #We don't include the matching WT epitope in the output
                 result['wt_epitope_seq'] = 'NA'
                 result['wt_scores']      = self.format_match_na(result, 'score')
-                result['wt_percentiles'] = self.format_match_na(result, 'percentile')
                 result['mutation_position'] = 'NA'
 
             result['match_direction']     = match_direction
@@ -438,24 +749,29 @@ class OutputParser(metaclass=ABCMeta):
         pass
 
     def get_values_for_summary_metrics(self, result, metric, epitope_type):
-        mt_values = dict()
-        for (method, values) in result['{}_{}s'.format(epitope_type, metric)].items():
-            if metric == 'score':
-                mt_values[method] = {field: score for field, score in values.items() if field == 'ic50' and score != 'NA'}
+        metric_values = dict()
+        if metric in ['ic50', 'percentile']:
+            for (method, values) in result['{}_scores'.format(epitope_type)].items():
+                metric_values[method] = {field: score for field, score in values.items() if field == metric and score != 'NA'}
+                if not metric_values[method]:
+                    del metric_values[method]
+        else:
+            if metric == 'ic50_percentile':
+                #also include MixMHCpred percentiles in ic50_percentile
+                result_subset = {method: scores for method, scores in result['{}_scores'.format(epitope_type)].items() if 'ic50' in scores or 'binding_score' in scores}
             else:
-                mt_values[method] = {field: score for field, score in values.items() if score != 'NA'}
-            if not mt_values[method]:
-                del mt_values[method]
-        return mt_values
+                field = metric.replace("_percentile", "")
+                result_subset = {method: scores for method, scores in result['{}_scores'.format(epitope_type)].items() if field in scores}
+            for (method, values) in result_subset.items():
+                metric_values[method] = {field: score for field, score in values.items() if field == 'percentile' and score != 'NA'}
+                if not metric_values[method]:
+                    del metric_values[method]
+        return metric_values
 
     def add_summary_metrics(self, iedb_results):
-        ## ***** Important *****
-        # Will likely be necessary to rename all of the `best_<etc>` format stuff
-        # to explicitly note that it is an aggregate for ic50. Might confuse end users
-        # if that is not clear
         iedb_results_with_metrics = {}
         for key, result in iedb_results.items():
-            for metric in ['score', 'percentile']:
+            for metric in ['ic50', 'ic50_percentile', 'immunogenicity_percentile', 'presentation_percentile', 'percentile']:
                 mt_values = self.get_values_for_summary_metrics(result, metric, 'mt')
                 if not mt_values:
                     result['best_mt_{}'.format(metric)]          = 'NA'
@@ -467,89 +783,35 @@ class OutputParser(metaclass=ABCMeta):
                     for method in sorted(mt_values.keys()):
                         for value in mt_values[method].values():
                             if value < best_mt_value:
-                                best_mt_value        = value
+                                best_mt_value = value
                                 best_mt_value_method = method
-                    result['best_mt_{}'.format(metric)]          = best_mt_value
-
-                    if metric == 'score':
-                        corresponding_wt = result['wt_{}s'.format(metric)][best_mt_value_method]['ic50']
-                        calculated_median = median([score['ic50'] for score in mt_values.values()])
-                    else:
-                        corresponding_wts = list(result['wt_{}s'.format(metric)][best_mt_value_method].values())
-                        if len(corresponding_wts) > 1:
-                            none_na_corresponding_wts = [p for p in corresponding_wts if p != 'NA']
-                            if len(none_na_corresponding_wts) == 0:
-                                corresponding_wt = 'NA'
-                            else:
-                                corresponding_wt = min(none_na_corresponding_wts)
-                        else:
-                            corresponding_wt = corresponding_wts[0]
-                        flattend_percentiles = [percentile for method_results in mt_values.values() for percentile in method_results.values()]
-                        calculated_median = median(flattend_percentiles)
-
-                    result['corresponding_wt_{}'.format(metric)] = corresponding_wt
+                    result['best_mt_{}'.format(metric)] = best_mt_value
                     result['best_mt_{}_method'.format(metric)]   = best_mt_value_method
-                    result['median_mt_{}'.format(metric)]        = calculated_median
 
-                # I can probably combine this with code above
+                    if metric == 'ic50':
+                        result['corresponding_wt_{}'.format(metric)] = result['wt_scores'][best_mt_value_method]['ic50']
+                        result['median_mt_{}'.format(metric)] = median([score['ic50'] for score in mt_values.values()])
+                    else:
+                        result['corresponding_wt_{}'.format(metric)] = result['wt_scores'][best_mt_value_method]['percentile']
+                        result['median_mt_{}'.format(metric)] = median([score['percentile'] for score in mt_values.values()])
+
                 wt_values = self.get_values_for_summary_metrics(result, metric, 'wt')
                 if not wt_values:
-                    result['median_wt_{}'.format(metric)]    = 'NA'
+                    result['median_wt_{}'.format(metric)] = 'NA'
                 else:
-                    if metric == 'score':
-                        calculated_median = median([score['ic50'] for score in wt_values.values()])
+                    if metric == 'ic50':
+                        result['median_wt_{}'.format(metric)] = median([score['ic50'] for score in wt_values.values()])
                     else:
-                        flattend_percentiles = [percentile for method_results in wt_values.values() for percentile in method_results.values()]
-                        calculated_median = median(flattend_percentiles)
-                    result['median_wt_{}'.format(metric)]    = calculated_median
+                        result['median_wt_{}'.format(metric)] = median([score['percentile'] for score in wt_values.values()])
 
                 iedb_results_with_metrics[key]  = result
 
         return iedb_results_with_metrics
 
-    def flatten_iedb_results(self, iedb_results):
-        #transform the iedb_results dictionary into a two-dimensional list
-        flattened_iedb_results = []
-        for value in iedb_results.values():
-            row = []
-            for key in (
-                'gene_name',
-                'amino_acid_change',
-                'position',
-                'mutation_position',
-                'mt_scores',
-                'wt_scores',
-                'mt_percentiles',
-                'wt_percentiles',
-                'wt_epitope_seq',
-                'mt_epitope_seq',
-                'tsv_index',
-                'allele',
-                'peptide_length',
-                'best_mt_score',
-                'corresponding_wt_score',
-                'best_mt_score_method',
-                'median_mt_score',
-                'median_wt_score',
-                'best_mt_percentile',
-                'corresponding_wt_percentile',
-                'best_mt_percentile_method',
-                'median_mt_percentile',
-                'median_wt_percentile',
-            ):
-                if key in value.keys():
-                    row.append(value[key])
-                else:
-                    row.append('NA')
-            flattened_iedb_results.append(row)
-        return flattened_iedb_results
-
     def process_input_iedb_file(self, tsv_entries):
         iedb_results = self.parse_iedb_file(tsv_entries)
         iedb_results_with_metrics = self.add_summary_metrics(iedb_results)
-        flattened_iedb_results = self.flatten_iedb_results(iedb_results_with_metrics)
-
-        return flattened_iedb_results
+        return iedb_results_with_metrics
 
     def base_headers(self):
         headers = [
@@ -585,6 +847,15 @@ class OutputParser(metaclass=ABCMeta):
             'Best MT Percentile Method',
             'Best MT Percentile',
             'Corresponding WT Percentile',
+            'Best MT IC50 Percentile Method',
+            'Best MT IC50 Percentile',
+            'Corresponding WT IC50 Percentile',
+            'Best MT Immunogenicity Percentile Method',
+            'Best MT Immunogenicity Percentile',
+            'Corresponding WT Immunogenicity Percentile',
+            'Best MT Presentation Percentile Method',
+            'Best MT Presentation Percentile',
+            'Corresponding WT Presentation Percentile',
             'Tumor DNA Depth',
             'Tumor DNA VAF',
             'Tumor RNA Depth',
@@ -598,6 +869,12 @@ class OutputParser(metaclass=ABCMeta):
             'Median Fold Change',
             'Median MT Percentile',
             'Median WT Percentile',
+            'Median MT IC50 Percentile',
+            'Median WT IC50 Percentile',
+            'Median MT Immunogenicity Percentile',
+            'Median WT Immunogenicity Percentile',
+            'Median MT Presentation Percentile',
+            'Median WT Presentation Percentile',
         ]
         return headers
 
@@ -612,14 +889,15 @@ class OutputParser(metaclass=ABCMeta):
                     self.flurry_headers(headers)
 
             pretty_method = PredictionClass.prediction_class_name_for_iedb_prediction_method(method)
-            if method in ['BigMHC_EL', 'BigMHC_IM', 'DeepImmuno']:
-                headers.append("%s WT Score" % pretty_method)
-                headers.append("%s MT Score" % pretty_method)
-                continue
-
-            if 'netmhciipan_el' in method or 'netmhcpan_el' in method:
-                headers.append("%s WT Score" % pretty_method)
-                headers.append("%s MT Score" % pretty_method)
+            if method in ['MixMHCpred']:
+                headers.append("%s WT Binding Score" % pretty_method)
+                headers.append("%s MT Binding Score" % pretty_method)
+            elif method in ['BigMHC_EL', 'netmhciipan_el', 'netmhcpan_el', 'MixMHC2pred']:
+                headers.append("%s WT Presentation Score" % pretty_method)
+                headers.append("%s MT Presentation Score" % pretty_method)
+            elif method in ['BigMHC_IM', 'DeepImmuno', 'PRIME', 'ImmuScope_IM']:
+                headers.append("%s WT Immunogenicity Score" % pretty_method)
+                headers.append("%s MT Immunogenicity Score" % pretty_method)
             else:
                 headers.append("%s WT IC50 Score" % pretty_method)
                 headers.append("%s MT IC50 Score" % pretty_method)
@@ -634,6 +912,8 @@ class OutputParser(metaclass=ABCMeta):
     def flurry_headers(self, headers):
         headers.append("MHCflurryEL Processing WT Score")
         headers.append("MHCflurryEL Processing MT Score")
+        headers.append("MHCflurryEL Processing WT Percentile")
+        headers.append("MHCflurryEL Processing MT Percentile")
         headers.append("MHCflurryEL Presentation WT Score")
         headers.append("MHCflurryEL Presentation MT Score")
         headers.append("MHCflurryEL Presentation WT Percentile")
@@ -642,7 +922,7 @@ class OutputParser(metaclass=ABCMeta):
     def prediction_methods(self):
         methods = set()
         pattern = re.compile(rf"{re.escape(self.sample_name)}\.(\w+(?:-\d+\.\d+)?)")
-        
+
         for input_iedb_file in self.input_iedb_files:
             filename = os.path.basename(input_iedb_file)
             match = pattern.match(filename)
@@ -651,23 +931,52 @@ class OutputParser(metaclass=ABCMeta):
 
         return sorted(list(methods))
 
-    def add_pretty_row(self, row, entries, prediction_method, pretty_method, suffix):
-        if prediction_method in entries:
-            # st = score type, s = score
-            for st, s in entries[prediction_method].items():
-                if st == 'mhcflurry_presentation_score':
-                    row['MHCflurryEL Presentation %s' % suffix.replace("IC50 ", "")] = s
-                elif st == 'mhcflurry_processing_score':
-                    row['MHCflurryEL Processing %s' % suffix.replace("IC50 ", "")] = s
-                elif st == 'mhcflurry_presentation_percentile':
-                    row['MHCflurryEL Presentation %s' % suffix.replace("IC50 ", "")] = s
-                elif pretty_method in ['NetMHCpanEL', 'NetMHCIIpanEL', 'BigMHC_EL', 'BigMHC_IM', 'DeepImmuno']:
-                    row['%s %s' % (pretty_method, suffix.replace("IC50 ", ""))] = s
+    def add_prediction_scores(self, row, mt_scores, wt_scores):
+        for method in self.prediction_methods():
+            pretty_method = PredictionClass.prediction_class_name_for_iedb_prediction_method(method)
+            if pretty_method == 'MHCflurry':
+                if self.flurry_state == 'EL_only' or self.flurry_state == 'both':
+                    row['MHCflurryEL Processing MT Score'] = self.score_or_na(mt_scores, 'MHCflurryEL Processing', 'presentation')
+                    row['MHCflurryEL Processing MT Percentile'] = self.score_or_na(mt_scores, 'MHCflurryEL Processing', 'percentile')
+                    row['MHCflurryEL Processing WT Score'] = self.score_or_na(wt_scores, 'MHCflurryEL Processing', 'presentation')
+                    row['MHCflurryEL Processing WT Percentile'] = self.score_or_na(wt_scores, 'MHCflurryEL Processing', 'percentile')
+                    row['MHCflurryEL Presentation MT Score'] = self.score_or_na(mt_scores, 'MHCflurryEL Presentation', 'presentation')
+                    row['MHCflurryEL Presentation MT Percentile'] = self.score_or_na(mt_scores, 'MHCflurryEL Presentation', 'percentile')
+                    row['MHCflurryEL Presentation WT Score'] = self.score_or_na(wt_scores, 'MHCflurryEL Presentation', 'presentation')
+                    row['MHCflurryEL Presentation WT Percentile'] = self.score_or_na(wt_scores, 'MHCflurryEL Presentation', 'percentile')
+                if self.flurry_state in ['both', 'BA_only', None]:
+                    row['MHCflurry MT IC50 Score'] = self.score_or_na(mt_scores, 'MHCflurry', 'ic50')
+                    row['MHCflurry MT Percentile'] = self.score_or_na(mt_scores, 'MHCflurry', 'percentile')
+                    row['MHCflurry WT IC50 Score'] = self.score_or_na(wt_scores, 'MHCflurry', 'ic50')
+                    row['MHCflurry WT Percentile'] = self.score_or_na(wt_scores, 'MHCflurry', 'percentile')
+            else:
+                if pretty_method in ['MixMHCpred']:
+                    row[f'{pretty_method} MT Binding Score'] = self.score_or_na(mt_scores, pretty_method, 'binding_score')
+                    row[f'{pretty_method} WT Binding Score'] = self.score_or_na(wt_scores, pretty_method, 'binding_score')
+                elif pretty_method in ['BigMHC_EL', 'NetMHCIIpanEL', 'NetMHCpanEL', 'MixMHC2pred']:
+                    row[f'{pretty_method} MT Presentation Score'] = self.score_or_na(mt_scores, pretty_method, 'presentation')
+                    row[f'{pretty_method} WT Presentation Score'] = self.score_or_na(wt_scores, pretty_method, 'presentation')
+                elif pretty_method in ['BigMHC_IM', 'DeepImmuno', 'PRIME', 'ImmuScope_IM']:
+                    row[f'{pretty_method} MT Immunogenicity Score'] = self.score_or_na(mt_scores, pretty_method, 'immunogenicity')
+                    row[f'{pretty_method} WT Immunogenicity Score'] = self.score_or_na(wt_scores, pretty_method, 'immunogenicity')
                 else:
-                    row['%s %s' % (pretty_method, suffix)] = s
+                    row[f'{pretty_method} MT IC50 Score'] = self.score_or_na(mt_scores, pretty_method, 'ic50')
+                    row[f'{pretty_method} WT IC50 Score'] = self.score_or_na(wt_scores, pretty_method, 'ic50')
+                row[f'{pretty_method} MT Percentile'] = self.score_or_na(mt_scores, pretty_method, 'percentile')
+                row[f'{pretty_method} WT Percentile'] = self.score_or_na(wt_scores, pretty_method, 'percentile')
+        return row
+
+    def score_or_na(self, all_scores, method, score):
+        if method in all_scores:
+            return all_scores[method][score]
         else:
-            # This covers cases where the allele/length of the result row is not supported by the prediction algorithm
-            row['%s %s' % (pretty_method, suffix)] = 'NA'
+            return 'NA'
+
+    def rounded_score_or_na(self, score):
+        if score == 'NA':
+            return score
+        else:
+            return round(score, 3)
 
     def execute(self):
         tsv_entries = self.parse_input_tsv_file()
@@ -678,50 +987,22 @@ class OutputParser(metaclass=ABCMeta):
         tsv_writer = csv.DictWriter(tmp_output_filehandle, delimiter='\t', fieldnames=self.output_headers())
         tsv_writer.writeheader()
 
-        for (
-            gene_name,
-            variant_aa,
-            position,
-            mutation_position,
-            mt_scores,
-            wt_scores,
-            mt_percentiles,
-            wt_percentiles,
-            wt_epitope_seq,
-            mt_epitope_seq,
-            tsv_index,
-            allele,
-            peptide_length,
-            best_mt_score,
-            corresponding_wt_score,
-            best_mt_score_method,
-            median_mt_score,
-            median_wt_score,
-            best_mt_percentile,
-            corresponding_wt_percentile,
-            best_mt_percentile_method,
-            median_mt_percentile,
-            median_wt_percentile,
-        ) in iedb_results:
-            tsv_entry = tsv_entries[tsv_index]
-            if mt_epitope_seq != wt_epitope_seq:
-                if corresponding_wt_score == 'NA':
+        for result in iedb_results.values():
+            tsv_entry = tsv_entries[result['tsv_index']]
+            if result['mt_epitope_seq'] != result['wt_epitope_seq']:
+                if result['corresponding_wt_ic50'] == 'NA':
                     corresponding_fold_change = 'NA'
-                elif best_mt_score == 0:
+                elif result['best_mt_ic50'] == 0:
                     corresponding_fold_change = inf
-                    corresponding_wt_score = round(corresponding_wt_score, 3)
                 else:
-                    corresponding_fold_change = round((corresponding_wt_score/best_mt_score), 3)
-                    corresponding_wt_score = round(corresponding_wt_score, 3)
+                    corresponding_fold_change = round((result['corresponding_wt_ic50']/result['best_mt_ic50']), 3)
 
-                if median_wt_score == 'NA':
+                if result['median_wt_ic50'] == 'NA':
                     median_fold_change = 'NA'
-                elif median_mt_score == 0:
+                elif result['median_mt_ic50'] == 0:
                     median_fold_change = inf
-                    median_wt_score = round(median_wt_score, 3)
                 else:
-                    median_fold_change = round((median_wt_score/median_mt_score), 3)
-                    median_wt_score = round(median_wt_score, 3)
+                    median_fold_change = round((result['median_wt_ic50']/result['median_mt_ic50']), 3)
                 row = {
                     'Chromosome'          : tsv_entry['chromosome_name'],
                     'Start'               : tsv_entry['start'],
@@ -739,36 +1020,55 @@ class OutputParser(metaclass=ABCMeta):
                     'HGVSc'               : tsv_entry['hgvsc'],
                     'HGVSp'               : tsv_entry['hgvsp'],
                     'Variant Type'        : tsv_entry['variant_type'],
-                    'Mutation'            : variant_aa,
+                    'Mutation'            : result['amino_acid_change'],
                     'Protein Position'    : tsv_entry['protein_position'],
-                    'Gene Name'           : gene_name,
-                    'HLA Allele'          : allele,
-                    'Peptide Length'      : peptide_length,
-                    'Sub-peptide Position': position,
-                    'Mutation Position'   : mutation_position,
-                    'MT Epitope Seq'      : mt_epitope_seq,
-                    'WT Epitope Seq'      : wt_epitope_seq,
-                    'Corresponding WT IC50 Score': corresponding_wt_score,
-                    'Corresponding Fold Change' : corresponding_fold_change,
-                    'Median WT IC50 Score'     : median_wt_score,
-                    'Median Fold Change'  : median_fold_change,
-                    'Index'               : tsv_index,
+                    'Gene Name'           : result['gene_name'],
+                    'HLA Allele'          : result['allele'],
+                    'Peptide Length'      : result['peptide_length'],
+                    'Sub-peptide Position': result['position'],
+                    'Mutation Position'   : result['mutation_position'] if 'mutation_position' in result else 'NA',
+                    'MT Epitope Seq'      : result['mt_epitope_seq'],
+                    'WT Epitope Seq'      : result['wt_epitope_seq'],
+                    'Index'               : result['tsv_index'],
+                    #Median IC50 Score
+                    'Median MT IC50 Score': self.rounded_score_or_na(result['median_mt_ic50']),
+                    'Median WT IC50 Score': self.rounded_score_or_na(result['median_wt_ic50']),
+                    'Median Fold Change': median_fold_change,
+                    #Median Percentile
+                    'Median MT Percentile': self.rounded_score_or_na(result['median_mt_percentile']),
+                    'Median WT Percentile': self.rounded_score_or_na(result['median_wt_percentile']),
+                    #Median IC50 Percentile
+                    'Median MT IC50 Percentile': self.rounded_score_or_na(result['median_mt_ic50_percentile']),
+                    'Median WT IC50 Percentile': self.rounded_score_or_na(result['median_wt_ic50_percentile']),
+                    #Median Immunogenicity Percentile
+                    'Median MT Immunogenicity Percentile': self.rounded_score_or_na(result['median_mt_immunogenicity_percentile']),
+                    'Median WT Immunogenicity Percentile': self.rounded_score_or_na(result['median_wt_immunogenicity_percentile']),
+                    #Median Presentation Percentile
+                    'Median MT Presentation Percentile': self.rounded_score_or_na(result['median_mt_presentation_percentile']),
+                    'Median WT Presentation Percentile': self.rounded_score_or_na(result['median_wt_presentation_percentile']),
+                    #Best IC50 Score
+                    'Best MT IC50 Score': self.rounded_score_or_na(result['best_mt_ic50']),
+                    'Best MT IC50 Score Method': result['best_mt_ic50_method'],
+                    'Corresponding WT IC50 Score': self.rounded_score_or_na(result['corresponding_wt_ic50']),
+                    'Corresponding Fold Change': corresponding_fold_change,
+                    #Best Percentile
+                    'Best MT Percentile': self.rounded_score_or_na(result['best_mt_percentile']),
+                    'Best MT Percentile Method': result['best_mt_percentile_method'],
+                    'Corresponding WT Percentile': self.rounded_score_or_na(result['corresponding_wt_percentile']),
+                    #Best IC50 Percentile
+                    'Best MT IC50 Percentile': self.rounded_score_or_na(result['best_mt_ic50_percentile']),
+                    'Best MT IC50 Percentile Method': result['best_mt_ic50_percentile_method'],
+                    'Corresponding WT IC50 Percentile': self.rounded_score_or_na(result['corresponding_wt_ic50_percentile']),
+                    #Best Immunogenicity Percentile
+                    'Best MT Immunogenicity Percentile': self.rounded_score_or_na(result['best_mt_immunogenicity_percentile']),
+                    'Best MT Immunogenicity Percentile Method': result['best_mt_immunogenicity_percentile_method'],
+                    'Corresponding WT Immunogenicity Percentile': self.rounded_score_or_na(result['corresponding_wt_immunogenicity_percentile']),
+                    #Best Presentation Percentile
+                    'Best MT Presentation Percentile': self.rounded_score_or_na(result['best_mt_presentation_percentile']),
+                    'Best MT Presentation Percentile Method': result['best_mt_presentation_percentile_method'],
+                    'Corresponding WT Presentation Percentile': self.rounded_score_or_na(result['corresponding_wt_presentation_percentile']),
                 }
-                row['Best MT IC50 Score Method'] = 'NA' if best_mt_score_method == 'NA' else PredictionClass.prediction_class_name_for_iedb_prediction_method(best_mt_score_method)
-                row['Best MT Percentile Method'] = 'NA' if best_mt_percentile_method == 'NA' else PredictionClass.prediction_class_name_for_iedb_prediction_method(best_mt_percentile_method)
-                row['Best MT IC50 Score'] = 'NA' if best_mt_score == 'NA' else round(best_mt_score, 3)
-                row['Best MT Percentile'] = 'NA' if best_mt_percentile == 'NA' else round(best_mt_percentile, 3)
-                row['Corresponding WT Percentile'] = 'NA' if corresponding_wt_percentile == 'NA' else round(corresponding_wt_percentile, 3)
-                row['Median MT IC50 Score'] = 'NA' if median_mt_score == 'NA' else round(median_mt_score, 3)
-                row['Median MT Percentile'] = 'NA' if median_mt_percentile == 'NA' else round(median_mt_percentile, 3)
-                row['Median WT Percentile'] = 'NA' if median_wt_percentile == 'NA' else round(median_wt_percentile, 3)
-                for method in self.prediction_methods():
-                    pretty_method = PredictionClass.prediction_class_name_for_iedb_prediction_method(method)
-                    self.add_pretty_row(row, wt_scores, method, pretty_method, 'WT IC50 Score')
-                    self.add_pretty_row(row, mt_scores, method, pretty_method, 'MT IC50 Score')
-                    if pretty_method not in ['BigMHC_EL', 'BigMHC_IM', 'DeepImmuno']:
-                        self.add_pretty_row(row, wt_percentiles, method, pretty_method, 'WT Percentile')
-                        self.add_pretty_row(row, mt_percentiles, method, pretty_method, 'MT Percentile')
+                row = self.add_prediction_scores(row, result['mt_scores'], result['wt_scores'])
 
                 for (tsv_key, row_key) in zip(['gene_expression', 'transcript_expression', 'normal_vaf', 'tdna_vaf', 'trna_vaf'], ['Gene Expression', 'Transcript Expression', 'Normal VAF', 'Tumor DNA VAF', 'Tumor RNA VAF']):
                     if tsv_key in tsv_entry:
@@ -813,7 +1113,6 @@ class DefaultOutputParser(OutputParser):
                         position   = str(int(line['start']) - line['peptide'].find(line['core_peptide']))
                     else:
                         position   = line['start']
-                    percentiles    = self.get_percentiles(line, method)
                     epitope        = line['peptide']
                     scores         = self.get_scores(line, method)
                     allele         = line['allele']
@@ -830,7 +1129,6 @@ class DefaultOutputParser(OutputParser):
                             if key not in iedb_results:
                                 iedb_results[key]                      = {}
                                 iedb_results[key]['mt_scores']         = {}
-                                iedb_results[key]['mt_percentiles']    = {}
                                 iedb_results[key]['mt_epitope_seq']    = epitope
                                 iedb_results[key]['gene_name']         = tsv_entry['gene_name']
                                 iedb_results[key]['amino_acid_change'] = tsv_entry['amino_acid_change']
@@ -839,18 +1137,15 @@ class DefaultOutputParser(OutputParser):
                                 iedb_results[key]['tsv_index']         = tsv_index
                                 iedb_results[key]['allele']            = allele
                                 iedb_results[key]['peptide_length']    = peptide_length
-                            iedb_results[key]['mt_scores'][method] = scores
-                            iedb_results[key]['mt_percentiles'][method] = percentiles
+                            iedb_results[key]['mt_scores'].update(scores)
                         else:
                             if tsv_index not in wt_iedb_results:
                                 wt_iedb_results[tsv_index] = {}
                             if position not in wt_iedb_results[tsv_index]:
                                 wt_iedb_results[tsv_index][position] = {}
-                                wt_iedb_results[tsv_index][position][protein_type.lower() + '_scores'] = {}
-                                wt_iedb_results[tsv_index][position][protein_type.lower() + '_percentiles'] = {}
-                            wt_iedb_results[tsv_index][position][protein_type.lower() + '_epitope_seq'] = epitope
-                            wt_iedb_results[tsv_index][position][protein_type.lower() + '_scores'][method] = scores
-                            wt_iedb_results[tsv_index][position][protein_type.lower() + '_percentiles'][method] = percentiles
+                                wt_iedb_results[tsv_index][position]['wt_scores'] = {}
+                            wt_iedb_results[tsv_index][position]['wt_epitope_seq'] = epitope
+                            wt_iedb_results[tsv_index][position]['wt_scores'].update(scores)
 
         return self.match_wildtype_and_mutant_entries(iedb_results, wt_iedb_results)
 
@@ -864,7 +1159,7 @@ class UnmatchedSequencesOutputParser(OutputParser):
             with open(input_iedb_file, 'r') as reader:
                 iedb_tsv_reader = csv.DictReader(reader, delimiter='\t')
                 filename = os.path.basename(input_iedb_file)
-        
+
                 pattern = re.compile(rf"{re.escape(self.sample_name)}\.(\w+(?:-\d+\.\d+)?)")
                 match = pattern.match(filename)
                 method = match.group(1)
@@ -883,7 +1178,6 @@ class UnmatchedSequencesOutputParser(OutputParser):
                     scores         = self.get_scores(line, method)
                     allele         = line['allele']
                     peptide_length = len(epitope)
-                    percentiles    = self.get_percentiles(line, method)
 
                     if tsv_indices_from_label[protein_label] is not None:
                         tsv_indices = tsv_indices_from_label[protein_label]
@@ -893,19 +1187,17 @@ class UnmatchedSequencesOutputParser(OutputParser):
                         if key not in iedb_results:
                             iedb_results[key]                      = {}
                             iedb_results[key]['mt_scores']         = {}
-                            iedb_results[key]['mt_percentiles']    = {}
                             iedb_results[key]['mt_epitope_seq']    = epitope
                             iedb_results[key]['position']          = position
                             iedb_results[key]['tsv_index']         = index
                             iedb_results[key]['allele']            = allele
-                        iedb_results[key]['mt_scores'][method] = scores
-                        iedb_results[key]['mt_percentiles'][method] = percentiles
+                        iedb_results[key]['mt_scores'].update(scores)
         return iedb_results
 
     def add_summary_metrics(self, iedb_results):
         iedb_results_with_metrics = {}
         for key, result in iedb_results.items():
-            for metric in ['score', 'percentile']:
+            for metric in ['ic50', 'ic50_percentile', 'immunogenicity_percentile', 'presentation_percentile', 'percentile']:
                 mt_values = self.get_values_for_summary_metrics(result, metric, 'mt')
                 if not mt_values:
                     result['best_mt_{}'.format(metric)]          = 'NA'
@@ -921,42 +1213,21 @@ class UnmatchedSequencesOutputParser(OutputParser):
                     result['best_mt_{}'.format(metric)]          = best_mt_value
                     result['best_mt_{}_method'.format(metric)]   = best_mt_value_method
 
-                    if metric == 'score':
-                        calculated_median = median([score['ic50'] for score in mt_values.values()])
+                    if metric == 'ic50':
+                        result['median_mt_{}'.format(metric)] = median([score['ic50'] for score in mt_values.values()])
                     else:
-                        flattend_percentiles = [percentile for method_results in mt_values.values() for percentile in method_results.values()]
-                        calculated_median = median(flattend_percentiles)
-                    result['median_mt_{}'.format(metric)]        = calculated_median
+                        result['median_mt_{}'.format(metric)] = median([score['percentile'] for score in mt_values.values()])
                 iedb_results_with_metrics[key]  = result
         return iedb_results_with_metrics
-
-    def flatten_iedb_results(self, iedb_results):
-        #transform the iedb_results dictionary into a two-dimensional list
-        flattened_iedb_results = list((
-            value['position'],
-            value['mt_scores'],
-            value['mt_percentiles'],
-            value['mt_epitope_seq'],
-            value['tsv_index'],
-            value['allele'],
-            value['best_mt_score'],
-            value['best_mt_score_method'],
-            value['median_mt_score'],
-            value['best_mt_percentile'],
-            value['best_mt_percentile_method'],
-            value['median_mt_percentile'],
-        ) for value in iedb_results.values())
-        return flattened_iedb_results
 
     def process_input_iedb_file(self):
         iedb_results              = self.parse_iedb_file()
         iedb_results_with_metrics = self.add_summary_metrics(iedb_results)
-        flattened_iedb_results    = self.flatten_iedb_results(iedb_results_with_metrics)
-        return flattened_iedb_results
+        return iedb_results_with_metrics
 
     def base_headers(self):
         return[
-            'Mutation',
+            'Index',
             'HLA Allele',
             'Sub-peptide Position',
             'Epitope Seq',
@@ -966,6 +1237,15 @@ class UnmatchedSequencesOutputParser(OutputParser):
             'Median Percentile',
             'Best Percentile',
             'Best Percentile Method',
+            'Median IC50 Percentile',
+            'Best IC50 Percentile',
+            'Best IC50 Percentile Method',
+            'Median Immunogenicity Percentile',
+            'Best Immunogenicity Percentile',
+            'Best Immunogenicity Percentile Method',
+            'Median Presentation Percentile',
+            'Best Presentation Percentile',
+            'Best Presentation Percentile Method',
         ]
 
     def output_headers(self):
@@ -974,16 +1254,17 @@ class UnmatchedSequencesOutputParser(OutputParser):
             if method.lower() == 'mhcflurry':
                 if self.flurry_state == 'EL_only':
                     self.flurry_headers(headers)
-                    continue 
+                    continue
                 elif self.flurry_state == 'both':
                     self.flurry_headers(headers)
-            pretty_method = PredictionClass.prediction_class_name_for_iedb_prediction_method(method)
-            if method in ['BigMHC_EL', 'BigMHC_IM', 'DeepImmuno']:
-                headers.append("%s Score" % pretty_method)
-                continue
 
-            if 'netmhciipan_el' in method or 'netmhcpan_el' in method:
-                headers.append("%s Score" % pretty_method)
+            pretty_method = PredictionClass.prediction_class_name_for_iedb_prediction_method(method)
+            if method in ['MixMHCpred']:
+                headers.append("%s Binding Score" % pretty_method)
+            elif method in ['BigMHC_EL', 'netmhciipan_el', 'netmhcpan_el', 'MixMHC2pred']:
+                headers.append("%s Presentation Score" % pretty_method)
+            elif method in ['BigMHC_IM', 'DeepImmuno', 'PRIME', 'ImmuScope_IM']:
+                headers.append("%s Immunogenicity Score" % pretty_method)
             else:
                 headers.append("%s IC50 Score" % pretty_method)
             headers.append("%s Percentile" % pretty_method)
@@ -993,8 +1274,33 @@ class UnmatchedSequencesOutputParser(OutputParser):
 
     def flurry_headers(self, headers):
         headers.append("MHCflurryEL Processing Score")
+        headers.append("MHCflurryEL Processing Percentile")
         headers.append("MHCflurryEL Presentation Score")
         headers.append("MHCflurryEL Presentation Percentile")
+
+    def add_prediction_scores(self, row, mt_scores):
+        for method in self.prediction_methods():
+            pretty_method = PredictionClass.prediction_class_name_for_iedb_prediction_method(method)
+            if pretty_method == 'MHCflurry':
+                if self.flurry_state == 'EL_only' or self.flurry_state == 'both':
+                    row['MHCflurryEL Processing Score'] = self.score_or_na(mt_scores, 'MHCflurryEL Processing', 'presentation')
+                    row['MHCflurryEL Processing Percentile'] = self.score_or_na(mt_scores, 'MHCflurryEL Processing', 'percentile')
+                    row['MHCflurryEL Presentation Score'] = self.score_or_na(mt_scores, 'MHCflurryEL Presentation', 'presentation')
+                    row['MHCflurryEL Presentation Percentile'] = self.score_or_na(mt_scores, 'MHCflurryEL Presentation', 'percentile')
+                if self.flurry_state in ['both', 'BA_only', None]:
+                    row['MHCflurry IC50 Score'] = self.score_or_na(mt_scores, 'MHCflurry', 'ic50')
+                    row['MHCflurry Percentile'] = self.score_or_na(mt_scores, 'MHCflurry', 'percentile')
+            else:
+                if pretty_method in ['MixMHCpred']:
+                    row[f'{pretty_method} Binding Score'] = self.score_or_na(mt_scores, pretty_method, 'binding_score')
+                elif pretty_method in ['BigMHC_EL', 'NetMHCIIpanEL', 'NetMHCpanEL', 'MixMHC2pred']:
+                    row[f'{pretty_method} Presentation Score'] = self.score_or_na(mt_scores, pretty_method, 'presentation')
+                elif pretty_method in ['BigMHC_IM', 'DeepImmuno', 'PRIME', 'ImmuScope_IM']:
+                    row[f'{pretty_method} Immunogenicity Score'] = self.score_or_na(mt_scores, pretty_method, 'immunogenicity')
+                else:
+                    row[f'{pretty_method} IC50 Score'] = self.score_or_na(mt_scores, pretty_method, 'ic50')
+                row[f'{pretty_method} Percentile'] = self.score_or_na(mt_scores, pretty_method, 'percentile')
+        return row
 
     def execute(self):
         tmp_output_file = self.output_file + '.tmp'
@@ -1003,37 +1309,39 @@ class UnmatchedSequencesOutputParser(OutputParser):
         tsv_writer.writeheader()
 
         iedb_results = self.process_input_iedb_file()
-        for (
-            position,
-            mt_scores,
-            mt_percentiles,
-            mt_epitope_seq,
-            tsv_index,
-            allele,
-            best_mt_score,
-            best_mt_score_method,
-            median_mt_score,
-            best_mt_percentile,
-            best_mt_percentile_method,
-            median_mt_percentile,
-        ) in iedb_results:
+        for result in iedb_results.values():
             row = {
-                'HLA Allele'          : allele,
-                'Sub-peptide Position': position,
-                'Epitope Seq'         : mt_epitope_seq,
-                'Best IC50 Score'     : best_mt_score,
-                'Best Percentile'     : best_mt_percentile,
-                'Mutation'            : tsv_index,
+                'HLA Allele'          : result['allele'],
+                'Sub-peptide Position': result['position'],
+                'Epitope Seq'         : result['mt_epitope_seq'],
+                'Index'               : result['tsv_index'],
+                #Median IC50 Score
+                'Median IC50 Score': self.rounded_score_or_na(result['median_mt_ic50']),
+                #Median Percentile
+                'Median Percentile': self.rounded_score_or_na(result['median_mt_percentile']),
+                #Median IC50 Percentile
+                'Median IC50 Percentile': self.rounded_score_or_na(result['median_mt_ic50_percentile']),
+                #Median Immunogenicity Percentile
+                'Median Immunogenicity Percentile': self.rounded_score_or_na(result['median_mt_immunogenicity_percentile']),
+                #Median Presentation Percentile
+                'Median Presentation Percentile': self.rounded_score_or_na(result['median_mt_presentation_percentile']),
+                #Best IC50 Score
+                'Best IC50 Score': self.rounded_score_or_na(result['best_mt_ic50']),
+                'Best IC50 Score Method': result['best_mt_ic50_method'],
+                #Best Percentile
+                'Best Percentile': self.rounded_score_or_na(result['best_mt_percentile']),
+                'Best Percentile Method': result['best_mt_percentile_method'],
+                #Best IC50 Percentile
+                'Best IC50 Percentile': self.rounded_score_or_na(result['best_mt_ic50_percentile']),
+                'Best IC50 Percentile Method': result['best_mt_ic50_percentile_method'],
+                #Best Immunogenicity Percentile
+                'Best Immunogenicity Percentile': self.rounded_score_or_na(result['best_mt_immunogenicity_percentile']),
+                'Best Immunogenicity Percentile Method': result['best_mt_immunogenicity_percentile_method'],
+                #Best Presentation Percentile
+                'Best Presentation Percentile': self.rounded_score_or_na(result['best_mt_presentation_percentile']),
+                'Best Presentation Percentile Method': result['best_mt_presentation_percentile_method'],
             }
-            row['Best IC50 Score Method'] = 'NA' if best_mt_score_method == 'NA' else PredictionClass.prediction_class_name_for_iedb_prediction_method(best_mt_score_method)
-            row['Best Percentile Method'] = 'NA' if best_mt_percentile_method == 'NA' else PredictionClass.prediction_class_name_for_iedb_prediction_method(best_mt_percentile_method)
-            row['Median IC50 Score'] = 'NA' if median_mt_score == 'NA' else round(median_mt_score, 3)
-            row['Median Percentile'] = 'NA' if median_mt_percentile == 'NA' else round(median_mt_percentile, 3)
-            for method in self.prediction_methods():
-                pretty_method = PredictionClass.prediction_class_name_for_iedb_prediction_method(method)
-                self.add_pretty_row(row, mt_scores, method, pretty_method, 'IC50 Score')
-                if pretty_method not in ['BigMHC_EL', 'BigMHC_IM', 'DeepImmuno']:
-                    self.add_pretty_row(row, mt_percentiles, method, pretty_method, 'Percentile')
+            row = self.add_prediction_scores(row, result['mt_scores'])
             if self.add_sample_name:
                 row['Sample Name'] = self.sample_name
             tsv_writer.writerow(row)
@@ -1054,7 +1362,6 @@ class PvacspliceOutputParser(UnmatchedSequencesOutputParser):
             with open(input_iedb_file, 'r') as reader:
                 iedb_tsv_reader = csv.DictReader(reader, delimiter='\t')
                 filename = os.path.basename(input_iedb_file)
-        
                 pattern = re.compile(rf"{re.escape(self.sample_name)}\.(\w+(?:-\d+\.\d+)?)")
                 match = pattern.match(filename)
                 method = match.group(1)
@@ -1068,7 +1375,6 @@ class PvacspliceOutputParser(UnmatchedSequencesOutputParser):
                     epitope        = line['peptide']
                     peptide_length = len(epitope)
                     scores         = self.get_scores(line, method)
-                    percentiles    = self.get_percentiles(line, method)
                     # get fasta_id/combined_name from fasta key file
                     if protein_identifiers_from_label[fasta_label] is not None:
                         # comma-separated string (1 or more ids) as 1 entry in list
@@ -1079,34 +1385,14 @@ class PvacspliceOutputParser(UnmatchedSequencesOutputParser):
                             if key not in iedb_results:
                                 iedb_results[key]                   = {}
                                 iedb_results[key]['mt_scores']      = {}
-                                iedb_results[key]['mt_percentiles'] = {}
                                 iedb_results[key]['mt_epitope_seq'] = epitope
                                 iedb_results[key]['fasta_id']       = fasta_label
                                 iedb_results[key]['tsv_index']      = key
                                 iedb_results[key]['allele']         = allele
                                 iedb_results[key]['peptide_length'] = peptide_length
-                            iedb_results[key]['mt_scores'][method]  = scores
-                            iedb_results[key]['mt_percentiles'][method] = percentiles
+                            iedb_results[key]['mt_scores'].update(scores)
 
         return iedb_results
-
-    def flatten_iedb_results(self, iedb_results):
-        #transform the iedb_results dictionary into a two-dimensional list
-        flattened_iedb_results = list((
-            value['fasta_id'],
-            value['mt_scores'],
-            value['mt_percentiles'],
-            value['mt_epitope_seq'],
-            value['tsv_index'],
-            value['allele'],
-            value['best_mt_score'],
-            value['best_mt_score_method'],
-            value['median_mt_score'],
-            value['best_mt_percentile'],
-            value['best_mt_percentile_method'],
-            value['median_mt_percentile'],
-        ) for value in iedb_results.values())
-        return flattened_iedb_results
 
     def base_headers(self):
         return[
@@ -1145,6 +1431,15 @@ class PvacspliceOutputParser(UnmatchedSequencesOutputParser):
             'Median Percentile',
             'Best Percentile',
             'Best Percentile Method',
+            'Median IC50 Percentile',
+            'Best IC50 Percentile',
+            'Best IC50 Percentile Method',
+            'Median Immunogenicity Percentile',
+            'Best Immunogenicity Percentile',
+            'Best Immunogenicity Percentile Method',
+            'Median Presentation Percentile',
+            'Best Presentation Percentile',
+            'Best Presentation Percentile Method',
             'Tumor DNA Depth',
             'Tumor DNA VAF',
             'Tumor RNA Depth',
@@ -1170,22 +1465,9 @@ class PvacspliceOutputParser(UnmatchedSequencesOutputParser):
         iedb_results = self.process_input_iedb_file()
 
         # from input iedb files
-        for (
-            fasta_id,
-            mt_scores,
-            mt_percentiles,
-            mt_epitope_seq,
-            tsv_index,
-            allele,
-            best_mt_score,
-            best_mt_score_method,
-            median_mt_score,
-            best_mt_percentile,
-            best_mt_percentile_method,
-            median_mt_percentile,
-        ) in iedb_results:
+        for result in iedb_results.values():
             # get unique index
-            (final_index, protein_position) = tsv_index.rsplit('.', 1)
+            (final_index, protein_position) = result['tsv_index'].rsplit('.', 1)
             tsv_entry = tsv_entries[final_index]
             row = {
                 'Chromosome'          : tsv_entry['chromosome_name'],
@@ -1214,28 +1496,41 @@ class PvacspliceOutputParser(UnmatchedSequencesOutputParser):
                 'HGVSc'               : tsv_entry['hgvsc'],
                 'HGVSp'               : tsv_entry['hgvsp'],
                 'Index'               : final_index,
-                'Fasta Key'           : fasta_id,
+                'Fasta Key'           : result['fasta_id'],
                 'WT Protein Length' : tsv_entry['wt_protein_length'],
                 'ALT Protein Length': tsv_entry['alt_protein_length'],
                 'Frameshift Event'     : tsv_entry['frameshift_event'],
                 ### pvacbind info
-                'HLA Allele'          : allele,
-                'Peptide Length'      : len(mt_epitope_seq),
-                'Epitope Seq'         : mt_epitope_seq,
-                'Best IC50 Score'     : best_mt_score,
-                'Best Percentile'     : best_mt_percentile,
-                ###
+                'HLA Allele'          : result['allele'],
+                'Peptide Length'      : len(result['mt_epitope_seq']),
+                'Epitope Seq'         : result['mt_epitope_seq'],
+                #Median IC50 Score
+                'Median IC50 Score': self.rounded_score_or_na(result['median_mt_ic50']),
+                #Median Percentile
+                'Median Percentile': self.rounded_score_or_na(result['median_mt_percentile']),
+                #Median IC50 Percentile
+                'Median IC50 Percentile': self.rounded_score_or_na(result['median_mt_ic50_percentile']),
+                #Median Immunogenicity Percentile
+                'Median Immunogenicity Percentile': self.rounded_score_or_na(result['median_mt_immunogenicity_percentile']),
+                #Median Presentation Percentile
+                'Median Presentation Percentile': self.rounded_score_or_na(result['median_mt_presentation_percentile']),
+                #Best IC50 Score
+                'Best IC50 Score': self.rounded_score_or_na(result['best_mt_ic50']),
+                'Best IC50 Score Method': result['best_mt_ic50_method'],
+                #Best Percentile
+                'Best Percentile': self.rounded_score_or_na(result['best_mt_percentile']),
+                'Best Percentile Method': result['best_mt_percentile_method'],
+                #Best IC50 Percentile
+                'Best IC50 Percentile': self.rounded_score_or_na(result['best_mt_ic50_percentile']),
+                'Best IC50 Percentile Method': result['best_mt_ic50_percentile_method'],
+                #Best Immunogenicity Percentile
+                'Best Immunogenicity Percentile': self.rounded_score_or_na(result['best_mt_immunogenicity_percentile']),
+                'Best Immunogenicity Percentile Method': result['best_mt_immunogenicity_percentile_method'],
+                #Best Presentation Percentile
+                'Best Presentation Percentile': self.rounded_score_or_na(result['best_mt_presentation_percentile']),
+                'Best Presentation Percentile Method': result['best_mt_presentation_percentile_method'],
             }
-            row['Median IC50 Score'] = 'NA' if median_mt_score == 'NA' else round(median_mt_score, 3)
-            row['Median Percentile'] = 'NA' if median_mt_percentile == 'NA' else round(median_mt_percentile, 3)
-            row['Best IC50 Score Method'] = 'NA' if best_mt_score_method == 'NA' else PredictionClass.prediction_class_name_for_iedb_prediction_method(best_mt_score_method)
-            row['Best Percentile Method'] = 'NA' if best_mt_percentile_method == 'NA' else PredictionClass.prediction_class_name_for_iedb_prediction_method(best_mt_percentile_method)
-
-            for method in self.prediction_methods():
-                pretty_method = PredictionClass.prediction_class_name_for_iedb_prediction_method(method)
-                self.add_pretty_row(row, mt_scores, method, pretty_method, 'IC50 Score')
-                if pretty_method not in ['BigMHC_EL', 'BigMHC_IM', 'DeepImmuno']:
-                    self.add_pretty_row(row, mt_percentiles, method, pretty_method, 'Percentile')
+            row = self.add_prediction_scores(row, result['mt_scores'])
 
             for (tsv_key, row_key) in zip(['gene_expression', 'transcript_expression', 'normal_vaf', 'tdna_vaf', 'trna_vaf'], ['Gene Expression', 'Transcript Expression', 'Normal VAF', 'Tumor DNA VAF', 'Tumor RNA VAF']):
                 if tsv_key in tsv_entry:

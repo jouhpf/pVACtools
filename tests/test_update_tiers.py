@@ -6,6 +6,7 @@ from filecmp import cmp
 import sys
 import shutil
 from tempfile import NamedTemporaryFile
+import py_compile
 
 from pvactools.lib.update_tiers import PvacseqUpdateTiers, PvacspliceUpdateTiers, PvacbindUpdateTiers, PvacfuseUpdateTiers
 from tests.utils import *
@@ -18,7 +19,7 @@ class UpdateTiersTests(unittest.TestCase):
         cls.executable    = os.path.join(pvactools_directory(), "pvactools", "lib", "update_tiers.py")
         cls.test_data_dir = os.path.join(pvactools_directory(), "tests", "test_data", "update_tiers")
 
-    def module_compiles(self):
+    def test_module_compiles(self):
         self.assertTrue(py_compile.compile(self.executable))
 
     def test_update_tiers_pvacseq(self):
@@ -31,6 +32,7 @@ class UpdateTiersTests(unittest.TestCase):
         self.assertFalse(PvacseqUpdateTiers(
             tmp_input_file.name,
             0.5,
+            percentile_threshold_strategy='exploratory',
             metrics_file=tmp_input_metrics_file.name
         ).execute())
         self.assertTrue(cmp(
@@ -64,6 +66,7 @@ class UpdateTiersTests(unittest.TestCase):
         shutil.copy(input_file, tmp_input_file.name)
         self.assertFalse(PvacbindUpdateTiers(
             tmp_input_file.name,
+            percentile_threshold_strategy='exploratory'
         ).execute())
         self.assertTrue(cmp(
             tmp_input_file.name,
@@ -77,6 +80,7 @@ class UpdateTiersTests(unittest.TestCase):
         shutil.copy(input_file, tmp_input_file.name)
         self.assertFalse(PvacfuseUpdateTiers(
             tmp_input_file.name,
+            binding_threshold=100,
         ).execute())
         self.assertTrue(cmp(
             tmp_input_file.name,

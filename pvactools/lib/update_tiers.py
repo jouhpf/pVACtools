@@ -9,8 +9,9 @@ import argparse
 import json
 
 from pvactools.lib.prediction_class import PredictionClass
-from pvactools.lib.run_utils import is_preferred_transcript, float_range, transcript_prioritization_strategy
+from pvactools.lib.run_utils import is_preferred_transcript, float_range, transcript_prioritization_strategy, top_score_metric2, metric2_to_aggregate_column
 from pvactools.lib.anchor_residue_pass import AnchorResiduePass
+from pvactools.lib.sort import pvacseq_sort, pvacfuse_sort, pvacsplice_sort, pvacbind_sort
 
 class UpdateTiers:
     def __init__(self):
@@ -71,11 +72,11 @@ class UpdateTiers:
         parser.add_argument(
             "-b","--binding-threshold", type=int,
             default=500,
-            help="IC50 Binding Threshold to consider when evaluting the binding criteria. Candidates  where the mutant allele has ic50 binding scores below this value will be considered good binders.",
+            help="IC50 binding threshold to consider when evaluting the binding criteria. Candidates where the mutant allele has ic50 binding scores below this value will be considered good binders.",
         )
         parser.add_argument(
             '--allele-specific-binding-thresholds',
-            help="Use allele-specific binding thresholds when evaluatng the binding criteria for tiering. To print the allele-specific binding thresholds run `%s allele_specific_cutoffs`. " % tool
+            help="Use allele-specific binding thresholds when evaluating the binding criteria for tiering. To print the allele-specific binding thresholds run `%s allele_specific_cutoffs`. " % tool
                  + "If an allele does not have a special threshold value, the `--binding-threshold` value will be used.",
             default=False,
             action='store_true',
@@ -86,17 +87,36 @@ class UpdateTiers:
                  +"percentile rank must be below this value."
         )
         parser.add_argument(
+            '--binding-percentile-threshold', type=float_range(0.0,100.0),
+            default=2.0,
+            help="Tier epitopes in the \"Pass\" tier when the mutant allele "
+                 + "has a binding percentile below this value.",
+        )
+        parser.add_argument(
+            '--immunogenicity-percentile-threshold', type=float_range(0.0,100.0),
+            default=2.0,
+            help="Tier epitopes in the \"Pass\" tier when the mutant allele "
+                 + "has a immunogenicity percentile below this value.",
+        )
+        parser.add_argument(
+            '--presentation-percentile-threshold', type=float_range(0.0,100.0),
+            default=2.0,
+            help="Tier epitopes in the \"Pass\" tier when the mutant allele "
+                 + "has a presentation percentile below this value.",
+        )
+        parser.add_argument(
             '--percentile-threshold-strategy',
             choices=['conservative', 'exploratory'],
-            help="Specify the candidate inclusion strategy. The 'conservative' option requires a candidate to pass BOTH the binding threshold and percentile threshold (default) in order to pass the binding criteria."
-                 + " The 'exploratory' option requires a candidate to pass EITHER the binding threshold or the percentile threshold.",
+            help="Specify the candidate inclusion strategy. The 'conservative' option requires a candidate to pass the binding threshold and all percentile thresholds (default)."
+                 + " The 'exploratory' option requires a candidate to pass EITHER the binding threshold or one of the percentile thresholds.",
             default="conservative",
         )
         parser.add_argument(
-            '-m2', '--top-score-metric2',
-            choices=['ic50','percentile'],
-            default='ic50',
-            help="Whether to use median/best IC50 or to use median/best percentile score as the primary sorting criteria in the aggregated report for the candidates within each tier."
+            '-m2', '--top-score-metric2', type=top_score_metric2(),
+            help="Which metrics to consider when sorting candidates within a tier. Each specified metric will be ranked and the sum of these ranks will be used for sorting."
+                 + "Available options are 'ic50', 'combined_percentile', 'binding_percentile', 'immunogenicity_percentile', and 'presentation_percentile'."
+                 + "Whether the lowest or median is considered for each metric is controlled by the --top-score-metric parameter. ",
+            default=['ic50', 'combined_percentile'],
         )
         if tool in ['pvacseq', 'pvacsplice']:
             parser.add_argument(
@@ -177,12 +197,14 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             expn_val=1,
             transcript_prioritization_strategy=['mane_select', 'canonical', 'tsl'],
             maximum_transcript_support_level=1,
-            percentile_threshold=None,
+            binding_percentile_threshold=2.0,
+            immunogenicity_percentile_threshold=2.0,
+            presentation_percentile_threshold=2.0,
             percentile_threshold_strategy='conservative',
             allele_specific_binding_thresholds=False,
             allele_specific_anchors=False,
             anchor_contribution_threshold=0.8,
-            top_score_metric2='ic50',
+            top_score_metric2=["ic50", "combined_percentile"],
             metrics_file=None,
         ):
         self.input_file = input_file
@@ -190,7 +212,9 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         self.vaf_clonal = vaf_clonal
         self.binding_threshold = binding_threshold
         self.use_allele_specific_binding_thresholds = allele_specific_binding_thresholds
-        self.percentile_threshold = percentile_threshold
+        self.binding_percentile_threshold = binding_percentile_threshold
+        self.immunogenicity_percentile_threshold = immunogenicity_percentile_threshold
+        self.presentation_percentile_threshold = presentation_percentile_threshold
         self.percentile_threshold_strategy = percentile_threshold_strategy
         self.allele_expr_threshold = trna_vaf * expn_val * 10
         self.trna_cov = trna_cov
@@ -198,10 +222,7 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         self.transcript_prioritization_strategy = transcript_prioritization_strategy
         self.maximum_transcript_support_level = maximum_transcript_support_level
         self.metrics_file=metrics_file
-        if top_score_metric2 == "percentile":
-            self.top_score_mode = "%ile MT"
-        else:
-            self.top_score_mode = "IC50 MT"
+        self.top_score_metric2 = top_score_metric2
         super().__init__()
         self.anchor_calculator = AnchorResiduePass(binding_threshold, self.use_allele_specific_binding_thresholds, self.allele_specific_binding_thresholds, allele_specific_anchors, anchor_contribution_threshold)
 
@@ -210,17 +231,28 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             binding_threshold = self.allele_specific_binding_thresholds[mutation['Allele']]
         else:
             binding_threshold = self.binding_threshold
-
-        ic50_pass = float(mutation["IC50 MT"]) < binding_threshold
-        percentile_pass = (
-            self.percentile_threshold is None or
-            float(mutation["%ile MT"]) < self.percentile_threshold
-        )
-        binding_pass = (
-            (ic50_pass and percentile_pass)
-            if self.percentile_threshold_strategy == 'conservative'
-            else (ic50_pass or percentile_pass)
-        )
+        ic50_pass = True if mutation["IC50 MT"] == 'NA' else float(mutation["IC50 MT"]) < binding_threshold
+        binding_percentile_pass = True if mutation["IC50 %ile MT"] == 'NA' else float(mutation["IC50 %ile MT"]) < self.binding_percentile_threshold
+        immunogenicity_percentile_pass = True if mutation["IM %ile MT"] == 'NA' else float(mutation["IM %ile MT"]) < self.immunogenicity_percentile_threshold
+        presentation_percentile_pass = True if mutation["Pres %ile MT"] == 'NA' else float(mutation["Pres %ile MT"]) < self.presentation_percentile_threshold
+        all_scores = []
+        binding_scores = []
+        if mutation["IC50 MT"] != 'NA':
+            all_scores.append(ic50_pass)
+            binding_scores.append(ic50_pass)
+        if mutation["IC50 %ile MT"] != 'NA':
+            all_scores.append(binding_percentile_pass)
+            binding_scores.append(binding_percentile_pass)
+        if mutation["IM %ile MT"] != 'NA':
+            all_scores.append(immunogenicity_percentile_pass)
+        if mutation["Pres %ile MT"] != 'NA':
+            all_scores.append(presentation_percentile_pass)
+        if self.percentile_threshold_strategy == 'conservative':
+            scores_pass = all(all_scores)
+            binding_pass = all(binding_scores)
+        elif self.percentile_threshold_strategy == 'exploratory':
+            scores_pass = any(all_scores)
+            binding_pass = any(binding_scores)
 
         anchor_residue_pass = self.anchor_calculator.is_anchor_residue_pass(mutation)
 
@@ -243,7 +275,7 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             vaf_clonal_pass = False
 
         #writing these out as explicitly as possible for ease of understanding
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            transcript_pass and
@@ -253,7 +285,7 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "Pass"
 
         #poor binder
-        if (not binding_pass and
+        if (not binding_pass and immunogenicity_percentile_pass and presentation_percentile_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            transcript_pass and
@@ -262,8 +294,28 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
            probaa_pass):
             return "PoorBinder"
 
+        #poor immunogenicity
+        if (binding_pass and not immunogenicity_percentile_pass and presentation_percentile_pass and
+           allele_expr_pass and
+           vaf_clonal_pass and
+           transcript_pass and
+           anchor_residue_pass and
+           refmatch_pass and
+           probaa_pass):
+            return "PoorImmunogenicity"
+
+        #poor presentation
+        if (binding_pass and immunogenicity_percentile_pass and not presentation_percentile_pass and
+           allele_expr_pass and
+           vaf_clonal_pass and
+           transcript_pass and
+           anchor_residue_pass and
+           refmatch_pass and
+           probaa_pass):
+            return "PoorPresentation"
+
         #has reference match
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            transcript_pass and
@@ -273,7 +325,7 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "RefMatch"
 
         #has problematic positions
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            transcript_pass and
@@ -292,7 +344,7 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "PoorTranscript"
 
         #anchor residues
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            transcript_pass and
@@ -302,7 +354,7 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "Anchor"
 
         #not in founding clone
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            not vaf_clonal_pass and
            transcript_pass and
@@ -321,7 +373,7 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
                 lowexpr=True
 
         #if low expression is the only strike against it, it gets lowexpr label (multiple strikes will pass through to poor)
-        if (binding_pass and
+        if (scores_pass and
            lowexpr and
            vaf_clonal_pass and
            transcript_pass and
@@ -340,24 +392,7 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         return "Poor"
 
     def sort_table(self, output_lines):
-        #make sure the tiers sort in the expected order
-        df = pd.DataFrame.from_dict(output_lines)
-        tier_sorter = ["Pass", "PoorBinder", "RefMatch", "PoorTranscript", "LowExpr", "Anchor", "Subclonal", "ProbPos", "Poor", "NoExpr"]
-        sorter_index = dict(zip(tier_sorter,range(len(tier_sorter))))
-        df["rank_tier"] = df['Tier'].map(sorter_index)
-
-        df["rank_binding"] = pd.to_numeric(df[self.top_score_mode]).rank(ascending=True, method='dense')
-        df["rank_expr"] = pd.to_numeric(df["Allele Expr"], errors='coerce').rank(ascending=False, method='dense', na_option="bottom")
-        df["rank"] = df["rank_binding"] + df["rank_expr"]
-
-        df.sort_values(by=["rank_tier", "rank", "Gene", "AA Change"], inplace=True, ascending=True)
-
-        df.drop(labels='rank_tier', axis=1, inplace=True)
-        df.drop(labels='rank_binding', axis=1, inplace=True)
-        df.drop(labels='rank_expr', axis=1, inplace=True)
-        df.drop(labels='rank', axis=1, inplace=True)
-
-        return df
+        return pvacseq_sort(output_lines, None, self.top_score_metric2, file_type='aggregated')
 
     def update_metrics_file(self):
         if self.metrics_file is not None:
@@ -372,10 +407,12 @@ class PvacseqUpdateTiers(UpdateTiers, metaclass=ABCMeta):
                 metrics['allele_expr_threshold'] = self.allele_expr_threshold
                 metrics['transcript_prioritization_strategy'] = sorted(self.transcript_prioritization_strategy)
                 metrics['maximum_transcript_support_level'] = self.maximum_transcript_support_level
-                metrics['percentile_threshold'] = self.percentile_threshold
+                metrics['binding_percentile_threshold'] = self.binding_percentile_threshold
+                metrics['immunogenicity_percentile_threshold'] = self.immunogenicity_percentile_threshold
+                metrics['presentation_percentile_threshold'] = self.presentation_percentile_threshold
                 metrics['percentile_threshold_strategy'] = self.percentile_threshold_strategy
                 metrics['use_allele_specific_binding_thresholds'] = self.use_allele_specific_binding_thresholds
-                metrics['top_score_metric2'] = 'ic50' if self.top_score_mode == "IC50 MT" else 'percentile'
+                metrics['top_score_metric2'] = self.top_score_metric2
                 metrics['allele_specific_anchors'] = self.anchor_calculator.use_allele_specific_anchors
                 metrics['anchor_contribution_threshold'] = self.anchor_calculator.anchor_contribution_threshold
                 json.dump(metrics, output_fh, indent=2, separators=(',', ': '))
@@ -386,25 +423,26 @@ class PvacfuseUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         self,
         input_file,
         binding_threshold=500,
-        percentile_threshold=None,
+        binding_percentile_threshold=2.0,
+        immunogenicity_percentile_threshold=2.0,
+        presentation_percentile_threshold=2.0,
         percentile_threshold_strategy='conservative',
         allele_specific_binding_thresholds=False,
         read_support=5,
         expn_val=0.1,
-        top_score_metric2="ic50"
+        top_score_metric2=["ic50", "combined_percentile"],
     ):
         self.input_file = input_file
         self.output_file = tempfile.NamedTemporaryFile()
         self.binding_threshold = binding_threshold
         self.use_allele_specific_binding_thresholds = allele_specific_binding_thresholds
-        self.percentile_threshold = percentile_threshold
+        self.binding_percentile_threshold = binding_percentile_threshold
+        self.immunogenicity_percentile_threshold = immunogenicity_percentile_threshold
+        self.presentation_percentile_threshold = presentation_percentile_threshold
         self.percentile_threshold_strategy = percentile_threshold_strategy
         self.read_support = read_support
         self.expn_val = expn_val
-        if top_score_metric2 == "percentile":
-            self.top_score_mode = "%ile MT"
-        else:
-            self.top_score_mode = "IC50 MT"
+        self.top_score_metric2 = top_score_metric2
         super().__init__()
 
     def get_tier(self, mutation):
@@ -413,16 +451,28 @@ class PvacfuseUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         else:
             binding_threshold = self.binding_threshold
 
-        ic50_pass = float(mutation["IC50 MT"]) < binding_threshold
-        percentile_pass = (
-            self.percentile_threshold is None or
-            float(mutation["%ile MT"]) < self.percentile_threshold
-        )
-        binding_pass = (
-            (ic50_pass and percentile_pass)
-            if self.percentile_threshold_strategy == 'conservative'
-            else (ic50_pass or percentile_pass)
-        )
+        ic50_pass = True if mutation["IC50 MT"] == 'NA' else float(mutation["IC50 MT"]) < binding_threshold
+        binding_percentile_pass = True if mutation["IC50 %ile MT"] == 'NA' else float(mutation["IC50 %ile MT"]) < self.binding_percentile_threshold
+        immunogenicity_percentile_pass = True if mutation["IM %ile MT"] == 'NA' else float(mutation["IM %ile MT"]) < self.immunogenicity_percentile_threshold
+        presentation_percentile_pass = True if mutation["Pres %ile MT"] == 'NA' else float(mutation["Pres %ile MT"]) < self.presentation_percentile_threshold
+        all_scores = []
+        binding_scores = []
+        if mutation["IC50 MT"] != 'NA':
+            all_scores.append(ic50_pass)
+            binding_scores.append(ic50_pass)
+        if mutation["IC50 %ile MT"] != 'NA':
+            all_scores.append(binding_percentile_pass)
+            binding_scores.append(binding_percentile_pass)
+        if mutation["IM %ile MT"] != 'NA':
+            all_scores.append(immunogenicity_percentile_pass)
+        if mutation["Pres %ile MT"] != 'NA':
+            all_scores.append(presentation_percentile_pass)
+        if self.percentile_threshold_strategy == 'conservative':
+            scores_pass = all(all_scores)
+            binding_pass = all(binding_scores)
+        elif self.percentile_threshold_strategy == 'exploratory':
+            scores_pass = any(all_scores)
+            binding_pass = any(binding_scores)
 
         low_read_support = False
         if mutation['Read Support'] != 'NA' and float(mutation['Read Support']) < self.read_support:
@@ -440,7 +490,7 @@ class PvacfuseUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         if 'Prob Pos' in mutation:
             probaa_pass = mutation['Prob Pos'] == 'None'
 
-        if (binding_pass and
+        if (scores_pass and
           not low_read_support and
           not low_expr and
           refmatch_pass and
@@ -448,15 +498,31 @@ class PvacfuseUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "Pass"
 
         #poor binder
-        if (not binding_pass and
+        if (not binding_pass and immunogenicity_percentile_pass and presentation_percentile_pass and
           not low_read_support and
           not low_expr and
           refmatch_pass and
           probaa_pass):
             return "PoorBinder"
 
+        #poor immunogenicity
+        if (binding_pass and not immunogenicity_percentile_pass and presentation_percentile_pass and
+          not low_read_support and
+          not low_expr and
+          refmatch_pass and
+          probaa_pass):
+            return "PoorImmunogenicity"
+
+        #poor presentation
+        if (binding_pass and immunogenicity_percentile_pass and not presentation_percentile_pass and
+          not low_read_support and
+          not low_expr and
+          refmatch_pass and
+          probaa_pass):
+            return "PoorPresentation"
+
         #has reference match
-        if (binding_pass and
+        if (scores_pass and
           not low_read_support and
           not low_expr and
           not refmatch_pass and
@@ -464,7 +530,7 @@ class PvacfuseUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "RefMatch"
 
         #has problematic positions
-        if (binding_pass and
+        if (scores_pass and
           not low_read_support and
           not low_expr and
           refmatch_pass and
@@ -472,7 +538,7 @@ class PvacfuseUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "ProbPos"
 
         #low read support
-        if (binding_pass and
+        if (scores_pass and
           low_read_support and
           not low_expr and
           refmatch_pass and
@@ -480,7 +546,7 @@ class PvacfuseUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "LowReadSupport"
 
         #low expression
-        if (binding_pass and
+        if (scores_pass and
           not low_read_support and
           low_expr and
           refmatch_pass and
@@ -490,24 +556,7 @@ class PvacfuseUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         return "Poor"
 
     def sort_table(self, output_lines):
-        df = pd.DataFrame.from_dict(output_lines)
-        tier_sorter = ["Pass", "PoorBinder", "RefMatch", "LowReadSupport", "LowExpr", "ProbPos", "Poor"]
-        sorter_index = dict(zip(tier_sorter,range(len(tier_sorter))))
-        df["rank_tier"] = df['Tier'].map(sorter_index)
-
-        df['binding_num'] = pd.to_numeric(df[self.top_score_mode])
-        df["rank_binding"] = df["binding_num"].rank(ascending=True, method='dense')
-        df["rank_expr"] = pd.to_numeric(df["Expr"], errors='coerce').rank(ascending=False, method='dense', na_option="bottom")
-        df["rank"] = df["rank_binding"] + df["rank_expr"]
-
-        df.sort_values(by=["rank_tier", "rank", "binding_num", "ID"], inplace=True, ascending=True)
-
-        df.drop(labels='rank_tier', axis=1, inplace=True)
-        df.drop(labels='binding_num', axis=1, inplace=True)
-        df.drop(labels='rank_binding', axis=1, inplace=True)
-        df.drop(labels='rank_expr', axis=1, inplace=True)
-        df.drop(labels='rank', axis=1, inplace=True)
-        return df
+        return pvacfuse_sort(output_lines, None, self.top_score_metric2, file_type='aggregated')
 
 class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
     def __init__(
@@ -516,20 +565,24 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         vaf_clonal,
         binding_threshold=500,
         allele_specific_binding_thresholds=False,
-        percentile_threshold=None,
+        binding_percentile_threshold=2.0,
+        immunogenicity_percentile_threshold=2.0,
+        presentation_percentile_threshold=2.0,
         percentile_threshold_strategy='conservative',
         trna_vaf=0.25,
         trna_cov=10,
         expn_val=1,
         transcript_prioritization_strategy=['mane_select', 'canonical', 'tsl'],
         maximum_transcript_support_level=1,
-        top_score_metric2="ic50"
+        top_score_metric2=["ic50", "combined_percentile"],
     ):
         self.input_file = input_file
         self.output_file = tempfile.NamedTemporaryFile()
         self.binding_threshold = binding_threshold
         self.use_allele_specific_binding_thresholds = allele_specific_binding_thresholds
-        self.percentile_threshold = percentile_threshold
+        self.binding_percentile_threshold = binding_percentile_threshold
+        self.immunogenicity_percentile_threshold = immunogenicity_percentile_threshold
+        self.presentation_percentile_threshold = presentation_percentile_threshold
         self.percentile_threshold_strategy = percentile_threshold_strategy
         self.vaf_clonal = vaf_clonal
         self.allele_expr_threshold = trna_vaf * expn_val * 10
@@ -538,10 +591,7 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         self.expn_val = expn_val
         self.transcript_prioritization_strategy = transcript_prioritization_strategy
         self.maximum_transcript_support_level = maximum_transcript_support_level
-        if top_score_metric2 == "percentile":
-            self.top_score_mode = "%ile MT"
-        else:
-            self.top_score_mode = "IC50 MT"
+        self.top_score_metric2 = top_score_metric2
         super().__init__()
 
     def get_tier(self, mutation):
@@ -550,16 +600,28 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         else:
             binding_threshold = self.binding_threshold
 
-        ic50_pass = float(mutation["IC50 MT"]) < binding_threshold
-        percentile_pass = (
-            self.percentile_threshold is None or
-            float(mutation["%ile MT"]) < self.percentile_threshold
-        )
-        binding_pass = (
-            (ic50_pass and percentile_pass)
-            if self.percentile_threshold_strategy == 'conservative'
-            else (ic50_pass or percentile_pass)
-        )
+        ic50_pass = True if mutation["IC50 MT"] == 'NA' else float(mutation["IC50 MT"]) < binding_threshold
+        binding_percentile_pass = True if mutation["IC50 %ile MT"] == 'NA' else float(mutation["IC50 %ile MT"]) < self.binding_percentile_threshold
+        immunogenicity_percentile_pass = True if mutation["IM %ile MT"] == 'NA' else float(mutation["IM %ile MT"]) < self.immunogenicity_percentile_threshold
+        presentation_percentile_pass = True if mutation["Pres %ile MT"] == 'NA' else float(mutation["Pres %ile MT"]) < self.presentation_percentile_threshold
+        all_scores = []
+        binding_scores = []
+        if mutation["IC50 MT"] != 'NA':
+            all_scores.append(ic50_pass)
+            binding_scores.append(ic50_pass)
+        if mutation["IC50 %ile MT"] != 'NA':
+            all_scores.append(binding_percentile_pass)
+            binding_scores.append(binding_percentile_pass)
+        if mutation["IM %ile MT"] != 'NA':
+            all_scores.append(immunogenicity_percentile_pass)
+        if mutation["Pres %ile MT"] != 'NA':
+            all_scores.append(presentation_percentile_pass)
+        if self.percentile_threshold_strategy == 'conservative':
+            scores_pass = all(all_scores)
+            binding_pass = all(binding_scores)
+        elif self.percentile_threshold_strategy == 'exploratory':
+            scores_pass = any(all_scores)
+            binding_pass = any(binding_scores)
 
         transcript_pass = is_preferred_transcript(mutation, self.transcript_prioritization_strategy, self.maximum_transcript_support_level)
 
@@ -580,7 +642,7 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             vaf_clonal_pass = False
 
         #writing these out as explicitly as possible for ease of understanding
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            transcript_pass and
@@ -589,7 +651,7 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "Pass"
 
         #poor binder
-        if (not binding_pass and
+        if (not binding_pass and immunogenicity_percentile_pass and presentation_percentile_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            transcript_pass and
@@ -597,8 +659,26 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
            probaa_pass):
             return "PoorBinder"
 
+        #poor immunogenicity
+        if (binding_pass and not immunogenicity_percentile_pass and presentation_percentile_pass and
+           allele_expr_pass and
+           vaf_clonal_pass and
+           transcript_pass and
+           refmatch_pass and
+           probaa_pass):
+            return "PoorImmunogenicity"
+
+        #poor presentation
+        if (binding_pass and immunogenicity_percentile_pass and not presentation_percentile_pass and
+           allele_expr_pass and
+           vaf_clonal_pass and
+           transcript_pass and
+           refmatch_pass and
+           probaa_pass):
+            return "PoorPresentation"
+
         #has reference match
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            transcript_pass and
@@ -607,7 +687,7 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "RefMatch"
 
         #has problematic positions
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            transcript_pass and
@@ -616,7 +696,7 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "ProbPos"
 
         #transcript doesn't match the prioritization criteria
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            vaf_clonal_pass and
            not transcript_pass and
@@ -625,7 +705,7 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
             return "PoorTranscript"
 
         #not in founding clone
-        if (binding_pass and
+        if (scores_pass and
            allele_expr_pass and
            not vaf_clonal_pass and
            transcript_pass and
@@ -643,7 +723,7 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
                 lowexpr=True
 
         #if low expression is the only strike against it, it gets lowexpr label (multiple strikes will pass through to poor)
-        if (binding_pass and
+        if (scores_pass and
            lowexpr and
            vaf_clonal_pass and
            transcript_pass and
@@ -661,46 +741,29 @@ class PvacspliceUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         return "Poor"
 
     def sort_table(self, output_lines):
-        df = pd.DataFrame.from_dict(output_lines)
-
-        #make sure the tiers sort in the expected order
-        tier_sorter = ["Pass", "PoorBinder", "RefMatch", "PoorTranscript", "LowExpr", "Subclonal", "ProbPos", "Poor", "NoExpr"]
-        sorter_index = dict(zip(tier_sorter,range(len(tier_sorter))))
-        df["rank_tier"] = df['Tier'].map(sorter_index)
-
-        df["rank_binding"] = pd.to_numeric(df[self.top_score_mode]).rank(ascending=True, method='dense')
-        df["rank_expr"] = pd.to_numeric(df["Allele Expr"], errors='coerce').rank(ascending=False, method='dense', na_option="bottom")
-        df["rank"] = df["rank_binding"] + df["rank_expr"]
-
-        df.sort_values(by=["rank_tier", "rank", "Gene", "Transcript", "AA Change"], inplace=True, ascending=True)
-
-        df.drop(labels='rank_tier', axis=1, inplace=True)
-        df.drop(labels='rank_binding', axis=1, inplace=True)
-        df.drop(labels='rank_expr', axis=1, inplace=True)
-        df.drop(labels='rank', axis=1, inplace=True)
-
-        return df
+        return pvacsplice_sort(output_lines, None, self.top_score_metric2, file_type='aggregated')
 
 class PvacbindUpdateTiers(UpdateTiers, metaclass=ABCMeta):
     def __init__(
             self,
             input_file,
             binding_threshold=500,
-            percentile_threshold=None,
+            binding_percentile_threshold=2.0,
+            immunogenicity_percentile_threshold=2.0,
+            presentation_percentile_threshold=2.0,
             percentile_threshold_strategy='conservative',
             allele_specific_binding_thresholds=False,
-            top_score_metric2="ic50"
+            top_score_metric2=["ic50", "combined_percentile"],
         ):
         self.input_file = input_file
         self.output_file = tempfile.NamedTemporaryFile()
         self.binding_threshold = binding_threshold
-        self.percentile_threshold = percentile_threshold
+        self.binding_percentile_threshold = binding_percentile_threshold
+        self.immunogenicity_percentile_threshold = immunogenicity_percentile_threshold
+        self.presentation_percentile_threshold = presentation_percentile_threshold
         self.percentile_threshold_strategy = percentile_threshold_strategy
         self.use_allele_specific_binding_thresholds = allele_specific_binding_thresholds
-        if top_score_metric2 == "percentile":
-            self.top_score_mode = "%ile MT"
-        else:
-            self.top_score_mode = "IC50 MT"
+        self.top_score_metric2 = top_score_metric2
         super().__init__()
 
     def get_tier(self, mutation):
@@ -709,16 +772,28 @@ class PvacbindUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         else:
             binding_threshold = self.binding_threshold
 
-        ic50_pass = float(mutation["IC50 MT"]) < binding_threshold
-        percentile_pass = (
-            self.percentile_threshold is None or
-            float(mutation["%ile MT"]) < self.percentile_threshold
-        )
-        binding_pass = (
-            (ic50_pass and percentile_pass)
-            if self.percentile_threshold_strategy == 'conservative'
-            else (ic50_pass or percentile_pass)
-        )
+        ic50_pass = True if mutation["IC50 MT"] == 'NA' else float(mutation["IC50 MT"]) < binding_threshold
+        binding_percentile_pass = True if mutation["IC50 %ile MT"] == 'NA' else float(mutation["IC50 %ile MT"]) < self.binding_percentile_threshold
+        immunogenicity_percentile_pass = True if mutation["IM %ile MT"] == 'NA' else float(mutation["IM %ile MT"]) < self.immunogenicity_percentile_threshold
+        presentation_percentile_pass = True if mutation["Pres %ile MT"] == 'NA' else float(mutation["Pres %ile MT"]) < self.presentation_percentile_threshold
+        all_scores = []
+        binding_scores = []
+        if mutation["IC50 MT"] != 'NA':
+            all_scores.append(ic50_pass)
+            binding_scores.append(ic50_pass)
+        if mutation["IC50 %ile MT"] != 'NA':
+            all_scores.append(binding_percentile_pass)
+            binding_scores.append(binding_percentile_pass)
+        if mutation["IM %ile MT"] != 'NA':
+            all_scores.append(immunogenicity_percentile_pass)
+        if mutation["Pres %ile MT"] != 'NA':
+            all_scores.append(presentation_percentile_pass)
+        if self.percentile_threshold_strategy == 'conservative':
+            scores_pass = all(all_scores)
+            binding_pass = all(binding_scores)
+        elif self.percentile_threshold_strategy == 'exploratory':
+            scores_pass = any(all_scores)
+            binding_pass = any(binding_scores)
 
         refmatch_pass = True
         if 'Ref Match' in mutation:
@@ -728,25 +803,37 @@ class PvacbindUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         if 'Prob Pos' in mutation:
             probaa_pass = mutation['Prob Pos'] == 'None'
 
-        if (binding_pass and
+        if (scores_pass and
             refmatch_pass and
             probaa_pass):
             return "Pass"
 
         #poor binder
-        if (not binding_pass and
+        if (not binding_pass and immunogenicity_percentile_pass and presentation_percentile_pass and
             refmatch_pass and
             probaa_pass):
             return "PoorBinder"
 
+        #poor immunogenicity
+        if (binding_pass and not immunogenicity_percentile_pass and presentation_percentile_pass and
+            refmatch_pass and
+            probaa_pass):
+            return "PoorImmunogenicity"
+
+        #poor presentation
+        if (binding_pass and immunogenicity_percentile_pass and not presentation_percentile_pass and
+            refmatch_pass and
+            probaa_pass):
+            return "PoorPresentation"
+
         #has reference match
-        if (binding_pass and
+        if (scores_pass and
            not refmatch_pass and
            probaa_pass):
             return "RefMatch"
 
         #has problematic positions
-        if (binding_pass and
+        if (scores_pass and
            refmatch_pass and
            not probaa_pass):
             return "ProbPos"
@@ -754,16 +841,4 @@ class PvacbindUpdateTiers(UpdateTiers, metaclass=ABCMeta):
         return "Poor"
 
     def sort_table(self, output_lines):
-        df = pd.DataFrame.from_dict(output_lines)
-
-        tier_sorter = ["Pass", "PoorBinder", "RefMatch", "ProbPos", "Poor"]
-        sorter_index = dict(zip(tier_sorter,range(len(tier_sorter))))
-        df["rank_tier"] = df['Tier'].map(sorter_index)
-
-        df['binding_num'] = pd.to_numeric(df[self.top_score_mode])
-
-        df.sort_values(by=["rank_tier", "binding_num", "ID"], inplace=True, ascending=[True, True, True])
-
-        df.drop(labels='rank_tier', axis=1, inplace=True)
-        df.drop(labels='binding_num', axis=1, inplace=True)
-        return df
+        return pvacbind_sort(output_lines, None, self.top_score_metric2, file_type='aggregated')
