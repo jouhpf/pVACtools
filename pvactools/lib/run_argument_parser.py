@@ -156,7 +156,8 @@ class RunArgumentParser(metaclass=ABCMeta):
             '-m2', '--top-score-metric2', type=top_score_metric2(),
             help="Which metrics to consider when selecting the best peptide in the aggregate erport and the top score filter step (filtered report). "
                  + "Each specified metric will be ranked and the sum of these ranks will be used. This rank sum is also used as the primary sorting criteria in the "
-                 + "aggregated report for the candidates within each tier as well as in the filtered report. "
+                 + "aggregated report for the candidates within each tier as well as in the filtered report. Available options are "
+                 + "'ic50', 'combined_percentile', 'binding_percentile', 'immunogenicity_percentile', and 'presentation_percentile'."
                  + "Whether the lowest or median is considered for each metric is controlled by the --top-score-metric parameter. ",
             default=['ic50', 'combined_percentile'],
         )

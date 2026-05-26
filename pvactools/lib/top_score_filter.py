@@ -45,6 +45,7 @@ class TopScoreFilter(metaclass=ABCMeta):
         parser.add_argument(
             '-m2', '--top-score-metric2', type=top_score_metric2(),
             help="Which metrics to consider when determining the top scoring peptide. All listed metrics will be rank scored and the sum of those rank scores will be used. "
+                 + "Available options are 'ic50', 'combined_percentile', 'binding_percentile', 'immunogenicity_percentile', and 'presentation_percentile'."
                  + "Whether the lowest or median is considered for each metric is controlled by the --top-score-metric parameter. "
                  + "This parameter is also used to control the sorting criteria for the variants in the output report evaluated in the order provided.",
             default=['ic50', 'combined_percentile'],
